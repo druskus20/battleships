@@ -1,7 +1,7 @@
-SUBDIRS=src
+SUBDIRS=src tests
 
-# BOLD=\e[1m
-# NC=\e[0m
+BOLD=\e[1m
+NC=\e[0m
 
 all:
 

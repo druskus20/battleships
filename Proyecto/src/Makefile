@@ -14,9 +14,9 @@ clean:
 
 simulador:
 	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) mapa.c simulador.c -o $(TARGET)/simulador -lrt -lm
+	$(CC) $(CFLAGS) mapa.c simulador.c -o $(TARGET)/simulador $(LDLIBS) -lm
 	
 monitor:
 	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) gamescreen.c mapa.c monitor.c -o $(TARGET)/monitor -lrt -lncurses -lm
+	$(CC) $(CFLAGS) gamescreen.c mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
 		

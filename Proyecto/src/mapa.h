@@ -44,4 +44,4 @@ void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves);
 void mapa_set_symbol(tipo_mapa *mapa, int posy, int posx, char symbol);
 
 
-#endif /* SRC_MAPA_H_ */
+#endif 

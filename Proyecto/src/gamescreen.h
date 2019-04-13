@@ -15,4 +15,4 @@ void screen_refresh();
 /* Finaliza el modo pantalla. Hay que hacerlo antes de finalizar el programa */
 void screen_end();
 
-#endif /* SRC_GAMESCREEN_H_ */
+#endif 
