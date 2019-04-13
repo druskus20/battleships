@@ -1,4 +1,4 @@
-TARGET = ../target
+TARGET = ../bin
 
 CC = gcc
 CFLAGS = -g -Wall -pthread -I.

@@ -1,4 +1,4 @@
-TARGET = ../target
+TARGET = ../bin
 
 CC = gcc
 CFLAGS = -g -Wall -pthread -I.
@@ -20,3 +20,7 @@ monitor:
 	mkdir -p $(TARGET)
 	$(CC) $(CFLAGS) gamescreen.c mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
 		
+
+nave: 
+	mkdir -p $(TARGET)
+	$(CC) $(CFLAGS) nave.c simulador.c -o $(TARGET)/monitor $(LDLIBS) -lm

@@ -1,0 +1,45 @@
+#include "nave.h"
+#include <stdbool.h>
+
+
+int nave_get_vida(tipo_nave *nave) {
+    return nave->vida;
+}
+void nave_set_vida(tipo_nave *nave, int vida) {
+    nave->vida = vida;
+}
+
+int nave_get_posx(tipo_nave *nave) {
+    return nave->posx;
+}
+void nave_set_posx(tipo_nave *nave, int posx) {
+    nave->posx = posx;
+}
+
+int nave_get_posy(tipo_nave *nave) {
+    return nave->posy;
+}
+void nave_set_posy(tipo_nave *nave, int posy) {
+    nave->posy = posy;
+}
+
+int nave_get_equipo(tipo_nave *nave) {
+    return nave->equipo;
+}
+void nave_set_equipo(tipo_nave *nave, int equipo) {
+    nave->equipo = equipo;
+}
+
+int nave_get_num_nave(tipo_nave *nave) {
+    return nave->num_nave;
+}
+void nave_set_num_nave(tipo_nave *nave, int num_nave) {
+    nave->num_nave = num_nave;
+}
+
+bool nave_is_viva(tipo_nave *nave) {
+    return nave->viva;
+}
+void nave_set_viva(tipo_nave *nave, bool viva){
+    nave->viva = viva;
+}

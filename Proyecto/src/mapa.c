@@ -1,26 +1,21 @@
 #include "mapa.h"
-#include <stdbool.h>
 #include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-char symbol_equipos[N_EQUIPOS] ={'A','B','C'};
+char symbol_equipos[N_EQUIPOS] = {'A','B','C'};
 
-int mapa_clean_casilla(tipo_mapa *mapa, int posy, int posx)
-{
+void mapa_clean_casilla(tipo_mapa *mapa, int posy, int posx) {
 	mapa->casillas[posy][posx].equipo=-1;
-	mapa->casillas[posy][posx].numNave=-1;
+	mapa->casillas[posy][posx].num_nave=-1;
 	mapa->casillas[posy][posx].simbolo=SYMB_VACIO;
-	return 0;
 }
 
-tipo_casilla mapa_get_casilla(tipo_mapa *mapa, int posy, int posx)
-{
+tipo_casilla mapa_get_casilla(tipo_mapa *mapa, int posy, int posx) {
 	return mapa->casillas[posy][posx];
 }
 
-int mapa_get_distancia(tipo_mapa *mapa, int oriy,int orix,int targety,int targetx)
-{
+int mapa_get_distancia(tipo_mapa *mapa, int oriy,int orix,int targety,int targetx) {
 	int distx,disty;
 
 	distx=abs(targetx - orix);
@@ -28,28 +23,23 @@ int mapa_get_distancia(tipo_mapa *mapa, int oriy,int orix,int targety,int target
 	return (distx > disty)? distx:disty;
 }
 
-tipo_nave mapa_get_nave(tipo_mapa *mapa, int equipo, int num_nave)
-{
+tipo_nave mapa_get_nave(tipo_mapa *mapa, int equipo, int num_nave) {
 	return mapa->info_naves[equipo][num_nave];
 }
 
-int mapa_get_num_naves(tipo_mapa *mapa, int equipo)
-{
+int mapa_get_num_naves(tipo_mapa *mapa, int equipo) {
 	return mapa->num_naves[equipo];
 }
 
-char mapa_get_symbol(tipo_mapa *mapa, int posy, int posx)
-{
+char mapa_get_symbol(tipo_mapa *mapa, int posy, int posx) {
 	return mapa->casillas[posy][posx].simbolo;
 }
 
-bool mapa_is_casilla_vacia(tipo_mapa *mapa, int posy, int posx)
-{
+bool mapa_is_casilla_vacia(tipo_mapa *mapa, int posy, int posx) {
 	return (mapa->casillas[posy][posx].equipo < 0);
 }
 
-void mapa_restore(tipo_mapa *mapa)
-{
+void mapa_restore(tipo_mapa *mapa) {
 	int i,j;
 
 	for(j=0;j<MAPA_MAXY;j++) {
@@ -65,35 +55,31 @@ void mapa_restore(tipo_mapa *mapa)
 	}
 }
 
-void mapa_set_symbol(tipo_mapa *mapa, int posy, int posx, char symbol)
-{
+void mapa_set_symbol(tipo_mapa *mapa, int posy, int posx, char symbol) {
 	mapa->casillas[posy][posx].simbolo=symbol;
 }
 
 
-int mapa_set_nave(tipo_mapa *mapa, tipo_nave nave)
-{
-	if (nave.equipo >= N_EQUIPOS) return -1;
-	if (nave.numNave >= N_NAVES) return -1;
-	mapa->info_naves[nave.equipo][nave.numNave]=nave;
+bool mapa_set_nave(tipo_mapa *mapa, tipo_nave nave) {
+	if (nave.equipo >= N_EQUIPOS) return false;
+	if (nave.num_nave >= N_NAVES) return false;
+	mapa->info_naves[nave.equipo][nave.num_nave]=nave;
 	if (nave.viva) {
 		mapa->casillas[nave.posy][nave.posx].equipo=nave.equipo;
-		mapa->casillas[nave.posy][nave.posx].numNave=nave.numNave;
+		mapa->casillas[nave.posy][nave.posx].num_nave=nave.num_nave;
 		mapa->casillas[nave.posy][nave.posx].simbolo=symbol_equipos[nave.equipo];
 	}
 	else {
 		mapa_clean_casilla(mapa,nave.posy, nave.posx);
 	}
-	return 0;
+	return true;
 }
 
-void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves)
-{
+void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves) {
 	mapa->num_naves[equipo]=numNaves;
 }
 
-void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int targetx)
-{
+void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int targetx) {
 	int px=origenx;
 	int py=origeny;
 	int tx=targetx;

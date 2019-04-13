@@ -4,8 +4,10 @@
 #include <simulador.h>
 #include <stdbool.h>
 
+
+
 // Pone una casilla del mapa a vacío
-int mapa_clean_casilla(tipo_mapa *mapa, int posy, int posx);
+void mapa_clean_casilla(tipo_mapa *mapa, int posy, int posx);
 
 // Obtiene información de una casilla del mapa
 tipo_casilla mapa_get_casilla(tipo_mapa *mapa, int posy, int posx);
@@ -35,7 +37,7 @@ void mapa_restore(tipo_mapa *mapa);
 void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int targetx);
 
 // Fija el contenido de "nave" en el mapa, en la posición nave.posy, nave.posx
-int mapa_set_nave(tipo_mapa *mapa, tipo_nave nave);
+bool mapa_set_nave(tipo_mapa *mapa, tipo_nave nave);
 
 // Fija el número de naves 'numNaves' para el equipo
 void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves);
