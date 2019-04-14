@@ -2,6 +2,7 @@
 #define SRC_SIMULADOR_H_
 
 #include <stdbool.h>
+#include "style.h"
 
 /*** SCREEN ***/
 #define MAPA_MAXX 20         // Número de columnas del mapa
@@ -22,10 +23,31 @@
 #define N_EQUIPOS 3 // Número de equipos
 #define N_NAVES 3   // Número de naves por equipo
 
+#define MAX_FICHERO_OUT 100
+#define STYLE_STRING_L 100
+
 extern char symbol_equipos[N_EQUIPOS]; // Símbolos de los diferentes equipos en el mapa (mirar mapa.c)
 
+/*** ARGUMENTOS ***/
+// Argumentos de ejecucion
+typedef struct {
+	bool F_color;
+	bool F_fichero_out;
+	char fichero_out[MAX_FICHERO_OUT];
+} tipo_argumentos;
+// Se usará con una variable "extern" si es necesario
 
-/*** MAPA ***/
+/*** ESTILO ***/
+// Formato para los mensajes en la terminal
+typedef struct {
+	char sim[STYLE_STRING_L];
+	char jefe[STYLE_STRING_L];	
+	char nave[STYLE_STRING_L];	
+	char ok_msg[STYLE_STRING_L];		
+	char error_msg[STYLE_STRING_L];
+} tipo_estilo;
+
+/*** NAVE ***/
 // Información de nave
 typedef struct {
 	int vida; 	  // Vida que le queda a la nave
@@ -36,6 +58,8 @@ typedef struct {
 	bool viva;    // Si la nave está viva o ha sido destruida
 } tipo_nave;
 
+
+/*** MAPA ***/
 // Información de una casilla en el mapa
 typedef struct {
 	char simbolo; // Símbolo que se mostrará en la pantalla para esta casilla
@@ -43,7 +67,7 @@ typedef struct {
 	int num_nave; // Número de nave en el equipo de la nave que está en la casilla
 } tipo_casilla;
 
-
+// Información del mapa
 typedef struct {
 	tipo_nave info_naves[N_EQUIPOS][N_NAVES];
 	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];

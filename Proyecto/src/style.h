@@ -13,11 +13,17 @@
 #define CYAN        "\x1b[36m"
 #define COLOR_RESET "\x1b[0m"
 
-#define NAVE        BLUE    "[NAVE]      " COLOR_RESET
-#define JEFE        YELLOW  "[JEFE]      " COLOR_RESET
-#define SIMULADOR   MAGENTA "[SIMULADOR] " COLOR_RESET
-#define ERROR_MSG   RED     "[ERROR]     " COLOR_RESET
-#define SUCCESS_MSG GREEN   "[SUCCESS]   " COLOR_RESET 
+#define SIM_C         MAGENTA "SIM          "       COLOR_RESET "-> "
+#define JEFE_C        YELLOW  "JEFE E:%.1s     "    COLOR_RESET "-> "
+#define NAVE_C        BLUE    "NAVE E:%.1s/N:%.1s " COLOR_RESET "-> "
+#define ERROR_MSG_C   RED     "ERR          "       COLOR_RESET "-> "
+#define OK_MSG_C      GREEN   "OK           "       COLOR_RESET "-> "
 
+
+#define SIM         "SIM          -> "
+#define JEFE        "JEFE E:%.1s     -> "
+#define NAVE        "NAVE E:%.1s/N:%.1s -> "
+#define ERROR_MSG   "ERR          -> "
+#define OK_MSG      "OK           -> "
 
 #endif 

@@ -8,3 +8,5 @@ all:
 %:
 	@$(foreach dir, $(SUBDIRS), echo -e "$(BOLD)Building $(dir:/=)...$(NC)" && $(MAKE) -C $(dir) $@ &&) :
 
+clean: 
+	rm ./bin/*
