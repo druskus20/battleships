@@ -43,8 +43,8 @@ void leer_argumentos(int argc, char **argv) {
                 strcpy(estilo.sim, SIM_MC);
                 strcpy(estilo.jefe, JEFE_MC);
                 strcpy(estilo.nave, NAVE_MC);
-                strcpy(estilo.ok_msg, OK_MSG_C);
-                strcpy(estilo.error_msg, ERROR_MSG_C);
+                strcpy(estilo.ok_msg, OK_SC);
+                strcpy(estilo.error_msg, ERROR_SC);
 				break;
 	
 			case '2' :
@@ -93,8 +93,8 @@ int main(int argc, char **argv) {
     strcpy(estilo.sim, SIM_M);
     strcpy(estilo.jefe, JEFE_M);
     strcpy(estilo.nave, NAVE_M);
-    strcpy(estilo.ok_msg, OK_MSG);
-    strcpy(estilo.error_msg, ERROR_MSG);
+    strcpy(estilo.ok_msg, OK_S);
+    strcpy(estilo.error_msg, ERROR_S);
     
     leer_argumentos(argc, argv);
 

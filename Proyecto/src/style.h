@@ -32,10 +32,10 @@
 #define NAVE_M         NAVE   " %s -> "
 
 // Status
-#define ERROR_MSG_C   RED     "ERR"       COLOR_RESET 
-#define OK_MSG_C      GREEN   "OK "       COLOR_RESET
-#define ERROR_MSG   "ERR" 
-#define OK_MSG      "OK " 
+#define ERROR_SC   RED     "ERR"       COLOR_RESET 
+#define OK_SC      GREEN   "OK "       COLOR_RESET
+#define ERROR_S   "ERR" 
+#define OK_S     "OK " 
 
 
 
