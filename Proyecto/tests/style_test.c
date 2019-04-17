@@ -2,6 +2,7 @@
 // Fuente: https://stackoverflow.com/questions/3219393/stdlib-and-colored-output-in-c
 
 #include <stdio.h>
+#include <string.h>
 #include "../src/style.h"
 
 int main (int argc, char const *argv[]) {
@@ -41,27 +42,32 @@ int main (int argc, char const *argv[]) {
 
 
   printf("\n[MENSAJES]\n");
-
-  printf(SIM_MC          " Esto es [SIM_MC], OK\n", OK_SC);
-  printf(JEFE_MC         " Esto es [JEFE_MC] del equipo ""a"", OK\n", "a", OK_SC);
-  printf(NAVE_MC         " Esto es [NAVE_MC] del equipo ""a"" con numero ""2"", OK\n", "a", "2", OK_SC);
-
-  printf(SIM_MC          " Esto es [SIM_MC], ERR\n", ERROR_SC);
-  printf(JEFE_MC         " Esto es [JEFE_MC] del equipo ""a"", ERR\n", "a", ERROR_SC);
-  printf(NAVE_MC         " Esto es [NAVE_MC] del equipo ""a"" con numero ""2"", ERR\n", "a", "2", ERROR_SC);
-
-
-  printf(SIM_M           " Esto es [SIM_M] OK\n", OK_S);
-  printf(JEFE_M          " Esto es [JEFE_M] del equipo ""a"", OK\n", "a", OK_S);
-  printf(NAVE_M          " Esto es [NAVE_M] del equipo ""a"" con numero ""2"", OK\n", "a", "2", OK_S);
-  printf(SIM_M           " Esto es [SIM_M] ERR\n", ERROR_S);
-  printf(JEFE_M          " Esto es [JEFE_M] del equipo ""a"", ERR\n", "a", ERROR_S);
-  printf(NAVE_M          " Esto es [NAVE_M] del equipo ""a"" con numero ""2"", ERR\n", "a", "2", ERROR_S);
+  printf(SIM_MC,          OK_SC, "Esto es [SIM_MC], OK");
+  printf(JEFE_MC,         "a", OK_SC, "Esto es [JEFE_MC] del equipo ""a"", OK");
+  printf(NAVE_MC,         "a", "2", OK_SC, "Esto es [NAVE_MC] del equipo ""a"" con numero ""2"", OK");
+  printf(SIM_MC,          ERROR_SC, "Esto es [SIM_MC], ERR");
+  printf(JEFE_MC,         "a", ERROR_SC, "Esto es [JEFE_MC] del equipo ""a"", ERR");
+  printf(NAVE_MC,         "a", "2", ERROR_SC, "Esto es [NAVE_MC] del equipo ""a"" con numero ""2"", ERR");
+  
+  printf(SIM_M,            OK_SC, "Esto es [SIM_M], OK");
+  printf(JEFE_M,           "a", OK_SC, "Esto es [JEFE_M] del equipo ""a"", OK");
+  printf(NAVE_M,           "a", "2", OK_SC, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", OK");
+  printf(SIM_M,            ERROR_SC, "Esto es [SIM_M], ERR");
+  printf(JEFE_M,           "a", ERROR_SC, "Esto es [JEFE_M] del equipo ""a"", ERR");
+  printf(NAVE_M,           "a", "2", ERROR_SC, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", ERR");
 
 
   
+  
+
+
+
   printf("\n[EJEMPLO]\n");
-  printf(NAVE_MC "Mensaje", "a", "2", OK_SC);
+  
+  char cadena[200];
+  strcpy(cadena, NAVE_MC);
+  printf(cadena, "a", "2", "OK", "Mensaje");
+
 
   printf("\n"
          RED     "A" COLOR_RESET 

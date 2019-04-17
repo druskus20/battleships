@@ -24,7 +24,7 @@
 #define N_NAVES 3   // Número de naves por equipo
 
 #define MAX_FICHERO_OUT 100
-#define STYLE_STRING_L 100
+#define STYLE_STRING_L 200
 
 extern char symbol_equipos[N_EQUIPOS]; // Símbolos de los diferentes equipos en el mapa (mirar mapa.c)
 
@@ -43,8 +43,8 @@ typedef struct {
 	char sim[STYLE_STRING_L];
 	char jefe[STYLE_STRING_L];	
 	char nave[STYLE_STRING_L];	
-	char ok_msg[STYLE_STRING_L];		
-	char error_msg[STYLE_STRING_L];
+	char ok_tag[STYLE_STRING_L];		
+	char error_tag[STYLE_STRING_L];
 } tipo_estilo;
 
 /*** NAVE ***/
