@@ -16,7 +16,7 @@
 // Para la lectura de argumentos
 #include <getopt.h>
 
-tipo_argumentos argumentos;
+tipo_argumentos args;
 tipo_estilo estilo;
 
 void leer_argumentos(int argc, char **argv) {
@@ -39,10 +39,10 @@ void leer_argumentos(int argc, char **argv) {
 		switch (opt)
 		{
 			case '1' :     
-                argumentos.F_color = true;
-                strcpy(estilo.sim, SIM_C);
-                strcpy(estilo.jefe, JEFE_C);
-                strcpy(estilo.nave, NAVE_C);
+                args.F_color = true;
+                strcpy(estilo.sim, SIM_MC);
+                strcpy(estilo.jefe, JEFE_MC);
+                strcpy(estilo.nave, NAVE_MC);
                 strcpy(estilo.ok_msg, OK_MSG_C);
                 strcpy(estilo.error_msg, ERROR_MSG_C);
 				break;
@@ -57,8 +57,8 @@ void leer_argumentos(int argc, char **argv) {
                     exit(EXIT_FAILURE);
                 }
                 
-                argumentos.F_fichero_out = true;
-                strcpy(argumentos.fichero_out, optarg);
+                args.F_fichero_out = true;
+                strcpy(args.fichero_out, optarg);
 				break;
 
             case '3' : 
@@ -72,25 +72,58 @@ void leer_argumentos(int argc, char **argv) {
 }
 
 
+// Manejador de la señal Ctrl+C (SIGINT)
+void manejador(int sig) {
+    
+    //printf("%s", sig);
+    exit(EXIT_FAILURE);
+}
+
 int main(int argc, char **argv) {
     
 	int ret=0;
-
+    struct sigaction act;
+    FILE * fp;
+    
     // Inicializacion de parametros por defecto
-    argumentos.F_fichero_out = false;
-    strcpy(argumentos.fichero_out, "");
+    args.F_fichero_out = false;
+    strcpy(args.fichero_out, "");
 
-    argumentos.F_color = false;
-    strcpy(estilo.sim, SIM);
-    strcpy(estilo.jefe, JEFE);
-    strcpy(estilo.nave, NAVE);
+    args.F_color = false;
+    strcpy(estilo.sim, SIM_M);
+    strcpy(estilo.jefe, JEFE_M);
+    strcpy(estilo.nave, NAVE_M);
     strcpy(estilo.ok_msg, OK_MSG);
     strcpy(estilo.error_msg, ERROR_MSG);
     
     leer_argumentos(argc, argv);
 
+    if (args.F_fichero_out) {
+        fp = fopen(args.fichero_out, "w");
+        if  (!fp) {
+            printf("Error. No se ha podido abrir el fichero: %s\n", args.fichero_out);
+            exit(EXIT_FAILURE);
+        }
+    }
+    else {
+        fp = stdout;
+    }
+
+    // Inicializacion del manejador SIGINT
+    act.sa_handler = manejador;
+    sigemptyset(&(act.sa_mask));
+    act.sa_flags = 0;
+
+    if (sigaction(SIGINT, &act, NULL) < 0) {
+        fprintf(fp, "%s sigaction\n", estilo.error_msg);
+        exit(EXIT_FAILURE);
+    }
+
     exit(ret);
+
+    
 }
+
 
 
 
