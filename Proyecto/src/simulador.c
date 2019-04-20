@@ -72,24 +72,30 @@ void leer_argumentos(int argc, char **argv) {
 			default:
                 sprintf(out_buffer, "Error. Ejecucion: %s <-f fichero_log> <-c>", argv[0]);
                 fprintf(fpo, estilo.error_msg, out_buffer);
-
 				exit(EXIT_FAILURE);
 				break;
 		}
 	}
 }
 
+// Libera recursos
+void end_exec() {
+    if (args.fichero_out)   
+        fclose(fpo);
+}
 
 // Manejador de la señal Ctrl+C (SIGINT)
-void manejador(int sig) {
+void manejador_SIGINT(int sig) {
     fprintf(fpo, "\n");
     fprintf(fpo, estilo.ok_msg, "Ending the program");
+    end_exec();
     exit(EXIT_SUCCESS);
 }
 
+
+
 int main(int argc, char **argv) {
     
-	int ret=0;
     struct sigaction act;
     char out_buffer[STRING_MAX];
 
@@ -119,7 +125,7 @@ int main(int argc, char **argv) {
     }
 
     // Inicializacion del manejador SIGINT
-    act.sa_handler = manejador;
+    act.sa_handler = manejador_SIGINT;
     sigemptyset(&(act.sa_mask));
     act.sa_flags = 0;
 
@@ -129,11 +135,18 @@ int main(int argc, char **argv) {
     }
 
     nave_start();
-    sleep(1000);
+    sleep(2);
     nave_end();
     
     fprintf(fpo, estilo.ok_msg, "Fin de la simulación");
-    exit(ret);
+
+    
+
+    // Removemos el manejador de señal para evitar errores 
+    // mientras liberamos recursos.
+    signal(SIGINT, SIG_DFL);
+    end_exec();
+    exit(EXIT_SUCCESS);
 
     
 }
