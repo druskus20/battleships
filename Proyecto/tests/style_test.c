@@ -56,10 +56,10 @@ int main (int argc, char const *argv[]) {
   printf(JEFE_M,           "a", ERROR_SC, "Esto es [JEFE_M] del equipo ""a"", ERR");
   printf(NAVE_M,           "a", "2", ERROR_SC, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", ERR");
 
-
-  
-  
-
+  printf(OK_MC,            "Esto es [OK_MC]");
+  printf(ERROR_MC,         "Esto es [ERROR_MC]");
+  printf(OK_M,             "Esto es [OK_M]");
+  printf(ERROR_M,          "Esto es [ERROR_M]");
 
 
   printf("\n[EJEMPLO]\n");
