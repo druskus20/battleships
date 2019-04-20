@@ -43,8 +43,10 @@ typedef struct {
 	char sim[STYLE_STRING_L];
 	char jefe[STYLE_STRING_L];	
 	char nave[STYLE_STRING_L];	
-	char ok[STYLE_STRING_L];		
-	char error[STYLE_STRING_L];
+	char ok_msg[STYLE_STRING_L];		
+	char error_msg[STYLE_STRING_L];
+	char ok[STYLE_STRING_L];
+	char err[STYLE_STRING_L];
 } tipo_estilo;
 
 /*** NAVE ***/

@@ -66,7 +66,7 @@ int main (int argc, char const *argv[]) {
   
   char cadena[200];
   strcpy(cadena, NAVE_MC);
-  printf(cadena, "a", "2", "OK", "Mensaje");
+  printf(cadena, "a", "2", OK_SC, "Mensaje");
 
 
   printf("\n"

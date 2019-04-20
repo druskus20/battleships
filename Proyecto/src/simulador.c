@@ -10,15 +10,16 @@
 #include <math.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <mapa.h>
+#include "mapa.h"
 #include "simulador.h"
+#include "nave.h"
 
 // Para la lectura de argumentos
 #include <getopt.h>
 
 tipo_argumentos args;
 tipo_estilo estilo;
-
+FILE * fpo;
 void leer_argumentos(int argc, char **argv) {
     // NOTA: No deben aplicarse colores en esta funcion
 
@@ -34,7 +35,7 @@ void leer_argumentos(int argc, char **argv) {
 	};
 
 	// Lectura de flags de ejecución
-	while ((opt = getopt_long_only(argc, argv, "f:i:h", options, &long_index)) != -1)
+	while ((opt = getopt_long_only(argc, argv, "1:2:3", options, &long_index)) != -1)
 	{
 		switch (opt)
 		{
@@ -43,8 +44,10 @@ void leer_argumentos(int argc, char **argv) {
                 strcpy(estilo.sim, SIM_MC);
                 strcpy(estilo.jefe, JEFE_MC);
                 strcpy(estilo.nave, NAVE_MC);
-                strcpy(estilo.ok, OK_MC);
-                strcpy(estilo.error, ERROR_MC);
+                strcpy(estilo.ok_msg, OK_MC);
+                strcpy(estilo.error_msg, ERROR_MC);
+                strcpy(estilo.ok, OK_SC);
+                strcpy(estilo.err, ERROR_SC);
 				break;
 	
 			case '2' :
@@ -64,7 +67,7 @@ void leer_argumentos(int argc, char **argv) {
             case '3' : 
 			case '?' :
 			default:
-				printf ("Error. Ejecucion: %s <-f fichero_log> <-nc>\n", argv[0]);
+				printf ("Error. Ejecucion: %s <-f fichero_log> <-c>\n", argv[0]);
 				exit(EXIT_FAILURE);
 				break;
 		}
@@ -83,7 +86,7 @@ int main(int argc, char **argv) {
     
 	int ret=0;
     struct sigaction act;
-    FILE * fp;
+   
     
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
@@ -93,20 +96,22 @@ int main(int argc, char **argv) {
     strcpy(estilo.sim, SIM_M);
     strcpy(estilo.jefe, JEFE_M);
     strcpy(estilo.nave, NAVE_M);
-    strcpy(estilo.ok, OK_M);
-    strcpy(estilo.error, ERROR_M);
+    strcpy(estilo.ok_msg, OK_M);
+    strcpy(estilo.error_msg, ERROR_M);
+    strcpy(estilo.ok, OK_S);
+    strcpy(estilo.err, ERROR_S);
     
     leer_argumentos(argc, argv);
 
     if (args.F_fichero_out) {
-        fp = fopen(args.fichero_out, "w");
-        if  (!fp) {
+        fpo= fopen(args.fichero_out, "w");
+        if  (!fpo) {
             printf("Error. No se ha podido abrir el fichero: %s\n", args.fichero_out);
             exit(EXIT_FAILURE);
         }
     }
     else {
-        fp = stdout;
+        fpo= stdout;
     }
 
     // Inicializacion del manejador SIGINT
@@ -115,10 +120,15 @@ int main(int argc, char **argv) {
     act.sa_flags = 0;
 
     if (sigaction(SIGINT, &act, NULL) < 0) {
-        fprintf(fp, estilo.error, "sigaction");
+        fprintf(fpo, estilo.error_msg, "sigaction");
         exit(EXIT_FAILURE);
     }
 
+
+    nave_start();
+    nave_end();
+    
+    fprintf(fpo, estilo.ok_msg, "Fin de la simulación");
     exit(ret);
 
     

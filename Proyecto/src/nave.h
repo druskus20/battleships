@@ -4,6 +4,10 @@
 #include <simulador.h>
 #include <stdbool.h>
 
+bool nave_start();
+
+bool nave_end();
+
 int nave_get_vida(tipo_nave *nave);
 void nave_set_vida(tipo_nave *nave, int vida);
 

@@ -1,6 +1,28 @@
 #include "nave.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <style.h>
 
+extern tipo_argumentos args;
+extern tipo_estilo estilo;
+extern FILE * fpo;
+
+bool nave_start(){
+    //FILE * fp = fopen(args.fichero_out, "w");
+    fprintf(fpo, estilo.nave, "a", "1", estilo.ok, "Starting");
+    
+    fprintf(fpo, estilo.ok_msg, "Color desactivado");
+
+    return true;
+}
+
+bool nave_end(){
+    fprintf(fpo, estilo.ok_msg, "Color test");
+    fprintf(fpo, estilo.nave, "a", "1", estilo.ok, "Ending");
+    return true;
+}
 
 int nave_get_vida(tipo_nave *nave) {
     return nave->vida;
