@@ -23,6 +23,7 @@
 
 // Nombres
 #define ESP                     "         "
+#define LINE                    "------------ "
 #define SIM_C         MAGENTA   "SIM         "       COLOR_RESET 
 #define JEFE_C        YELLOW    "JEFE E:%.1s    "    COLOR_RESET 
 #define NAVE_C        BLUE      "NAVE E:%.1s/N:%.1s" COLOR_RESET  
@@ -31,17 +32,17 @@
 #define NAVE                    "NAVE E:%.1s/N:%.1s" 
 
 // Mensajes
-#define SIM_MC         SIM_C        " %s -> %s\n"
-#define JEFE_MC        JEFE_C       " %s -> %s\n"
-#define NAVE_MC        NAVE_C       " %s -> %s\n"
-#define OK_MC          OK_SC    ESP "     -> %s\n"
-#define ERROR_MC       ERROR_SC ESP "     -> %s\n"
+#define SIM_MC         SIM_C           " %s -> %s\n"
+#define JEFE_MC        JEFE_C          " %s -> %s\n"
+#define NAVE_MC        NAVE_C          " %s -> %s\n"
+#define OK_MC          LINE   OK_SC    " -> %s\n"
+#define ERROR_MC       LINE   ERROR_SC " -> %s\n"
 
-#define SIM_M          SIM          " %s -> %s\n"
-#define JEFE_M         JEFE         " %s -> %s\n"
-#define NAVE_M         NAVE         " %s -> %s\n" 
-#define OK_M           OK_S     ESP "     -> %s\n"
-#define ERROR_M        ERROR_S  ESP "     -> %s\n"
+#define SIM_M          SIM             " %s -> %s\n"
+#define JEFE_M         JEFE            " %s -> %s\n"
+#define NAVE_M         NAVE            " %s -> %s\n" 
+#define OK_M           LINE   OK_S     " -> %s\n"
+#define ERROR_M        LINE   ERROR_S  " -> %s\n"
 
 
 

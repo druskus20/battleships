@@ -20,11 +20,14 @@
 tipo_argumentos args;
 tipo_estilo estilo;
 FILE * fpo;
+
+
 void leer_argumentos(int argc, char **argv) {
     // NOTA: No deben aplicarse colores en esta funcion
-
+    char out_buffer[STRING_MAX];
 	int long_index = 0;
 	char opt;
+    
 
     static struct option options[] =
 	{
@@ -52,11 +55,11 @@ void leer_argumentos(int argc, char **argv) {
 	
 			case '2' :
                 if (!optarg) {
-                    printf("Error. Falta argumento ""fichero_out""\n");
+                    fprintf(fpo, estilo.error_msg, "Error. Falta argumento ""fichero_out""");  
                     exit(EXIT_FAILURE);
                 }
                 if (strlen(optarg) > MAX_FICHERO_OUT){
-                    printf("Error. Argumento ""fichero_out"" demasiado largo\n");
+                    fprintf(fpo, estilo.error_msg, "Error. Argumento ""fichero_out"" demasiado largo");
                     exit(EXIT_FAILURE);
                 }
                 
@@ -67,7 +70,9 @@ void leer_argumentos(int argc, char **argv) {
             case '3' : 
 			case '?' :
 			default:
-				printf ("Error. Ejecucion: %s <-f fichero_log> <-c>\n", argv[0]);
+                sprintf(out_buffer, "Error. Ejecucion: %s <-f fichero_log> <-c>", argv[0]);
+                fprintf(fpo, estilo.error_msg, out_buffer);
+
 				exit(EXIT_FAILURE);
 				break;
 		}
@@ -77,20 +82,21 @@ void leer_argumentos(int argc, char **argv) {
 
 // Manejador de la señal Ctrl+C (SIGINT)
 void manejador(int sig) {
-    
-    //printf("%s", sig);
-    exit(EXIT_FAILURE);
+    fprintf(fpo, "\n");
+    fprintf(fpo, estilo.ok_msg, "Ending the program");
+    exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char **argv) {
     
 	int ret=0;
     struct sigaction act;
-   
-    
+    char out_buffer[STRING_MAX];
+
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
     strcpy(args.fichero_out, "");
+    fpo = stdout;
 
     args.F_color = false;
     strcpy(estilo.sim, SIM_M);
@@ -106,12 +112,10 @@ int main(int argc, char **argv) {
     if (args.F_fichero_out) {
         fpo= fopen(args.fichero_out, "w");
         if  (!fpo) {
-            printf("Error. No se ha podido abrir el fichero: %s\n", args.fichero_out);
+            sprintf(out_buffer, "Error. No se ha podido abrir el fichero: %s\n", args.fichero_out);
+            fprintf(fpo, estilo.error_msg, out_buffer);
             exit(EXIT_FAILURE);
         }
-    }
-    else {
-        fpo= stdout;
     }
 
     // Inicializacion del manejador SIGINT
@@ -124,8 +128,8 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-
     nave_start();
+    sleep(1000);
     nave_end();
     
     fprintf(fpo, estilo.ok_msg, "Fin de la simulación");

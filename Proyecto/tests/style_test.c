@@ -48,16 +48,17 @@ int main (int argc, char const *argv[]) {
   printf(SIM_MC,          ERROR_SC, "Esto es [SIM_MC], ERR");
   printf(JEFE_MC,         "a", ERROR_SC, "Esto es [JEFE_MC] del equipo ""a"", ERR");
   printf(NAVE_MC,         "a", "2", ERROR_SC, "Esto es [NAVE_MC] del equipo ""a"" con numero ""2"", ERR");
-  
-  printf(SIM_M,            OK_SC, "Esto es [SIM_M], OK");
-  printf(JEFE_M,           "a", OK_SC, "Esto es [JEFE_M] del equipo ""a"", OK");
-  printf(NAVE_M,           "a", "2", OK_SC, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", OK");
-  printf(SIM_M,            ERROR_SC, "Esto es [SIM_M], ERR");
-  printf(JEFE_M,           "a", ERROR_SC, "Esto es [JEFE_M] del equipo ""a"", ERR");
-  printf(NAVE_M,           "a", "2", ERROR_SC, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", ERR");
-
   printf(OK_MC,            "Esto es [OK_MC]");
   printf(ERROR_MC,         "Esto es [ERROR_MC]");
+
+  printf("\n");
+  
+  printf(SIM_M,            OK_S, "Esto es [SIM_M], OK");
+  printf(JEFE_M,           "a", OK_S, "Esto es [JEFE_M] del equipo ""a"", OK");
+  printf(NAVE_M,           "a", "2", OK_S, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", OK");
+  printf(SIM_M,            ERROR_S, "Esto es [SIM_M], ERR");
+  printf(JEFE_M,           "a", ERROR_S, "Esto es [JEFE_M] del equipo ""a"", ERR");
+  printf(NAVE_M,           "a", "2", ERROR_S, "Esto es [NAVE_M] del equipo ""a"" con numero ""2"", ERR");
   printf(OK_M,             "Esto es [OK_M]");
   printf(ERROR_M,          "Esto es [ERROR_M]");
 

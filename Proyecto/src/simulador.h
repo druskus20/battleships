@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "style.h"
 
+#define STRING_MAX 500
 /*** SCREEN ***/
 #define MAPA_MAXX 20         // Número de columnas del mapa
 #define MAPA_MAXY 20         // Número de filas del mapa

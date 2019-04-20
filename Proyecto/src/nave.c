@@ -10,17 +10,12 @@ extern tipo_estilo estilo;
 extern FILE * fpo;
 
 bool nave_start(){
-    //FILE * fp = fopen(args.fichero_out, "w");
-    fprintf(fpo, estilo.nave, "a", "1", estilo.ok, "Starting");
-    
-    fprintf(fpo, estilo.ok_msg, "Color desactivado");
-
+    fprintf(fpo, estilo.nave, " ", " ", estilo.ok, "Starting up...");
     return true;
 }
 
 bool nave_end(){
-    fprintf(fpo, estilo.ok_msg, "Color test");
-    fprintf(fpo, estilo.nave, "a", "1", estilo.ok, "Ending");
+    fprintf(fpo, estilo.nave, " ", " ", estilo.ok, "Ending up...");
     return true;
 }
 
