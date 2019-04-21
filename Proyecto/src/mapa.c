@@ -110,7 +110,7 @@ void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int
 		mapa_set_symbol(mapa,py,px,ps);
 		usleep(50000);
 		px = nextx;
-		py= nexty;
+		py = nexty;
 		ps = nexts;
 	}
 

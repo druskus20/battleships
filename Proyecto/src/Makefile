@@ -15,11 +15,11 @@ clean:
 
 simulador:
 	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) mapa.c simulador.c nave.c -o $(TARGET)/simulador $(LDLIBS) -lm
+	$(CC) $(CFLAGS) mapa.c simulador.c  nave.c -o $(TARGET)/simulador $(LDLIBS) -lm
 	
 monitor:
 	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) gamescreen.c  nave.c mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
+	$(CC) $(CFLAGS) gamescreen.c  nave.c  mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
 		
 
 nave: 

@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <semaphore.h>
 
 #include <simulador.h>
 #include <gamescreen.h>
@@ -101,6 +102,7 @@ void end_exec(){
 int main(int argc, char *argv[]) {
 
     char out_buffer[STRING_MAX];
+	sem_t * sem_sim;
 
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
@@ -127,15 +129,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
+	// Inicializacion de semaforos  
+    if((sem_sim = sem_open(SEM_SIMULADOR, S_IRUSR | S_IWUSR))== SEM_FAILED){
+		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
+		exit(EXIT_FAILURE);
+	}
+	
 	screen_init();
 
 	sleep(1);
 
 	screen_end();
 
-
+	sem_close(sem_sim);
 	end_exec();
-	
 	exit(EXIT_SUCCESS);
 }

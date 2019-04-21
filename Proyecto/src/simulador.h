@@ -27,6 +27,10 @@
 #define MAX_FICHERO_OUT 100
 #define STYLE_STRING_L 200
 
+// Semaforos
+#define SEM_SIMULADOR "/sem_simulador"
+
+
 extern char symbol_equipos[N_EQUIPOS]; // Símbolos de los diferentes equipos en el mapa (mirar mapa.c)
 
 /*** ARGUMENTOS ***/

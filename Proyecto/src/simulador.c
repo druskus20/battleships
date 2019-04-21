@@ -9,10 +9,12 @@
 #include <signal.h>
 #include <math.h>
 #include <stdbool.h>
+#include <semaphore.h>
 #include <unistd.h>
 #include "mapa.h"
 #include "simulador.h"
 #include "nave.h"
+
 
 // Para la lectura de argumentos
 #include <getopt.h>
@@ -92,12 +94,24 @@ void manejador_SIGINT(int sig) {
     exit(EXIT_SUCCESS);
 }
 
+void imprimir_semaforo(sem_t *sem) {
+    int sval;
+    if (sem_getvalue(sem, &sval) == -1) {
+          
+        fprintf(fpo, estilo.ok_msg, "Fin de la simulación");
+		sem_unlink(SEM_SIMULADOR);
+        exit(EXIT_FAILURE);
+    }
+    printf("Valor del semáforo: %d\n", sval);
+    fflush(stdout);
+}
 
 
 int main(int argc, char **argv) {
     
     struct sigaction act;
     char out_buffer[STRING_MAX];
+    sem_t * sem_sim;
 
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
@@ -134,17 +148,31 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
+  
+	
+	// Inicializacion de semaforos  
+    sem_unlink(SEM_SIMULADOR);
+	if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT | O_EXCL, S_IRUSR | S_IWUSR, 0))== SEM_FAILED){
+		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
+		exit(EXIT_FAILURE);
+	}
+
+
+    fprintf(fpo, estilo.ok_msg, "Comienza la simulación");
+    // COMIENZO DE LA SIMULACION ---------------------------------
+    sem_post(sem_sim);
+
     nave_start();
     sleep(2);
     nave_end();
     
-    fprintf(fpo, estilo.ok_msg, "Fin de la simulación");
-
-    
+    fprintf(fpo, estilo.ok_msg, "Fin de la simulación");    
+    // FIN DE LA SIMULACION --------------------------------------
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
+    sem_close(sem_sim);
     end_exec();
     exit(EXIT_SUCCESS);
 
