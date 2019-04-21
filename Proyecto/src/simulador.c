@@ -151,9 +151,9 @@ int main(int argc, char **argv) {
   
 	
 	// Inicializacion de semaforos  
-    sem_unlink(SEM_SIMULADOR);
-	if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT | O_EXCL, S_IRUSR | S_IWUSR, 0))== SEM_FAILED){
-		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
+//	if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT | O_EXCL, S_IRUSR | S_IWUSR, 0))== SEM_FAILED){
+    if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+    		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}
 

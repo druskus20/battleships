@@ -1,0 +1,3 @@
+NAVE E: /N:  OK  -> Starting up...
+
+------------ OK  -> Ending the program
