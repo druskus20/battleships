@@ -11,13 +11,14 @@
 #include <stdbool.h>
 #include <semaphore.h>
 #include <unistd.h>
+// Para la lectura de argumentos
+#include <getopt.h>
+
 #include "mapa.h"
 #include "simulador.h"
 #include "nave.h"
 
 
-// Para la lectura de argumentos
-#include <getopt.h>
 
 tipo_argumentos args;
 tipo_estilo estilo;
