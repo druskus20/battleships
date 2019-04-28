@@ -14,10 +14,11 @@ bool nave_start(tipo_nave *nave){
     return true;
 }
 
-bool nave_end(tipo_nave *nave){
+bool nave_destruir(tipo_nave *nave){
     fprintf(fpo, estilo.nave, nave->equipo , nave->num_nave, estilo.ok, "Destruida");
     return true;
 }
+
 
 bool nave_atacar(tipo_nave *nave, tipo_nave *nave_obj){
     if (nave_alcanza(nave, nave_obj) ){

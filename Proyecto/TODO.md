@@ -11,9 +11,14 @@
 ## Nave
 * Añadir precision, alcance y daño DONE
 * Hacer alguna funcion para "recibir daño (set_daño + mensaje de nave) DONE
+* Hacer funcion mover_aleatorio
+* Añadir funcion destruir DONE
+* Implementar cola de mensajes nave-simulador: 
+	* Añadir funcion de evaluar accion (manda el mensaje al simulador)
+
 
 ## Jefe
-
+* Añadir funcion de comunicar accion a nave (pipes)
 
 ## Simulador
 

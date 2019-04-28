@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 bool nave_start(tipo_nave *nave);
-bool nave_end(tipo_nave *nave);
+bool nave_destruir(tipo_nave *nave);
 bool nave_alcanza(tipo_nave *nave, tipo_nave *nave_obj);
 bool nave_atacar(tipo_nave *nave, tipo_nave *nave_obj);
 void nave_recibir_ataque(tipo_nave *nave, int dmg);
