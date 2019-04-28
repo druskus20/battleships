@@ -57,12 +57,16 @@ typedef struct {
 /*** NAVE ***/
 // Información de nave
 typedef struct {
-	int vida; 	  // Vida que le queda a la nave
-	int posx; 	  // Columna en el mapa
-	int posy;  	  // Fila en el mapa
-	int equipo;   // Equipo de la nave
-	int num_nave; // Numero de la nave en el equipo
-	bool viva;    // Si la nave está viva o ha sido destruida
+	int vida; 	   // Vida que le queda a la nave
+	int dmg;	   // El daño que inflinge
+	int precision; // La precision que tiene (0 - 100)
+	int alcance;
+	int posx; 	   // Columna en el mapa
+	int posy;  	   // Fila en el mapa
+	int equipo;    // Equipo de la nave
+	int num_nave;  // Numero de la nave en el equipo
+	bool viva;     // Si la nave está viva o ha sido destruida
+	char * tag;   
 } tipo_nave;
 
 

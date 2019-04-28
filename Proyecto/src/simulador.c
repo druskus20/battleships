@@ -163,10 +163,8 @@ int main(int argc, char **argv) {
     // COMIENZO DE LA SIMULACION ---------------------------------
     sem_post(sem_sim);
 
-    nave_start();
-    sleep(10);
-    nave_end();
-    
+   
+       
     fprintf(fpo, estilo.ok_msg, "Fin de la simulación");    
     // FIN DE LA SIMULACION --------------------------------------
 
@@ -174,7 +172,7 @@ int main(int argc, char **argv) {
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
     sem_close(sem_sim);
-    sem_unlink(SEM_SIMULADOR);
+    sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     end_exec();
     exit(EXIT_SUCCESS);
 
