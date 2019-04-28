@@ -136,10 +136,10 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	
+	sem_wait(sem_sim);
 	screen_init();
 
-	sleep(1);
+	sleep(10);
 
 	screen_end();
 

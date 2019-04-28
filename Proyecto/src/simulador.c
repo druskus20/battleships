@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
     sem_post(sem_sim);
 
     nave_start();
-    sleep(2);
+    sleep(10);
     nave_end();
     
     fprintf(fpo, estilo.ok_msg, "Fin de la simulación");    
@@ -173,6 +173,7 @@ int main(int argc, char **argv) {
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
     sem_close(sem_sim);
+    sem_unlink(SEM_SIMULADOR);
     end_exec();
     exit(EXIT_SUCCESS);
 

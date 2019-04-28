@@ -1,4 +1,4 @@
-SUBDIRS=src tests
+SUBDIRS=src tests scripts
 
 BOLD=\e[1m
 NC=\e[0m
