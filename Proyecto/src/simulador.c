@@ -175,8 +175,6 @@ int main(int argc, char **argv) {
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     end_exec();
     exit(EXIT_SUCCESS);
-
-    
 }
 
 

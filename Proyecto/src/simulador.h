@@ -76,7 +76,7 @@ typedef struct {
 	char simbolo; // Símbolo que se mostrará en la pantalla para esta casilla
 	int equipo;   // Si está vacia = -1. Si no, número de equipo de la nave que está en la casilla
 	int num_nave; // Número de nave en el equipo de la nave que está en la casilla
-} tipo_casilla;
+ } tipo_casilla;
 
 // Información del mapa
 typedef struct {

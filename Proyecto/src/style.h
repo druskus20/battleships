@@ -32,15 +32,15 @@
 #define NAVE                    "NAVE E:%.1s/N:%.1s" 
 
 // Mensajes
-#define SIM_MC         SIM_C           " %s -> %s\n"
-#define JEFE_MC        JEFE_C          " %s -> %s\n"
-#define NAVE_MC        NAVE_C          " %s -> %s\n"
+#define SIM_MC                     "%s %s -> %s\n"
+#define JEFE_MC                    "%s %s -> %s\n"
+#define NAVE_MC                    "%s %s -> %s\n"
 #define OK_MC          LINE   OK_SC    " -> %s\n"
 #define ERROR_MC       LINE   ERROR_SC " -> %s\n"
 
-#define SIM_M          SIM             " %s -> %s\n"
-#define JEFE_M         JEFE            " %s -> %s\n"
-#define NAVE_M         NAVE            " %s -> %s\n" 
+#define SIM_M                      "%s %s -> %s\n"
+#define JEFE_M                     "%s %s -> %s\n"
+#define NAVE_M                     "%s %s -> %s\n" 
 #define OK_M           LINE   OK_S     " -> %s\n"
 #define ERROR_M        LINE   ERROR_S  " -> %s\n"
 
