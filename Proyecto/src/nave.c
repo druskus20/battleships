@@ -88,9 +88,6 @@ void nave_set_dmg(tipo_nave *nave, int dmg) {
 }
 
 
-
-
-
 int nave_get_alcance(tipo_nave *nave) {
     return nave->alcance;
 }

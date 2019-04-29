@@ -14,6 +14,7 @@
 // Para la lectura de argumentos
 #include <getopt.h>
 
+
 #include "mapa.h"
 #include "simulador.h"
 #include "nave.h"
@@ -78,17 +79,14 @@ void leer_argumentos(int argc, char **argv) {
 	}
 }
 
-// Libera recursos
-void end_exec() {
-    if (args.fichero_out)   
-        fclose(fpo);
-}
+
 
 // Manejador de la señal Ctrl+C (SIGINT)
 void manejador_SIGINT(int sig) {
     fprintf(fpo, "\n");
     fprintf(fpo, estilo.ok_msg, "Ending the program");
-    end_exec();
+    if (args.fichero_out)   
+        fclose(fpo);
     exit(EXIT_SUCCESS);
 }
 
@@ -105,11 +103,14 @@ void imprimir_semaforo(sem_t *sem) {
 }
 
 
+
 int main(int argc, char **argv) {
     
     struct sigaction act;
     char out_buffer[STRING_MAX];
-    sem_t * sem_sim;
+    sem_t * sem_sim; // semaforo monitor-simulador
+    
+
 
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
@@ -152,33 +153,34 @@ int main(int argc, char **argv) {
 
   
 	
-	// Inicializacion de semaforos  
+	// Inicializacion de recursos
     if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
     		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
-	}
+	}  
+
+
+
+
 
 
     fprintf(fpo, estilo.ok_msg, "Comienza la simulación");
     sem_post(sem_sim);
     // COMIENZO DE LA SIMULACION ---------------------------------
-    tipo_nave * n1 = nave_init();
-    nave_destruir(n1);
     
 
 
      
     // FIN DE LA SIMULACION --------------------------------------
-    sleep(2);
     fprintf(fpo, estilo.ok_msg, "Fin de la simulación");  
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
-    sleep(3);
     sem_close(sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
-    end_exec();
+    if (args.fichero_out)   
+        fclose(fpo);
     exit(EXIT_SUCCESS);
 }
 
