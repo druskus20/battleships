@@ -4,7 +4,8 @@
 #include <simulador.h>
 #include <stdbool.h>
 
-bool nave_start(tipo_nave *nave);
+
+tipo_nave * nave_init();
 bool nave_destruir(tipo_nave *nave);
 bool nave_alcanza(tipo_nave *nave, tipo_nave *nave_obj);
 bool nave_atacar(tipo_nave *nave, tipo_nave *nave_obj);
@@ -38,9 +39,6 @@ void nave_set_tag(tipo_nave *nave, char *tag);
 int nave_get_dmg(tipo_nave *nave);
 
 void nave_set_dmg(tipo_nave *nave, int dmg); 
-
-int nave_get_precision(tipo_nave *nave);
-void nave_set_precision(tipo_nave *nave, int precision);
 
 
 int nave_get_alcance(tipo_nave *nave);

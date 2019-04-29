@@ -10,8 +10,9 @@ NC=\e[0m
 all: reset_sems
 
 reset_sems: 
-	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) reset_sems.c -o $(TARGET)/reset_sems $(LDLIBS) -lm
+	@echo "Building reset_sems"
+	@mkdir -p $(TARGET)
+	@$(CC) $(CFLAGS) reset_sems.c -o $(TARGET)/reset_sems $(LDLIBS) -lm
 
 clean: 
 	rm -r -f $(TARGET)

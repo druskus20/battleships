@@ -6,7 +6,7 @@ NC=\e[0m
 all:
 
 %:
-	@$(foreach dir, $(SUBDIRS), echo -e "$(BOLD)Building $(dir:/=)...$(NC)" && $(MAKE) -C $(dir) $@ &&) :
+	@$(foreach dir, $(SUBDIRS), echo  "$(BOLD)Building $(dir:/=)...$(NC)" && $(MAKE) -C $(dir) $@ &&) :
 
 clean: 
 	rm ./bin/*

@@ -2,6 +2,7 @@
 #define SRC_SIMULADOR_H_
 
 #include <stdbool.h>
+#include <stdio.h>
 #include "style.h"
 
 #define STRING_MAX 500
@@ -31,8 +32,6 @@
 #define SEM_SIMULADOR "/sem_simulador"
 
 
-extern char symbol_equipos[N_EQUIPOS]; // Símbolos de los diferentes equipos en el mapa (mirar mapa.c)
-
 /*** ARGUMENTOS ***/
 // Argumentos de ejecucion
 typedef struct {
@@ -52,6 +51,10 @@ typedef struct {
 	char error_msg[STYLE_STRING_L];
 	char ok[STYLE_STRING_L];
 	char err[STYLE_STRING_L];
+	// tags
+	char nave_tag[STYLE_STRING_L];
+	char jefe_tag[STYLE_STRING_L];
+	char sim_tag[STYLE_STRING_L];
 } tipo_estilo;
 
 /*** NAVE ***/
@@ -59,16 +62,30 @@ typedef struct {
 typedef struct {
 	int vida; 	   // Vida que le queda a la nave
 	int dmg;	   // El daño que inflinge
-	int precision; // La precision que tiene (0 - 100)
 	int alcance;
 	int posx; 	   // Columna en el mapa
 	int posy;  	   // Fila en el mapa
 	int equipo;    // Equipo de la nave
 	int num_nave;  // Numero de la nave en el equipo
 	bool viva;     // Si la nave está viva o ha sido destruida
-	char * tag;   
+	char tag[STRING_MAX];   
 } tipo_nave;
 
+
+/*** JEFE ***/
+typedef struct {
+	int num_naves;
+	int equipo;
+	// !!! quizas pipes de naves hijas
+	char tag[STRING_MAX]; 	
+} tipo_jefe;
+
+/*** SIM ***/
+typedef struct {
+	tipo_jefe *jefes; 
+	// !!! array de pipes a jefes
+	char tag[STRING_MAX];
+} tipo_sim;
 
 /*** MAPA ***/
 // Información de una casilla en el mapa
@@ -84,6 +101,15 @@ typedef struct {
 	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
 	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
 } tipo_mapa;
+
+
+
+// variables globales 
+// !!! por que solo funcionan aqui??
+tipo_argumentos args;
+tipo_estilo estilo;
+FILE * fpo;
+
 
 #define SHM_MAP_NAME "/shm_naves"
 

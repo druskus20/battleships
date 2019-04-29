@@ -19,12 +19,6 @@
 #include "nave.h"
 
 
-
-tipo_argumentos args;
-tipo_estilo estilo;
-FILE * fpo;
-
-
 void leer_argumentos(int argc, char **argv) {
     // NOTA: No deben aplicarse colores en esta funcion
     char out_buffer[STRING_MAX];
@@ -54,15 +48,18 @@ void leer_argumentos(int argc, char **argv) {
                 strcpy(estilo.error_msg, ERROR_MC);
                 strcpy(estilo.ok, OK_SC);
                 strcpy(estilo.err, ERROR_SC);
+                strcpy(estilo.nave_tag, NAVE_C);
+                strcpy(estilo.jefe_tag, JEFE_C);
+                strcpy(estilo.sim_tag, SIM_C);    
 				break;
 	
 			case '2' :
                 if (!optarg) {
-                    fprintf(fpo, estilo.error_msg, "Error. Falta argumento ""fichero_out""");  
+                    fprintf(fpo, estilo.error_msg, "Falta argumento ""fichero_out""");  
                     exit(EXIT_FAILURE);
                 }
                 if (strlen(optarg) > MAX_FICHERO_OUT){
-                    fprintf(fpo, estilo.error_msg, "Error. Argumento ""fichero_out"" demasiado largo");
+                    fprintf(fpo, estilo.error_msg, "Argumento ""fichero_out"" demasiado largo");
                     exit(EXIT_FAILURE);
                 }
                 
@@ -73,7 +70,7 @@ void leer_argumentos(int argc, char **argv) {
             case '3' : 
 			case '?' :
 			default:
-                sprintf(out_buffer, "Error. Ejecucion: %s <-f fichero_log> <-c>", argv[0]);
+                sprintf(out_buffer, "Ejecucion: %s <-f fichero_log> <-c>", argv[0]);
                 fprintf(fpo, estilo.error_msg, out_buffer);
 				exit(EXIT_FAILURE);
 				break;
@@ -127,13 +124,17 @@ int main(int argc, char **argv) {
     strcpy(estilo.error_msg, ERROR_M);
     strcpy(estilo.ok, OK_S);
     strcpy(estilo.err, ERROR_S);
+    strcpy(estilo.nave_tag, NAVE);
+    strcpy(estilo.jefe_tag, JEFE);
+    strcpy(estilo.sim_tag, SIM);
+    
     
     leer_argumentos(argc, argv);
 
     if (args.F_fichero_out) {
         fpo= fopen(args.fichero_out, "w");
         if  (!fpo) {
-            sprintf(out_buffer, "Error. No se ha podido abrir el fichero: %s\n", args.fichero_out);
+            sprintf(out_buffer, "No se ha podido abrir el fichero: %s\n", args.fichero_out);
             fprintf(fpo, estilo.error_msg, out_buffer);
             exit(EXIT_FAILURE);
         }
@@ -152,7 +153,6 @@ int main(int argc, char **argv) {
   
 	
 	// Inicializacion de semaforos  
-//	if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT | O_EXCL, S_IRUSR | S_IWUSR, 0))== SEM_FAILED){
     if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
     		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
@@ -160,17 +160,22 @@ int main(int argc, char **argv) {
 
 
     fprintf(fpo, estilo.ok_msg, "Comienza la simulación");
-    // COMIENZO DE LA SIMULACION ---------------------------------
     sem_post(sem_sim);
+    // COMIENZO DE LA SIMULACION ---------------------------------
+    tipo_nave * n1 = nave_init();
+    nave_destruir(n1);
+    
 
-   
-       
-    fprintf(fpo, estilo.ok_msg, "Fin de la simulación");    
+
+     
     // FIN DE LA SIMULACION --------------------------------------
+    sleep(2);
+    fprintf(fpo, estilo.ok_msg, "Fin de la simulación");  
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
+    sleep(3);
     sem_close(sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     end_exec();

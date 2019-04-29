@@ -7,21 +7,20 @@ LDLIBS = -lrt -lncurses
 BOLD=\e[1m
 NC=\e[0m
 
-DEP = mapa.c nave.c 
-all: simulador monitor
+
+all: simulador monitor 
 
 clean: 
-	rm -r -f $(TARGET)
+	@echo "Building style_test"
+	@rm -r -f $(TARGET)
 
 simulador:
-	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) mapa.c simulador.c  nave.c -o $(TARGET)/simulador $(LDLIBS) -lm
+	@echo "Building simulador"
+	@mkdir -p $(TARGET)
+	@$(CC) $(CFLAGS)  simulador.c nave.c  mapa.c   -o $(TARGET)/simulador $(LDLIBS) -lm
 	
 monitor:
-	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) gamescreen.c  nave.c  mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
+	@echo "Building monitor"
+	@mkdir -p $(TARGET)
+	@$(CC) $(CFLAGS) gamescreen.c  nave.c  mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
 		
-
-nave: 
-	mkdir -p $(TARGET)
-	$(CC) $(CFLAGS) nave.c simulador.c -o $(TARGET)/monitor $(LDLIBS) -lm

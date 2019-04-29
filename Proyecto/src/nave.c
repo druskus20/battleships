@@ -9,10 +9,12 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-bool nave_start(tipo_nave *nave){
-    sprintf(nave->tag,  NAVE, "a", "2"); // !!!
-    fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Llega");
-    return true;
+tipo_nave * nave_init(){
+    tipo_nave * new_nave;
+    new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
+    sprintf(new_nave->tag,  estilo.nave_tag, "a", "2"); // !!!
+    fprintf(fpo, estilo.nave, new_nave->tag, estilo.ok, "Llega");
+    return new_nave;
 }
 
 bool nave_destruir(tipo_nave *nave){
@@ -20,11 +22,13 @@ bool nave_destruir(tipo_nave *nave){
     return true;
 }
 
-
+/*
 bool nave_atacar(tipo_nave *nave, tipo_nave *nave_obj){
     if (nave_alcanza(nave, nave_obj) ){
         if ((rand()%100) < nave->precision) {
             nave_recibir_ataque(nave_obj, nave->dmg);
+
+            // !!! sprintf
             fprintf(fpo, estilo.nave, nave->tag, estilo.ok,
                  "Inflinge %d daños a %s", nave->dmg, nave_obj->tag);
             return true;
@@ -63,15 +67,15 @@ void nave_recibir_ataque(tipo_nave *nave, int dmg){
     fprintf(fpo, estilo.nave, nave->tag, estilo.ok,
             "Tiene %d vida restante", nave->vida);
 
-}
-
+} 
+*/
 
 char * nave_get_tag(tipo_nave *nave) {
     return nave->tag;
 }
 
 void nave_set_tag(tipo_nave *nave, char *tag) {
-    nave->tag = tag;
+    strcpy(nave->tag, tag);
 }
 
 int nave_get_dmg(tipo_nave *nave) {
@@ -84,14 +88,6 @@ void nave_set_dmg(tipo_nave *nave, int dmg) {
 }
 
 
-int nave_get_precision(tipo_nave *nave) {
-    return nave->precision;
-}
-
-
-void nave_set_precision(tipo_nave *nave, int precision) {
-    nave->precision = precision;
-}
 
 
 

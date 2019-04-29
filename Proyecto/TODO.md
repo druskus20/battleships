@@ -18,8 +18,11 @@
 
 ## Jefe
 * Añadir funcion de comunicar accion a nave (pipes)
+* Init
 
 ## Simulador
+* tag
+* Init 
 
 ## Monitor
 * Hacer funcionar el mapa
