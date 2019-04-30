@@ -9,18 +9,36 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-tipo_nave * nave_init(){
-    tipo_nave * new_nave;
+
+tipo_nave * nave_init(int equipo, int id) {
+    
+    tipo_nave *new_nave;
+    char out_buffer[STRING_MAX];
+    
     new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
-    sprintf(new_nave->tag,  estilo.nave_tag, 1, 2); // !!!
-    fprintf(fpo, estilo.nave, new_nave->tag, estilo.ok, "Llega");
+   
+    new_nave->equipo = equipo;
+    new_nave->id = id;
+    sprintf(new_nave->tag,  estilo.nave_tag, new_nave->equipo, new_nave->id); // !!!
+    
+    // !!! jefe_crear_naves aqui o en simulador
+    sprintf(out_buffer, "Iniciando %s", new_nave->tag);
+
+    fprintf(fpo, estilo.nave, new_nave->tag, estilo.ok, out_buffer);
     return new_nave;
 }
 
-bool nave_destroy(tipo_nave *nave){
-    fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Destruida");
-    return true;
+
+
+
+void nave_run(tipo_nave *nave){
+   // fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Running");
 }
+
+void nave_destroy(tipo_nave *nave){
+    fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Destruida");
+}
+
 
 /*
 bool nave_atacar(tipo_nave *nave, tipo_nave *nave_obj){

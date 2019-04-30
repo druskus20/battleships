@@ -5,9 +5,9 @@
 #include <stdbool.h>
 
 tipo_nave * jefe_crear_naves(tipo_jefe *jefe);
-
 tipo_jefe * jefe_init(int equipo);
 void jefe_destroy(tipo_jefe *jefe);
 void jefe_run(tipo_jefe *jefe);
+void jefe_run_naves(tipo_jefe *jefe);
 
 #endif

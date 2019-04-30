@@ -86,8 +86,6 @@ void leer_argumentos(int argc, char **argv) {
 	}
 }
 
-
-
 // Manejador de la señal Ctrl+C (SIGINT)
 void manejador_SIGINT(int sig) {
     fprintf(fpo, "\n");
