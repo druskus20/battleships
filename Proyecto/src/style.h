@@ -1,6 +1,7 @@
-#ifndef STYLE_H_
-#define STYLE_H_
+#ifndef SRC_STYLE_H_
+#define SRC_STYLE_H_
 
+#include "types.h"
 // Definiciones de colores para salida en la terminal
 // Fuente: https://stackoverflow.com/questions/3219393/stdlib-and-colored-output-in-c
 // Uso: ver ../tests/style_test.c

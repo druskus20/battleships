@@ -6,11 +6,11 @@
 
 * Hacer el orden de ejecucion monitor-simulador independiente DONE
 * Hacer funciones de "print_msg" -> CAMBIADO POR: Cambiar formato de impresion DONE
-
+* sem_unlink en los errores?
 
 
 ## Quizas
-* types.h
+* types.h DONE
 * error enums
 * Multiples algoritmos de deteccion de naves, dependiendo del equipo (puntero a funcion en jefe)
 * Funciones "print" para debuggear, + argumento -d (-debug)
@@ -33,8 +33,6 @@
 
 ## Monitor
 * Hacer funcionar el mapa
-
-
 
 ## Preguntas 
 * Como funciona la señal de alarma del turno ?

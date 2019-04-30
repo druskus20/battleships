@@ -20,7 +20,7 @@ void jefe_destroy(tipo_jefe *jefe){
 
 }
 
-
+/*
 // !!! cambiar retornos y arreglar una vez funcione jefe
 tipo_nave * jefe_crear_naves(tipo_jefe *jefe) {      
     int pid = -1;
@@ -38,4 +38,4 @@ tipo_nave * jefe_crear_naves(tipo_jefe *jefe) {
         }   
     }
     return NULL;
-}
+}*/

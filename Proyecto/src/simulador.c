@@ -1,3 +1,4 @@
+#include "simulador.h"
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -12,14 +13,16 @@
 #include <semaphore.h>
 #include <unistd.h>
 
+
 #include "jefe.h" // !!! funciona??
 // Para la lectura de argumentos
 #include <getopt.h>
 
-
+// !!! no estoy muy seguro de esto
 #include "mapa.h"
-#include "simulador.h"
+#include "jefe.h"
 #include "nave.h"
+
 
 
 void leer_argumentos(int argc, char **argv) {
@@ -111,7 +114,7 @@ int main(int argc, char **argv) {
     
     struct sigaction act;
     char out_buffer[STRING_MAX];
-    bool simulador_f = true;
+   
     tipo_sim sim; // !!! quizas haga falta hacerlo con memoria dinamica por tema de procesos y  memoria entre procesos
                   // !!! No deberia, porque el jefe no interviene con simulador, pero quizas las naves... 
 
@@ -136,6 +139,8 @@ int main(int argc, char **argv) {
     leer_argumentos(argc, argv);
     strcpy(sim.tag, estilo.sim_tag); 
 
+   
+    
     // Apertura de fichero de log
     if (args.F_fichero_out) {
         fpo = fopen(args.fichero_out, "w");
@@ -146,13 +151,13 @@ int main(int argc, char **argv) {
         }
     }
 
+    fprintf(fpo, estilo.ok_msg, "Comenzando INICIALIZACION");
+
 	// Inicializacion de semaforo simulador
     if((sim.sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
     		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
-
-    // INICIALIZACIONES ------------------------------------------
 
     // Inicializacion del manejador SIGINT
     act.sa_handler = manejador_SIGINT;
@@ -162,29 +167,30 @@ int main(int argc, char **argv) {
         fprintf(fpo, estilo.error_msg, "sigaction");
         exit(EXIT_FAILURE);
     }
-
+    fprintf(fpo, estilo.ok_msg,  "Fin de INICIALIZACION");
     sem_post(sim.sem_sim);  // avisa al monitor
 
-    simulador_f = false;
-    if (sim_crear_jefes(&sim) != CHILD) 
-        simulador_f = true;
-    if(simulador_f) fprintf(fpo, estilo.ok_msg, "Jefes inicializados");
-
-
-    // FIN DE LAS INICIALIZACIONES -------------------------------
     
-    if(simulador_f) fprintf(fpo, estilo.ok_msg, "Comienza la simulación");
- 
-
-    // COMIENZO DE LA SIMULACION ---------------------------------
+    // Comienzo simulador
+    fprintf(fpo, estilo.sim, sim.tag, estilo.ok, "Comenzando SIMULACION");
+    int pid = sim_crear_jefes(&sim) != 0;
+    if (pid > 0) {  // simulador
+        
+        // ...
+        sim_esperar_jefes(&sim);
+    } 
+    else if (pid == 0) {  // jefe
+        fprintf(fpo, estilo.sim, sim.tag, estilo.ok, "jefe");
+        exit(EXIT_SUCCESS);
+    }
+    else {
+        fprintf(fpo, estilo.sim, sim.tag, estilo.err, "sim_crear_jefes");
+    }
+   fprintf(fpo, estilo.sim, sim.tag, estilo.ok,"Fin de SIMULACION");  // quizas ponerlo fuera
     
 
-  // sim_ejecutar_jefe();
-    sim_esperar_jefes(&sim);
+
      
-    // FIN DE LA SIMULACION --------------------------------------
-
-     if(simulador_f)  fprintf(fpo, estilo.ok_msg, "Fin de la simulación");  
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
@@ -202,26 +208,26 @@ int main(int argc, char **argv) {
 
 
 
-// retorna jefe o null si es el padre
+// crea N_EQUIPOS procesos, retorna el pid
 int sim_crear_jefes(tipo_sim *sim) {      
     int pid = -1;
+    fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Inicializando jefes");
     for (int i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
-        switch (pid) {
-            case CHILD:
-                jefe_init(); // para ???
-                return pid;
-            case FATHER:
-                sim->pid_jefes[i] = pid;
-                break;             // sigue ???
-            default:
-                fprintf(fpo, estilo.error_msg, "sim_crear_jefes");
-                exit(EXIT_FAILURE);
-        }   
+        if (pid > 0) {        // simulador
+            sim->pid_jefes[i] = pid; // !!! se puede?  
+        }
+        else if (pid == 0){  // jefe
+            jefe_init(); 
+            return pid; 
+        }
     }
     return pid;
 }
 
-void sim_esperar_jefes(tipo_sim *sim){
 
+void sim_esperar_jefes(tipo_sim *sim){
+    for (int i = 0; i < N_EQUIPOS; i++)
+        wait(NULL);
 }
+    
