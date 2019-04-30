@@ -14,6 +14,8 @@
 #include <unistd.h>
 
 
+
+
 #include "jefe.h" // !!! funciona??
 // Para la lectura de argumentos
 #include <getopt.h>
@@ -107,9 +109,6 @@ void imprimir_semaforo(sem_t *sem) {
     fflush(stdout);
 }
 
-
-
-
 int main(int argc, char **argv) {
     
     struct sigaction act;
@@ -152,8 +151,7 @@ int main(int argc, char **argv) {
 
     sim = (tipo_sim *)malloc(sizeof(tipo_sim));
     strcpy(sim->tag, estilo.sim_tag); 
-    
-   
+
     sprintf(out_buffer, "Comenzando %s", sim->tag);
     fprintf(fpo, estilo.ok_msg, out_buffer);
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Comenzando inicialización");
@@ -180,18 +178,9 @@ int main(int argc, char **argv) {
     
     // Comienzo simulador
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Comenzando simulación");
-    int pid = sim_crear_pjefes(sim);
-    if (pid > 0) {  // simulador
-        sim_esperar_pjefes(sim);
-    } 
-    else if (pid == 0) {  // jefe
-        tipo_jefe * jefe = jefe_init();
-        exit(EXIT_SUCCESS);
-    }
-    else {
-        fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sim_crear_jefes");
-        exit(EXIT_FAILURE);
-    }
+    sim_run_jefes(sim);
+    fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Esperando a los jefes");
+    sim_esperar_jefes(sim);
 
     
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok,"Fin de simulación");  // quizas ponerlo fuera
@@ -199,8 +188,6 @@ int main(int argc, char **argv) {
     fprintf(fpo, estilo.ok_msg, out_buffer);
 
 
-
-    
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
@@ -213,25 +200,31 @@ int main(int argc, char **argv) {
 
 
 
-
-
-
-
-// Solo crear los procesos
-int sim_crear_pjefes(tipo_sim *sim) {      
+// Ejecuta los jefes
+void sim_run_jefes(tipo_sim *sim) {      
     int pid = -1;
+    tipo_jefe * jefe;
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Inicializando jefes");
+    // creacion de jefes
     for (int i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
         if (pid == 0){  // jefe
-            return pid; 
+            jefe = jefe_init(i+1);
+            break;
+        }
+        else if (pid < 0) {
+            fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sim_run_jefes");
+            exit(EXIT_FAILURE);
         }
     }
-    return pid;
+    // Resto del codigo de jefes
+    if (pid == 0) {
+        jefe_run(jefe);
+        exit(EXIT_SUCCESS);
+    }
 }
 
-void sim_esperar_pjefes(tipo_sim *sim){
+void sim_esperar_jefes(tipo_sim *sim){
     for (int i = 0; i < N_EQUIPOS; i++)
         wait(NULL);
 }
-    

@@ -10,16 +10,11 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-tipo_jefe * jefe_init() {
-    char tag_buffer[100];
+tipo_jefe * jefe_init(int equipo) {
     
     tipo_jefe *new_jefe;
     new_jefe = (tipo_jefe *)malloc(sizeof(tipo_jefe));
-    static int id = 0;
-    static int equipo = 0;
-    id++;
-    equipo++;
-    new_jefe->id = id;
+   
     new_jefe->equipo = equipo;
     
    
@@ -29,6 +24,10 @@ tipo_jefe * jefe_init() {
        
     fprintf(fpo, estilo.jefe, new_jefe->tag, estilo.ok, "Init");
     return new_jefe;
+}
+
+void jefe_run(tipo_jefe *jefe){
+    fprintf(fpo, estilo.jefe, jefe->tag, estilo.ok, "Running");
 }
 
 void jefe_destroy(tipo_jefe *jefe){
