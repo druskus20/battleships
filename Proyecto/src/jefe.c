@@ -51,7 +51,7 @@ void jefe_run_naves(tipo_jefe *jefe){
     tipo_nave * nave;
     fprintf(fpo, estilo.jefe, jefe->tag, estilo.ok, "Inicializando naves");
     // creacion de naves
-    for (int i = 0; i < N_EQUIPOS; i++) {
+    for (int i = 0; i < N_NAVES; i++) {
         pid = fork();
         if (pid == 0) {  // nave
             nave = nave_init(jefe->equipo, i);
