@@ -11,15 +11,24 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-tipo_jefe * jefe_init(int equipo) {
+tipo_jefe * jefe_init(int equipo, int pipe_sim[2]) {
     
     tipo_jefe *new_jefe;
     char out_buffer[STRING_MAX];
+    int pipe_status;
     
     new_jefe = (tipo_jefe *)malloc(sizeof(tipo_jefe));
    
     new_jefe->equipo = equipo;
     sprintf(new_jefe->tag,  estilo.jefe_tag, new_jefe->equipo); // !!!
+    new_jefe->pipe_sim = pipe_sim;
+    
+    // La pipe ya esta abierta
+    // pipe_status = pipe(new_jefe->pipe_sim);
+    //if (pipe_status == -1) {
+    //    fprintf(fpo, estilo.jefe, new_jefe->tag, estilo.ok, "jefe_init/pipe");
+    //    exit(EXIT_FAILURE);
+    //}
     
     // !!! jefe_crear_naves aqui o en simulador
     sprintf(out_buffer, "Iniciando %s", new_jefe->tag);
@@ -45,7 +54,7 @@ void jefe_run_naves(tipo_jefe *jefe){
     for (int i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
         if (pid == 0) {  // nave
-            nave = nave_init(jefe->equipo, i+1);
+            nave = nave_init(jefe->equipo, i);
             break;
         }
         else if (pid < 0) {

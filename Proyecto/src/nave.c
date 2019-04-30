@@ -28,9 +28,6 @@ tipo_nave * nave_init(int equipo, int id) {
     return new_nave;
 }
 
-
-
-
 void nave_run(tipo_nave *nave){
    // fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Running");
 }
@@ -39,54 +36,6 @@ void nave_destroy(tipo_nave *nave){
     fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Destruida");
 }
 
-
-/*
-bool nave_atacar(tipo_nave *nave, tipo_nave *nave_obj){
-    if (nave_alcanza(nave, nave_obj) ){
-        if ((rand()%100) < nave->precision) {
-            nave_recibir_ataque(nave_obj, nave->dmg);
-
-            // !!! sprintf
-            fprintf(fpo, estilo.nave, nave->tag, estilo.ok,
-                 "Inflinge %d daños a %s", nave->dmg, nave_obj->tag);
-            return true;
-        } 
-        else {
-            fprintf(fpo, estilo.nave, nave->tag, estilo.ok, 
-                "Falla al atacar a %s", nave_obj->tag);
-            return false;
-
-        }
-    }
-    else {
-        fprintf(fpo, estilo.nave, nave->tag, estilo.ok, 
-            "No alcanza a atacar a %s", nave_obj->tag);
-        return false;
-    }
-}
-
-bool nave_alcanza(tipo_nave *nave, tipo_nave *nave_obj) {
-    
-    //    . . . . t
-    //    . . . . .
-    //    n . . . t    
-    //    n deberia alcanzar a ambos objetivos con "alcance = 4"
-    //    4 >= |0 - 4| y 4 > |3 - 0| 
-    //    es decir, se cuenta tambien en diagonal
-
-    if  ((nave->alcance >= abs(nave->posx - nave_obj->posx)) 
-        && (nave->alcance >= abs(nave->posx - nave_obj->posy)))
-        return true;
-    return false;
-}
-
-void nave_recibir_ataque(tipo_nave *nave, int dmg){
-    nave->vida -= dmg;
-    fprintf(fpo, estilo.nave, nave->tag, estilo.ok,
-            "Tiene %d vida restante", nave->vida);
-
-} 
-*/
 
 char * nave_get_tag(tipo_nave *nave) {
     return nave->tag;

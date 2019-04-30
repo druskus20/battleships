@@ -75,6 +75,7 @@ typedef struct {
 	int equipo;    // Equipo de la nave
 	int num_nave;  // Numero de la nave en el equipo
 	bool viva;     // Si la nave está viva o ha sido destruida
+	int * pipe_jefe;
 	char tag[TAG_MAX];   
 } tipo_nave;
 
@@ -86,6 +87,8 @@ typedef struct {
 	int equipo;
 	// int pid_naves[N_NAVES]; !!! NO
 	// !!! quizas pipes de naves hijas
+	int pipes_naves[N_NAVES][2];
+	int * pipe_sim;
 	char tag[TAG_MAX]; 	
 } tipo_jefe;
 
@@ -95,6 +98,7 @@ typedef struct {
 	sem_t *sem_sim; // semaforo monitor-simulador		
 	// int pid_jefes[N_EQUIPOS]; !!! NO
 	// !!! array de pipes a jefes
+	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
 } tipo_sim;
 

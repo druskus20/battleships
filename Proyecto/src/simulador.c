@@ -86,6 +86,7 @@ void leer_argumentos(int argc, char **argv) {
 	}
 }
 
+
 // Manejador de la señal Ctrl+C (SIGINT)
 void manejador_SIGINT(int sig) {
     fprintf(fpo, "\n");
@@ -111,9 +112,9 @@ int main(int argc, char **argv) {
     
     struct sigaction act;
     char out_buffer[STRING_MAX];
-   
+    
     tipo_sim  * sim; // !!! quizas haga falta hacerlo con memoria dinamica por tema de procesos y  memoria entre procesos
-                  // !!! No deberia, porque el jefe no interviene con simulador, pero quizas las naves... 
+                     // !!! No deberia, porque el jefe no interviene con simulador, pero quizas las naves... 
 
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
@@ -132,10 +133,7 @@ int main(int argc, char **argv) {
     strcpy(estilo.jefe_tag, JEFE);
     strcpy(estilo.sim_tag, SIM);
     
-    
     leer_argumentos(argc, argv);
-
-
 
     // Apertura de fichero de log
     if (args.F_fichero_out) {
@@ -154,7 +152,6 @@ int main(int argc, char **argv) {
     fprintf(fpo, estilo.ok_msg, out_buffer);
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Comenzando inicialización");
     
-
 	// Inicializacion de semaforo simulador
     if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sem_open de ""sem_sim""");
@@ -166,25 +163,26 @@ int main(int argc, char **argv) {
     sigemptyset(&(act.sa_mask));
     act.sa_flags = 0;
     if (sigaction(SIGINT, &act, NULL) < 0) {
-         fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sigaction");
+        fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sigaction");
         exit(EXIT_FAILURE);
     }
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Fin de inicialización");
     sem_post(sim->sem_sim);  // avisa al monitor
 
-
+    sim_init_pipes_jefes(sim);
     
     // Comienzo simulador
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Comenzando simulación");
     sim_run_jefes(sim);
+    
+    
+    
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Esperando a los jefes");
     sim_esperar_jefes(sim);
 
-    
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok,"Fin de simulación");  // quizas ponerlo fuera
     sprintf(out_buffer, "Finalizando %s", sim->tag);
     fprintf(fpo, estilo.ok_msg, out_buffer);
-
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
@@ -196,7 +194,17 @@ int main(int argc, char **argv) {
     exit(EXIT_SUCCESS);
 }
 
-
+// Inicializa pipes a jefes
+void sim_init_pipes_jefes(tipo_sim * sim) { 
+    int pipe_status;
+    for (int i = 0; i < N_EQUIPOS; i++){
+        pipe_status = pipe(sim->pipes_jefes[i]);
+        if (pipe_status == -1){
+            fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sim_init_pipes_jefes");
+		    exit(EXIT_FAILURE);
+        }
+    }
+}
 
 // Ejecuta los jefes
 void sim_run_jefes(tipo_sim *sim) {      
@@ -207,7 +215,7 @@ void sim_run_jefes(tipo_sim *sim) {
     for (int i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
         if (pid == 0){  // jefe
-            jefe = jefe_init(i+1);
+            jefe = jefe_init(i, sim->pipes_jefes[i]);
             break;
         }
         else if (pid < 0) {
@@ -222,7 +230,7 @@ void sim_run_jefes(tipo_sim *sim) {
     }
 }
 
-void sim_esperar_jefes(tipo_sim *sim){
+void sim_esperar_jefes(tipo_sim *sim) {
     for (int i = 0; i < N_EQUIPOS; i++)
         wait(NULL);
 }

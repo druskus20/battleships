@@ -16,5 +16,5 @@ FILE * fpo;
 
 void sim_run_jefes(tipo_sim *sim);
 void sim_esperar_jefes(tipo_sim *sim);
-
+void sim_init_pipes_jefes(tipo_sim *sim);
 #endif 
