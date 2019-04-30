@@ -5,6 +5,9 @@
 #include <string.h>
 #include "../src/style.h"
 
+#define CHILD 0
+#define FATHER // TODO !!!
+
 int main (int argc, char const *argv[]) {
 
   printf("\nSTYLE_TEST\n\n");
@@ -85,7 +88,10 @@ int main (int argc, char const *argv[]) {
          GREEN   "S" COLOR_RESET 
          "\n");
 
+/*
 
-
+  if (0 == CHILD) printf("A");
+  if (1 == FATHER) printf("D"); */
+  
   return 0;
 }

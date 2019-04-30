@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <semaphore.h>
 #include <unistd.h>
+
+#include "jefe.h" // !!! funciona??
 // Para la lectura de argumentos
 #include <getopt.h>
 
@@ -104,13 +106,14 @@ void imprimir_semaforo(sem_t *sem) {
 
 
 
+
 int main(int argc, char **argv) {
     
     struct sigaction act;
     char out_buffer[STRING_MAX];
-    sem_t * sem_sim; // semaforo monitor-simulador
-    
-
+    bool simulador_f = true;
+    tipo_sim sim; // !!! quizas haga falta hacerlo con memoria dinamica por tema de procesos y  memoria entre procesos
+                  // !!! No deberia, porque el jefe no interviene con simulador, pero quizas las naves... 
 
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
@@ -131,53 +134,62 @@ int main(int argc, char **argv) {
     
     
     leer_argumentos(argc, argv);
+    strcpy(sim.tag, estilo.sim_tag); 
 
+    // Apertura de fichero de log
     if (args.F_fichero_out) {
-        fpo= fopen(args.fichero_out, "w");
+        fpo = fopen(args.fichero_out, "w");
         if  (!fpo) {
             sprintf(out_buffer, "No se ha podido abrir el fichero: %s\n", args.fichero_out);
-            fprintf(fpo, estilo.error_msg, out_buffer);
+            fprintf(stdout, estilo.error_msg, out_buffer);      // !!! creo que solo se puede stdout
             exit(EXIT_FAILURE);
         }
     }
+
+	// Inicializacion de semaforo simulador
+    if((sim.sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+    		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
+		exit(EXIT_FAILURE);
+	}  
+
+    // INICIALIZACIONES ------------------------------------------
 
     // Inicializacion del manejador SIGINT
     act.sa_handler = manejador_SIGINT;
     sigemptyset(&(act.sa_mask));
     act.sa_flags = 0;
-
     if (sigaction(SIGINT, &act, NULL) < 0) {
         fprintf(fpo, estilo.error_msg, "sigaction");
         exit(EXIT_FAILURE);
     }
 
-  
-	
-	// Inicializacion de recursos
-    if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-    		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
-		exit(EXIT_FAILURE);
-	}  
+    sem_post(sim.sem_sim);  // avisa al monitor
+
+    simulador_f = false;
+    if (sim_crear_jefes(&sim) != CHILD) 
+        simulador_f = true;
+    if(simulador_f) fprintf(fpo, estilo.ok_msg, "Jefes inicializados");
 
 
+    // FIN DE LAS INICIALIZACIONES -------------------------------
+    
+    if(simulador_f) fprintf(fpo, estilo.ok_msg, "Comienza la simulación");
+ 
 
-
-
-
-    fprintf(fpo, estilo.ok_msg, "Comienza la simulación");
-    sem_post(sem_sim);
     // COMIENZO DE LA SIMULACION ---------------------------------
     
 
-
+  // sim_ejecutar_jefe();
+    sim_esperar_jefes(&sim);
      
     // FIN DE LA SIMULACION --------------------------------------
-    fprintf(fpo, estilo.ok_msg, "Fin de la simulación");  
+
+     if(simulador_f)  fprintf(fpo, estilo.ok_msg, "Fin de la simulación");  
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
-    sem_close(sem_sim);
+    sem_close(sim.sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     if (args.fichero_out)   
         fclose(fpo);
@@ -187,3 +199,29 @@ int main(int argc, char **argv) {
 
 
 
+
+
+
+// retorna jefe o null si es el padre
+int sim_crear_jefes(tipo_sim *sim) {      
+    int pid = -1;
+    for (int i = 0; i < N_EQUIPOS; i++) {
+        pid = fork();
+        switch (pid) {
+            case CHILD:
+                jefe_init(); // para ???
+                return pid;
+            case FATHER:
+                sim->pid_jefes[i] = pid;
+                break;             // sigue ???
+            default:
+                fprintf(fpo, estilo.error_msg, "sim_crear_jefes");
+                exit(EXIT_FAILURE);
+        }   
+    }
+    return pid;
+}
+
+void sim_esperar_jefes(tipo_sim *sim){
+
+}

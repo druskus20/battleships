@@ -17,7 +17,7 @@ tipo_nave * nave_init(){
     return new_nave;
 }
 
-bool nave_destruir(tipo_nave *nave){
+bool nave_destroy(tipo_nave *nave){
     fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Destruida");
     return true;
 }

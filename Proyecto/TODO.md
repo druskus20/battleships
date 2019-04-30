@@ -7,7 +7,15 @@
 * Hacer el orden de ejecucion monitor-simulador independiente DONE
 * Hacer funciones de "print_msg" -> CAMBIADO POR: Cambiar formato de impresion DONE
 
+
+
+## Quizas
+* types.h
+* error enums
+* Multiples algoritmos de deteccion de naves, dependiendo del equipo (puntero a funcion en jefe)
+
 ## Nave
+* !!! Como hacer para que la nave pueda comunicarse con el simulador
 * Añadir precision, alcance y daño DONE
 * Hacer alguna funcion para "recibir daño (set_daño + mensaje de nave) DONE
 * Hacer funcion mover_aleatorio
@@ -31,4 +39,4 @@
 
 ## Preguntas 
 * Como funciona la señal de alarma del turno ?
-
+* Como funcionaba la memoria dinamica con los semáforos??

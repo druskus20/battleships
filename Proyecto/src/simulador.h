@@ -3,12 +3,16 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <semaphore.h>
 #include "style.h"
 
 #define STRING_MAX 500
 /*** SCREEN ***/
 #define MAPA_MAXX 20         // Número de columnas del mapa
 #define MAPA_MAXY 20         // Número de filas del mapa
+
+
+
 #define SCREEN_REFRESH 10000 // Frequencia de refresco del mapa en el monitor
 #define SYMB_VACIO '.'       // Símbolo para casilla vacia
 #define SYMB_TOCADO '%'      // Símbolo para tocado
@@ -22,12 +26,13 @@
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
 #define TURNO_SECS 5      // Segundos que dura un turno
 
-#define N_EQUIPOS 3 // Número de equipos
+#define N_EQUIPOS 4 // Número de equipos
 #define N_NAVES 3   // Número de naves por equipo
 
 #define MAX_FICHERO_OUT 100
 #define STYLE_STRING_L 200
-
+#define CHILD 0
+#define FATHER !CHILD // TODO !!!
 // Semaforos
 #define SEM_SIMULADOR "/sem_simulador"
 
@@ -74,15 +79,18 @@ typedef struct {
 
 /*** JEFE ***/
 typedef struct {
-	int num_naves;
+	int naves_rest;
 	int equipo;
+	int pid_naves[N_NAVES];
 	// !!! quizas pipes de naves hijas
 	char tag[STRING_MAX]; 	
 } tipo_jefe;
 
 /*** SIM ***/
 typedef struct {
-	tipo_jefe *jefes; 
+	int equipos_rest;
+	sem_t *sem_sim; // semaforo monitor-simulador		
+	int pid_jefes[N_EQUIPOS];
 	// !!! array de pipes a jefes
 	char tag[STRING_MAX];
 } tipo_sim;
@@ -112,5 +120,13 @@ FILE * fpo;
 
 
 #define SHM_MAP_NAME "/shm_naves"
+
+
+
+int sim_crear_jefes(tipo_sim *sim);
+void sim_esperar_jefes(tipo_sim *sim);
+    
+
+
 
 #endif 
