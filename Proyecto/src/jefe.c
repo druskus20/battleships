@@ -5,6 +5,7 @@
 #include <string.h>
 #include <style.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "nave.h"
 
 extern tipo_argumentos args;
@@ -38,12 +39,16 @@ tipo_jefe * jefe_init(int equipo, int pipe_sim[2]) {
 }
 
 void jefe_run(tipo_jefe *jefe){
-    //fprintf(fpo, estilo.jefe, jefe->tag, estilo.ok, "Running");
+    fprintf(fpo, estilo.jefe, jefe->tag, estilo.ok, "Ejecutando");
     jefe_run_naves(jefe);
+    jefe_esperar_naves(jefe);
+    jefe_destroy(jefe);
 }
 
 void jefe_destroy(tipo_jefe *jefe){
     fprintf(fpo, estilo.jefe, jefe->tag, estilo.ok, "Destruido");
+    exit(EXIT_SUCCESS);
+
 }
 
 void jefe_run_naves(tipo_jefe *jefe){
@@ -67,4 +72,9 @@ void jefe_run_naves(tipo_jefe *jefe){
         nave_run(nave);
         exit(EXIT_SUCCESS);
     }
+}
+
+void jefe_esperar_naves(tipo_jefe *jefe) {
+    for (int i = 0; i < N_NAVES; i++)
+        wait(NULL);
 }

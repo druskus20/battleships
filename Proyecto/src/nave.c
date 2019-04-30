@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <style.h>
+#include <unistd.h>
+#include "style.h"
 
 extern tipo_argumentos args;
 extern tipo_estilo estilo;
@@ -29,11 +30,14 @@ tipo_nave * nave_init(int equipo, int id) {
 }
 
 void nave_run(tipo_nave *nave){
-   // fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Running");
+   fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Ejecutando");
+   sleep(1);
+   nave_destroy(nave);
 }
 
 void nave_destroy(tipo_nave *nave){
     fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Destruida");
+    exit(EXIT_SUCCESS);
 }
 
 
