@@ -14,10 +14,7 @@ tipo_estilo estilo;
 FILE * fpo;
 
 
-int sim_crear_jefes(tipo_sim *sim);
-void sim_esperar_jefes(tipo_sim *sim);
-    
-
-
+int sim_crear_pjefes(tipo_sim *sim);
+void sim_esperar_pjefes(tipo_sim *sim);
 
 #endif 

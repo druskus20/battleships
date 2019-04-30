@@ -7,7 +7,7 @@
 * Hacer el orden de ejecucion monitor-simulador independiente DONE
 * Hacer funciones de "print_msg" -> CAMBIADO POR: Cambiar formato de impresion DONE
 * sem_unlink en los errores?
-
+* Quitar imprimir semaforo
 
 ## Quizas
 * types.h DONE

@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
     struct sigaction act;
     char out_buffer[STRING_MAX];
    
-    tipo_sim sim; // !!! quizas haga falta hacerlo con memoria dinamica por tema de procesos y  memoria entre procesos
+    tipo_sim  * sim; // !!! quizas haga falta hacerlo con memoria dinamica por tema de procesos y  memoria entre procesos
                   // !!! No deberia, porque el jefe no interviene con simulador, pero quizas las naves... 
 
     // Inicializacion de parametros por defecto
@@ -137,25 +137,31 @@ int main(int argc, char **argv) {
     
     
     leer_argumentos(argc, argv);
-    strcpy(sim.tag, estilo.sim_tag); 
 
-   
-    
+
+
     // Apertura de fichero de log
     if (args.F_fichero_out) {
         fpo = fopen(args.fichero_out, "w");
         if  (!fpo) {
-            sprintf(out_buffer, "No se ha podido abrir el fichero: %s\n", args.fichero_out);
+            sprintf(out_buffer, "No se ha podido abrir el fichero: %s", args.fichero_out);
             fprintf(stdout, estilo.error_msg, out_buffer);      // !!! creo que solo se puede stdout
             exit(EXIT_FAILURE);
         }
     }
 
-    fprintf(fpo, estilo.ok_msg, "Comenzando INICIALIZACION");
+    sim = (tipo_sim *)malloc(sizeof(tipo_sim));
+    strcpy(sim->tag, estilo.sim_tag); 
+    
+   
+    sprintf(out_buffer, "Comenzando %s", sim->tag);
+    fprintf(fpo, estilo.ok_msg, out_buffer);
+    fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Comenzando inicialización");
+    
 
 	// Inicializacion de semaforo simulador
-    if((sim.sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-    		fprintf(fpo, estilo.error_msg, "sem_open de ""sem_sim""");
+    if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
 
@@ -164,38 +170,41 @@ int main(int argc, char **argv) {
     sigemptyset(&(act.sa_mask));
     act.sa_flags = 0;
     if (sigaction(SIGINT, &act, NULL) < 0) {
-        fprintf(fpo, estilo.error_msg, "sigaction");
+         fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sigaction");
         exit(EXIT_FAILURE);
     }
-    fprintf(fpo, estilo.ok_msg,  "Fin de INICIALIZACION");
-    sem_post(sim.sem_sim);  // avisa al monitor
+    fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Fin de inicialización");
+    sem_post(sim->sem_sim);  // avisa al monitor
+
 
     
     // Comienzo simulador
-    fprintf(fpo, estilo.sim, sim.tag, estilo.ok, "Comenzando SIMULACION");
-    int pid = sim_crear_jefes(&sim) != 0;
+    fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Comenzando simulación");
+    int pid = sim_crear_pjefes(sim);
     if (pid > 0) {  // simulador
-        
-        // ...
-        sim_esperar_jefes(&sim);
+        sim_esperar_pjefes(sim);
     } 
     else if (pid == 0) {  // jefe
-        fprintf(fpo, estilo.sim, sim.tag, estilo.ok, "jefe");
+        tipo_jefe * jefe = jefe_init();
         exit(EXIT_SUCCESS);
     }
     else {
-        fprintf(fpo, estilo.sim, sim.tag, estilo.err, "sim_crear_jefes");
+        fprintf(fpo, estilo.sim, sim->tag, estilo.err, "sim_crear_jefes");
+        exit(EXIT_FAILURE);
     }
-   fprintf(fpo, estilo.sim, sim.tag, estilo.ok,"Fin de SIMULACION");  // quizas ponerlo fuera
+
     
+    fprintf(fpo, estilo.sim, sim->tag, estilo.ok,"Fin de simulación");  // quizas ponerlo fuera
+    sprintf(out_buffer, "Finalizando %s", sim->tag);
+    fprintf(fpo, estilo.ok_msg, out_buffer);
 
 
-     
 
+    
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
     signal(SIGINT, SIG_DFL);
-    sem_close(sim.sem_sim);
+    sem_close(sim->sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     if (args.fichero_out)   
         fclose(fpo);
@@ -208,25 +217,20 @@ int main(int argc, char **argv) {
 
 
 
-// crea N_EQUIPOS procesos, retorna el pid
-int sim_crear_jefes(tipo_sim *sim) {      
+// Solo crear los procesos
+int sim_crear_pjefes(tipo_sim *sim) {      
     int pid = -1;
     fprintf(fpo, estilo.sim, sim->tag, estilo.ok, "Inicializando jefes");
     for (int i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
-        if (pid > 0) {        // simulador
-            sim->pid_jefes[i] = pid; // !!! se puede?  
-        }
-        else if (pid == 0){  // jefe
-            jefe_init(); 
+        if (pid == 0){  // jefe
             return pid; 
         }
     }
     return pid;
 }
 
-
-void sim_esperar_jefes(tipo_sim *sim){
+void sim_esperar_pjefes(tipo_sim *sim){
     for (int i = 0; i < N_EQUIPOS; i++)
         wait(NULL);
 }

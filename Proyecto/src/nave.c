@@ -12,7 +12,7 @@ extern FILE * fpo;
 tipo_nave * nave_init(){
     tipo_nave * new_nave;
     new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
-    sprintf(new_nave->tag,  estilo.nave_tag, "a", "2"); // !!!
+    sprintf(new_nave->tag,  estilo.nave_tag, 1, 2); // !!!
     fprintf(fpo, estilo.nave, new_nave->tag, estilo.ok, "Llega");
     return new_nave;
 }

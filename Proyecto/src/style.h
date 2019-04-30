@@ -26,11 +26,11 @@
 #define ESP                     "         "
 #define LINE                    "------------ "
 #define SIM_C         MAGENTA   "SIM         "       COLOR_RESET 
-#define JEFE_C        YELLOW    "JEFE E:%.1s    "    COLOR_RESET 
-#define NAVE_C        BLUE      "NAVE E:%.1s/N:%.1s" COLOR_RESET  
+#define JEFE_C        YELLOW    "JEFE E:%d    "      COLOR_RESET 
+#define NAVE_C        BLUE      "NAVE E:%d/N:%.1d"   COLOR_RESET  
 #define SIM                     "SIM         " 
-#define JEFE                    "JEFE E:%.1s    " 
-#define NAVE                    "NAVE E:%.1s/N:%.1s" 
+#define JEFE                    "JEFE E:%d    " 
+#define NAVE                    "NAVE E:%d/N:%.1d" 
 
 // Mensajes
 #define SIM_MC                     "%s %s -> %s\n"

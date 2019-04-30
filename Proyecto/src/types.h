@@ -5,8 +5,11 @@
 #include <stdbool.h>
 
 #define STRING_MAX 500
+#define TAG_MAX 50  // Tiene que ser bastante menor que STRING MAX para que
+                    // los sprintfs no den error.
+
 #define MAX_FICHERO_OUT 100
-#define STYLE_STRING_L 200
+#define STYLE_STRING_L 100
 
 // Semaforos
 #define SEM_SIMULADOR "/sem_simulador"
@@ -55,15 +58,15 @@ typedef struct {
 	char ok[STYLE_STRING_L];
 	char err[STYLE_STRING_L];
 	// tags
-	char nave_tag[STYLE_STRING_L];
-	char jefe_tag[STYLE_STRING_L];
-	char sim_tag[STYLE_STRING_L];
+	char nave_tag[TAG_MAX];
+	char jefe_tag[TAG_MAX];
+	char sim_tag[TAG_MAX];
 } tipo_estilo;
 
 /*** NAVE ***/
 // Información de nave
 typedef struct {
-	int id;
+	int id; // !!! Setter
 	int vida; 	   // Vida que le queda a la nave
 	int dmg;	   // El daño que inflinge
 	int alcance;
@@ -72,27 +75,27 @@ typedef struct {
 	int equipo;    // Equipo de la nave
 	int num_nave;  // Numero de la nave en el equipo
 	bool viva;     // Si la nave está viva o ha sido destruida
-	char tag[STRING_MAX];   
+	char tag[TAG_MAX];   
 } tipo_nave;
 
 
 /*** JEFE ***/
 typedef struct {
-	int id;
-	int naves_rest;
+	int id; // !!! Setter
+	// int naves_rest; // <- se puede? con los waits...
 	int equipo;
-	int pid_naves[N_NAVES];
+	// int pid_naves[N_NAVES]; !!! NO
 	// !!! quizas pipes de naves hijas
-	char tag[STRING_MAX]; 	
+	char tag[TAG_MAX]; 	
 } tipo_jefe;
 
 /*** SIM ***/
 typedef struct {
-	int equipos_rest;
+	// int equipos_rest; // <- se puede? con los waits...
 	sem_t *sem_sim; // semaforo monitor-simulador		
-	int pid_jefes[N_EQUIPOS];
+	// int pid_jefes[N_EQUIPOS]; !!! NO
 	// !!! array de pipes a jefes
-	char tag[STRING_MAX];
+	char tag[TAG_MAX];
 } tipo_sim;
 
 /*** MAPA ***/
