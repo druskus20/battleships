@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
+
 void msg_OK(FILE * fpo, char * msg){
     fprintf(fpo, estilo.ok_status, estilo.status_msg, msg);  
 }
@@ -17,14 +20,13 @@ void load_sim_tag(char tag[TAG_MAX]) {
     strcpy(tag,  estilo.sim_tag); 
 }
 
-void msg_simOK(FILE * fpo, tipo_sim * sim, char * msg){
-    fprintf(fpo, estilo.std_msg, sim->tag, estilo.ok_status, msg);
+void msg_simOK(FILE * fpo, char * msg){
+    fprintf(fpo, estilo.std_msg,  estilo.ok_status, msg);
 }
 
-void msg_simERR(FILE * fpo,  tipo_sim * sim, char * msg){
-    fprintf(fpo, estilo.std_msg, sim->tag, estilo.err_status, msg);
+void msg_simERR(FILE * fpo,  char * msg){
+    fprintf(fpo, estilo.std_msg,  estilo.err_status, msg);
 }
-
 
 
 

@@ -3,30 +3,27 @@
 * Capturar Ctrl+C tanto en el monitor como en el simulado DONE
 * Modificar estilo para que cada entidad tenga una propiedad "tag" DONE
 * Modificar estilo para usar "tag" en los mensajes DONE
-
 * Hacer el orden de ejecucion monitor-simulador independiente DONE
 * Hacer funciones de "print_msg" -> CAMBIADO POR: Cambiar formato de impresion DONE
-* sem_unlink en los errores?
-* Quitar imprimir semaforo
-* msgs.c / .h  sim_print, sim_perror + mover estilo -> msgs.c
-	* nave_create_tag....
+* Quitar imprimir semaforo DONE
+* msgs.c / .h  sim_print, sim_perror + mover estilo -> msgs.c DONE
+	* nave_create_tag.... DONE
 
 * setters y getters
-
+* sem_unlink en los errores? 
 * OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
 
 ## Quizas
 * types.h DONE
-* error enums
+* error enums 
 * Multiples algoritmos de deteccion de naves, dependiendo del equipo (puntero a funcion en jefe)
 * Funciones "print" para debuggear, + argumento -d (-debug)
 
 ## Nave
-* !!! Como hacer para que la nave pueda comunicarse con el simulador
 * Añadir alcance y daño DONE
 * Implementar cola de mensajes nave-simulador: 
 	* Añadir funcion de evaluar accion (manda el mensaje al simulador)
-* Completar nave_init
+* init
 
 ## Jefe
 * Añadir funcion de comunicar accion a nave (pipes)

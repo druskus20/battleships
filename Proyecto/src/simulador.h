@@ -11,7 +11,7 @@
 // !!! por que solo funcionan aqui??
 tipo_argumentos args;
 FILE * fpo;      
-extern tipo_estilo estilo;             // Ver msg.h            
+extern tipo_estilo estilo;             // Ver msg.c            
 extern char symbol_equipos[N_EQUIPOS]; // Ver mapa.c
 
 

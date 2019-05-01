@@ -57,9 +57,10 @@ typedef struct {
 	char ok_status[STYLE_STRING_L];
 	char err_status[STYLE_STRING_L];
 	// tags
+	char turno_tag[TAG_MAX];
 	char nave_tag[TAG_MAX];
 	char jefe_tag[TAG_MAX];
-	char sim_tag[TAG_MAX];
+	char sim_tag[TAG_MAX];	
 } tipo_estilo;
 
 /*** NAVE ***/
