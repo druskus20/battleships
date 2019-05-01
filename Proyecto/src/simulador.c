@@ -29,7 +29,6 @@ void leer_argumentos(int argc, char **argv) {
 	int long_index = 0;
 	char opt;
     
-
     static struct option options[] =
 	{
 		{"c",  no_argument,       0,  '1'},
@@ -57,6 +56,7 @@ void leer_argumentos(int argc, char **argv) {
                     msg_ERR(fpo, "Falta argumento ""fichero_out""");
                     exit(EXIT_FAILURE);
                 }
+
                 if (strlen(optarg) > MAX_FICHERO_OUT){
                     msg_ERR(fpo, "Argumento ""fichero_out"" demasiado largo");
          
@@ -94,9 +94,8 @@ int main(int argc, char **argv) {
     struct sigaction act;
     char out_buffer[STRING_MAX];
     
-    tipo_sim  * sim; // !!! quizas haga falta hacerlo con memoria dinamica por tema de procesos y  memoria entre procesos
-                     // !!! No deberia, porque el jefe no interviene con simulador, pero quizas las naves... 
-
+    tipo_sim  * sim; 
+                     
     // Inicializacion de parametros por defecto
     args.F_fichero_out = false;
     strcpy(args.fichero_out, "");
@@ -125,12 +124,6 @@ int main(int argc, char **argv) {
 
     sim = sim_create();
 
-    sprintf(out_buffer, "Comenzando %s", sim->tag);
-    msg_simOK(fpo, sim, out_buffer);
-
-    
-
-
     // Inicializacion del manejador SIGINT
     act.sa_handler = manejador_SIGINT;
     sigemptyset(&(act.sa_mask));
@@ -146,14 +139,10 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}  
 
-
     sim_init(sim);
     sem_post(sim->sem_sim);  // avisa al monitor
     sim_run(sim);
     sim_end(sim);
-
-    sprintf(out_buffer, "Finalizando %s", sim->tag);
-    msg_simOK(fpo, sim, out_buffer);
 
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
@@ -163,48 +152,48 @@ int main(int argc, char **argv) {
     if (args.fichero_out)   
         fclose(fpo);
     
-
     sim_destroy(sim);
     return 0;
 }
 
 tipo_sim * sim_create() {
     tipo_sim * sim;
+    char out_buffer[STRING_MAX];
 
     sim = (tipo_sim *)malloc(sizeof(tipo_sim));
     load_sim_tag(sim->tag);
 
+    sprintf(out_buffer, "Creando %s", sim->tag);
+    msg_simOK(fpo, sim, out_buffer);
     return sim;
 }
 
 void sim_init(tipo_sim * sim) {
-    msg_simOK(fpo, sim, "Comenzando inicialización");
+    msg_simOK(fpo, sim, "Inicializando");
     sim_init_pipes_jefes(sim);
-    msg_simOK(fpo, sim, "Fin de inicialización");
 }
 
 void sim_run(tipo_sim * sim) {
     // Comienzo simulador
-    msg_simOK(fpo, sim, "Comenzando simulación");
+    msg_simOK(fpo, sim, "Comenzando");
+    msg_simOK(fpo, sim, "Ejecutando jefes");
     sim_run_jefes(sim);
-    
-    msg_simOK(fpo, sim, "Esperando a los jefes");
-    sim_esperar_jefes(sim);
 
-    msg_simOK(fpo, sim, "Fin de simulación");  // quizas ponerlo fuera
 }
 
 void sim_end(tipo_sim * sim) {
-
+    msg_simOK(fpo, sim, "Esperando jefes");
+    sim_esperar_jefes(sim);
+    msg_simOK(fpo, sim, "Finalizando");  // quizas ponerlo fuera
 }
 
 void sim_destroy(tipo_sim * sim) {
+    char out_buffer[STRING_MAX];
+    sprintf(out_buffer, "Destruyendo %s", sim->tag);
+    msg_simOK(fpo, sim, out_buffer);    
     free(sim);
     exit(EXIT_SUCCESS);
 }
-
-
-
 
 // Inicializa pipes a jefes
 void sim_init_pipes_jefes(tipo_sim * sim) { 

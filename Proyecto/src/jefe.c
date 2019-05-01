@@ -36,29 +36,33 @@ tipo_jefe * jefe_create(int equipo, int pipe_sim[2]) {
     //}
     
     // !!! jefe_crear_naves aqui o en simulador
-
+    char out_buffer[STRING_MAX];
+    sprintf(out_buffer, "Creando %s", new_jefe->tag);
+    msg_jefeOK(fpo, new_jefe, out_buffer);
     
     return new_jefe;
 }
 void jefe_init(tipo_jefe *jefe) {
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Iniciando %s", jefe->tag);
-    msg_jefeOK(fpo, jefe, out_buffer);
+    msg_jefeOK(fpo, jefe, "Inicializando");
 }
 void jefe_run(tipo_jefe *jefe){
-    msg_jefeOK(fpo, jefe, "Ejecutando ");
+    msg_jefeOK(fpo, jefe, "Comenzando");
+    msg_jefeOK(fpo, jefe, "Ejecutando naves");
     jefe_run_naves(jefe);
-    jefe_esperar_naves(jefe);
-    jefe_destroy(jefe);
+
+
 }
 
 void jefe_end(tipo_jefe *jefe) {
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Finalizando %s", jefe->tag);
-    msg_jefeOK(fpo, jefe, out_buffer);
+    msg_jefeOK(fpo, jefe, "Esperando naves");
+    jefe_esperar_naves(jefe);
+    msg_jefeOK(fpo, jefe, "Finalizando");
+    
 }
 void jefe_destroy(tipo_jefe *jefe){
-
+    char out_buffer[STRING_MAX];
+    sprintf(out_buffer, "Destruyendo %s", jefe->tag);
+    msg_jefeOK(fpo, jefe, out_buffer);
     exit(EXIT_SUCCESS);
 
 }

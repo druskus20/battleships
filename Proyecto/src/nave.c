@@ -14,32 +14,36 @@ extern FILE * fpo;
 tipo_nave * nave_create(int equipo, int id) {
     
     tipo_nave *new_nave;
+    char out_buffer[STRING_MAX];
+
     new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
    
     new_nave->equipo = equipo;
     new_nave->id = id;
     load_nave_tag(equipo, id, new_nave->tag);
     
+    sprintf(out_buffer, "Creando %s", new_nave->tag);
+    msg_naveOK(fpo, new_nave, out_buffer);
+    
     return new_nave;
 }
 void nave_init(tipo_nave * nave){
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Iniciando %s", nave->tag);
-    msg_naveOK(fpo, nave, out_buffer);
+    msg_naveOK(fpo, nave, "Inicializando");
 }
+
 void nave_run(tipo_nave *nave){
-    msg_naveOK(fpo, nave, "Ejecutando");
-   sleep(1);
-   nave_destroy(nave);
+    msg_naveOK(fpo, nave, "Comenzando");
+    sleep(1);
 }
+
 void nave_end(tipo_nave * nave){
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Finalizando %s", nave->tag);
-    msg_naveOK(fpo, nave, out_buffer);
+    msg_naveOK(fpo, nave, "Finalizando");
 }
 
 void nave_destroy(tipo_nave *nave){
-    // free
+    char out_buffer[STRING_MAX];
+    sprintf(out_buffer, "Destruyendo %s", nave->tag);
+    msg_naveOK(fpo, nave, out_buffer);
     exit(EXIT_SUCCESS);
 }
 
