@@ -9,43 +9,43 @@
 // Fuente: https://stackoverflow.com/questions/3219393/stdlib-and-colored-output-in-c
 // Uso: ver ../tests/style_test.c
 
-tipo_estilo estilo;
 
 
 
-
-#define RED         "\x1b[31m"
-#define GREEN       "\x1b[32m" 
-#define YELLOW      "\x1b[33m"
-#define BLUE        "\x1b[34m"
-#define MAGENTA     "\x1b[35m"
-#define CYAN        "\x1b[36m"
-#define COLOR_RESET "\x1b[0m"
+#define RED         "\x1b[0;31m"
+#define GREEN       "\x1b[0;32m" 
+#define YELLOW      "\x1b[0;33m"
+#define BLUE        "\x1b[0;34m"
+#define MAGENTA     "\x1b[0;35m"
+#define CYAN        "\x1b[0;36m"
+#define BOLD_RED    "\x1b[1;31m" 
+#define BOLD_GREEN  "\x1b[1;32m" 
+#define COLOR_RESET "\x1b[0;0m"
 
 
 // Espaciados y lineas
 #define ESP                     "         "
-#define LINE                    "------------  "
+#define LINE                    "------------"
 
 // Status
-#define ERROR_SC   RED     "ERR"       COLOR_RESET 
-#define OK_SC      GREEN   "OK"        COLOR_RESET " "
-#define ERROR_S   "ERR" 
-#define OK_S      "OK " 
+#define ERROR_SC   "["BOLD_RED     "ERR"       COLOR_RESET "]"
+#define OK_SC      "["BOLD_GREEN   "OK"        COLOR_RESET " ]"
+#define ERROR_S   "[ERR]" 
+#define OK_S      "[OK ]" 
 
 // Tags
 #define SIM_C         MAGENTA   "SIM"               COLOR_RESET "         " 
-#define JEFE_C        GREEN     "JEFE E:%d"         COLOR_RESET "    "   
+#define JEFE_C        YELLOW    "JEFE E:%d"         COLOR_RESET "    "   
 #define NAVE_C        BLUE      "NAVE E:%d/N:%.1d"  COLOR_RESET  
-#define TURNO_C       YELLOW    "TURNO"             COLOR_RESET "       "
+#define TURNO_C       CYAN      "TURNO"             COLOR_RESET "       "
 #define SIM                     "SIM         " 
 #define JEFE                    "JEFE E:%d    " 
 #define NAVE                    "NAVE E:%d/N:%.1d" 
 #define TURNO                   "TURNO       "
 
 // Mensajes
-#define STD_MSG                           "%s  %s -> %s\n"
-#define STATUS_MSG          LINE          "%s -> %s\n"
+#define STD_MSG      "%s %s > %s\n"
+#define STATUS_MSG   "%s " LINE " > %s\n"        
 
 
 
@@ -68,5 +68,5 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 void estilo_set_default();
 void estilo_set_colorful();
 
-
+void msg_signal(char * msg) ;
 #endif 

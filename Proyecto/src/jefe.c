@@ -6,6 +6,7 @@
 
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "nave.h"
 #include "msg.h" 
 
@@ -14,14 +15,37 @@ extern tipo_estilo estilo;
 extern FILE * fpo;
 
 
+void jefe_manejador_SIGINT(int sig) {
+    exit(EXIT_SUCCESS);
+}
 
+
+void jefe_launch(int equipo, int pipe_sim[2]) {
+        tipo_jefe * jefe;
+        struct sigaction act;
+
+        // Establece el manejador de sigint especifico del jefe
+        act.sa_handler = jefe_manejador_SIGINT;
+        sigemptyset(&(act.sa_mask));
+        act.sa_flags = 0;
+        if (sigaction(SIGINT, &act, NULL) < 0) {
+            msg_ERR(fpo, "sigaction de SIGINT en jefe_launch");
+            exit(EXIT_FAILURE);
+        }
+
+        jefe = jefe_create(equipo, pipe_sim);
+        jefe_init(jefe);
+        jefe_run(jefe);
+        jefe_end(jefe);
+        jefe_destroy(jefe);
+        exit(EXIT_SUCCESS);
+}
 
 tipo_jefe * jefe_create(int equipo, int pipe_sim[2]) {
     
     tipo_jefe *new_jefe;
-   
     int pipe_status;
-    
+
     new_jefe = (tipo_jefe *)malloc(sizeof(tipo_jefe));
    
     new_jefe->equipo = equipo;
@@ -42,9 +66,11 @@ tipo_jefe * jefe_create(int equipo, int pipe_sim[2]) {
     
     return new_jefe;
 }
+
 void jefe_init(tipo_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Inicializando");
 }
+
 void jefe_run(tipo_jefe *jefe){
     msg_jefeOK(fpo, jefe, "Comenzando");
     sleep(1);
@@ -62,7 +88,6 @@ void jefe_destroy(tipo_jefe *jefe){
     sprintf(out_buffer, "Destruyendo %s", jefe->tag);
     msg_jefeOK(fpo, jefe, out_buffer);
     free(jefe);
-    exit(EXIT_SUCCESS);
 }
 
 void jefe_run_naves(tipo_jefe *jefe){
@@ -73,7 +98,7 @@ void jefe_run_naves(tipo_jefe *jefe){
     for (int i = 0; i < N_NAVES; i++) {
         pid = fork();
         if (pid == 0) {  // nave
-            nave = nave_create(jefe->equipo, i);
+            nave_launch(jefe->equipo, i);
             break;
         }
         else if (pid < 0) {
@@ -81,14 +106,7 @@ void jefe_run_naves(tipo_jefe *jefe){
             exit(EXIT_FAILURE);
         }
     }
-    // Resto del codigo de jefes
-    if (pid == 0) {
-        nave_init(nave);
-        nave_run(nave);
-        nave_end(nave);
-        nave_destroy(nave);
-        exit(EXIT_SUCCESS);
-    }
+
 }
 
 void jefe_esperar_naves(tipo_jefe *jefe) {

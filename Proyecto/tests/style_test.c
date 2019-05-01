@@ -45,33 +45,33 @@ int main (int argc, char const *argv[]) {
   printf(OK_SC      "          Esto es [OK_SC]\n");
   printf(ERROR_SC   "          Esto es [ERROR_SC]\n");
 
-  printf("%s %s", tag_sim,  "Esto es [SIM]\n");
-  printf("%s %s", tag_jefe, "Esto es [JEFE] del equipo ""1""\n");
-  printf("%s %s", tag_nave, "Esto es [NAVE] del equipo ""1"" con numero ""2""\n");
-  printf(OK_S          "          Esto es [OK_S]\n");
-  printf(ERROR_S       "          Esto es [ERROR_S]\n");
+  printf("%s %s", tag_sim,     "Esto es [SIM]\n");
+  printf("%s %s", tag_jefe,    "Esto es [JEFE] del equipo ""1""\n");
+  printf("%s %s", tag_nave,    "Esto es [NAVE] del equipo ""1"" con numero ""2""\n");
+  printf(OK_S          "        Esto es [OK_S]\n");
+  printf(ERROR_S       "        Esto es [ERROR_S]\n");
 
 
   printf("\n[MENSAJES]\n");
-  printf(STD_MSG,         tag_sim_c, OK_SC, "Esto es [STD_MSG], del simulador, con status [OK_SC]");
-  printf(STD_MSG,         tag_jefe_c, OK_SC, "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [OK_SC]");
-  printf(STD_MSG,         tag_nave_c, OK_SC, "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [OK_SC]");
-  printf(STD_MSG,         tag_sim_c, ERROR_SC, "Esto es [STD_MSG], del simulador, con status [ERR_SC]");
+  printf(STD_MSG,         tag_sim_c, OK_SC,     "Esto es [STD_MSG], del simulador, con status [OK_SC]");
+  printf(STD_MSG,         tag_jefe_c, OK_SC,    "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [OK_SC]");
+  printf(STD_MSG,         tag_nave_c, OK_SC,    "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [OK_SC]");
+  printf(STD_MSG,         tag_sim_c, ERROR_SC,  "Esto es [STD_MSG], del simulador, con status [ERR_SC]");
   printf(STD_MSG,         tag_jefe_c, ERROR_SC, "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [ERR_SC]");
   printf(STD_MSG,         tag_nave_c, ERROR_SC, "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [ERR_SC]");
-  printf(STATUS_MSG,        OK_SC, "Esto es [STATUS_MSG], con status [OK_SC]");
-  printf(STATUS_MSG,        ERROR_SC, "Esto es [STATUS_MSG], con status [ERR_SC]");
+  printf(STATUS_MSG,        OK_SC,              "Esto es [STATUS_MSG], con status [OK_SC]");
+  printf(STATUS_MSG,        ERROR_SC,           "Esto es [STATUS_MSG], con status [ERR_SC]");
 
   printf("\n");
   
-  printf(STD_MSG,            tag_sim, OK_S, "Esto es [SIM_M], del simulador, con status [OK_S]");
-  printf(STD_MSG,           tag_jefe, OK_S, "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [OK_S]");
-  printf(STD_MSG,           tag_nave, OK_S, "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [OK_S]");
-  printf(STD_MSG,            tag_sim, ERROR_S, "Esto es [SIM_M], del simulador, con status [ERR_S]");
-  printf(STD_MSG,           tag_jefe, ERROR_S, "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [ERR_S]");
-  printf(STD_MSG,           tag_nave, ERROR_S, "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [ERR_S]");
-  printf(STATUS_MSG,          OK_S,   "Esto es [STATUS_MSG], con status [OK_S]");
-  printf(STATUS_MSG,          ERROR_S, "Esto es [STATUS_MSG], con status [ERR_S]");
+  printf(STD_MSG,            tag_sim, OK_S,     "Esto es [SIM_M], del simulador, con status [OK_S]");
+  printf(STD_MSG,           tag_jefe, OK_S,     "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [OK_S]");
+  printf(STD_MSG,           tag_nave, OK_S,     "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [OK_S]");
+  printf(STD_MSG,            tag_sim, ERROR_S,  "Esto es [SIM_M], del simulador, con status [ERR_S]");
+  printf(STD_MSG,           tag_jefe, ERROR_S,  "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [ERR_S]");
+  printf(STD_MSG,           tag_nave, ERROR_S,  "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [ERR_S]");
+  printf(STATUS_MSG,          OK_S,             "Esto es [STATUS_MSG], con status [OK_S]");
+  printf(STATUS_MSG,          ERROR_S,          "Esto es [STATUS_MSG], con status [ERR_S]");
 
 
 
@@ -84,12 +84,8 @@ int main (int argc, char const *argv[]) {
          CYAN    "R" COLOR_RESET 
          RED     "I" COLOR_RESET 
          GREEN   "S" COLOR_RESET 
-         "\n");
+                 "\n"           );
 
-/*
-
-  if (0 == CHILD) printf("A");
-  if (1 == FATHER) printf("D"); */
   
   return 0;
 }

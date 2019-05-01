@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <semaphore.h>
+#include <errno.h>
 #include <unistd.h>
 
 // Para la lectura de argumentos
@@ -22,7 +23,8 @@
 #include "nave.h"
 
 
-
+// Lee las flags y argumentos introducidos y modifica los parametros
+// de ejecucion necesarios
 void leer_argumentos(int argc, char **argv) {
     // NOTA: No deben aplicarse colores en esta funcion
     char out_buffer[STRING_MAX];
@@ -44,12 +46,7 @@ void leer_argumentos(int argc, char **argv) {
 		{
 			case '1' :     
                 args.F_color = true;
-                strcpy(estilo.ok_status, OK_SC);
-                strcpy(estilo.err_status, ERROR_SC);
-                strcpy(estilo.nave_tag, NAVE_C);
-                strcpy(estilo.jefe_tag, JEFE_C);
-                strcpy(estilo.sim_tag, SIM_C);   
-                //strcpy(estilo.turno_tag, TURNO_C); 
+                estilo_set_colorful();
 				break;
 	
 			case '2' :
@@ -78,98 +75,113 @@ void leer_argumentos(int argc, char **argv) {
 	}
 }
 
-
-// Manejador de la señal Ctrl+C (SIGINT)
-void manejador_SIGINT(int sig) {
-    fprintf(fpo, "\n");
-    msg_OK(fpo, "Finalizando el proyrama");
-    if (args.fichero_out)   
-        fclose(fpo);
+// Manejador de la señal Ctrl+C (SIGINT), con mensajes
+void sim_manejador_SIGINT(int sig) {
+    fprintf(stdout, "\n");
+    // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
+    msg_signal("Finalizando ejecucion...");
+    fflush(stdout);
+    sleep(1);
     exit(EXIT_SUCCESS);
 }
 
+
+
 // Manejador de la señal Ctrl+C (SIGINT)
-void manejador_SIGALRM(int sig) {
+void sim_manejador_SIGALRM(int sig) {
     char out_buffer[STRING_MAX];
     sprintf(out_buffer, "Nuevo %s", estilo.turno_tag);
-    msg_simOK(fpo, out_buffer);
-    if (args.fichero_out)   
-        fclose(fpo);
-    exit(EXIT_SUCCESS);
+    msg_OK(fpo, out_buffer);
+}
+
+// Establece los parametros de ejecucion por defecto
+void set_default_params() {
+    args.F_fichero_out = false;
+    strcpy(args.fichero_out, "");
+    fpo = stdout;
+    args.F_color = false;
+    estilo_set_default();
+}
+
+// Abre un fichero de log
+void abrir_log() {
+    char out_buffer[STRING_MAX];
+    fpo = fopen(args.fichero_out, "w");
+    if  (!fpo) {
+        sprintf(out_buffer, "No se ha podido abrir el fichero: %s", args.fichero_out);
+        msg_ERR(stdout, out_buffer);
+        exit(EXIT_FAILURE);
+    }
 }
 
 
+
+// Rutina principal
 int main(int argc, char **argv) {
     
-    struct sigaction act;
+    struct sigaction act_sigint, act_sigalrm;
     char out_buffer[STRING_MAX];
     sem_t *sem_sim; // semaforo monitor-simulador	
     tipo_sim  * sim; 
                      
-    // Inicializacion de parametros por defecto
-    args.F_fichero_out = false;
-    strcpy(args.fichero_out, "");
-    fpo = stdout;
-
-    args.F_color = false;
-    strcpy(estilo.std_msg, STD_MSG);
-    strcpy(estilo.status_msg, STATUS_MSG);
-    strcpy(estilo.ok_status, OK_S);
-    strcpy(estilo.err_status, ERROR_S);
-    strcpy(estilo.nave_tag, NAVE);
-    strcpy(estilo.jefe_tag, JEFE);
-    strcpy(estilo.sim_tag, SIM);
-    //strcpy(estilo.turno_tag, TURNO);
-
-    leer_argumentos(argc, argv);
-
-    // Apertura de fichero de log
-    if (args.F_fichero_out) {
-        fpo = fopen(args.fichero_out, "w");
-        if  (!fpo) {
-            sprintf(out_buffer, "No se ha podido abrir el fichero: %s", args.fichero_out);
-            msg_ERR(stdout, out_buffer);
-            exit(EXIT_FAILURE);
-        }
-    }
-
+    set_default_params();
+    leer_argumentos(argc, argv); 
+    if (args.F_fichero_out) 
+        abrir_log();
     sim = sim_create();
 
-    // Inicializacion del manejador SIGINT
-    act.sa_handler = manejador_SIGINT;
-    sigemptyset(&(act.sa_mask));
-    act.sa_flags = 0;
-    if (sigaction(SIGINT, &act, NULL) < 0) {
-        msg_simERR(fpo, "sigaction");
-        exit(EXIT_FAILURE);
-    }
-    
     // Inicializacion de semaforo simulador
     if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
 
+    // Inicializacion del manejador SIGINT
+    act_sigint.sa_handler = sim_manejador_SIGINT;
+    sigemptyset(&(act_sigint.sa_mask));
+    act_sigint.sa_flags = 0;
+    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
+        msg_simERR(fpo, "sigaction de SIGINT");
+        exit(EXIT_FAILURE);
+    }
+
+    // Inicializacion del manejador SIGALRM
+    act_sigalrm.sa_handler = sim_manejador_SIGALRM;
+    sigemptyset(&(act_sigalrm.sa_mask));
+    act_sigalrm.sa_flags = 0;
+    if (sigaction(SIGALRM, &act_sigalrm, NULL) < 0) {
+        sprintf(out_buffer, "sigaction de SIGALRM: %s", strerror(errno));
+        msg_simERR(fpo, out_buffer);
+        exit(EXIT_FAILURE);
+    }  
+
+
+    // alarm(TURNO_INTERVAL);  
+   
     sim_init(sim);
     sem_post(sem_sim);   // avisa al monitor
     sim_run(sim);
+    sleep(10);
     sim_end(sim);
-    sim_destroy(sim);
-    // Removemos el manejador de señal para evitar errores 
-    // mientras liberamos recursos.
     
+    sim_destroy(sim);
+
+    // Elimina el manejador sigint
     signal(SIGINT, SIG_DFL);
     sem_close(sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     if (args.fichero_out)   
         fclose(fpo);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
+
+
 
 tipo_sim * sim_create() {
     tipo_sim * sim;
     char out_buffer[STRING_MAX];
+
 
     sim = (tipo_sim *)malloc(sizeof(tipo_sim));
     load_sim_tag(sim->tag);
@@ -219,28 +231,22 @@ void sim_init_pipes_jefes(tipo_sim * sim) {
 
 // Ejecuta los jefes
 void sim_run_jefes(tipo_sim *sim) {      
-    msg_simOK(fpo, "Ejecutando jefes");
     int pid = -1;
+    struct sigaction act; 
     tipo_jefe * jefe;
+    int i;
+    msg_simOK(fpo, "Ejecutando jefes");
     // creacion de jefes
-    for (int i = 0; i < N_EQUIPOS; i++) {
+    for (i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
         if (pid == 0) {  // jefe
-            jefe = jefe_create(i, sim->pipes_jefes[i]);
-            break;
+            jefe_launch(i, sim->pipes_jefes[i]);
+            break;  
         }
         else if (pid < 0) {
             msg_simERR(fpo, "sim_run_jefes");
             exit(EXIT_FAILURE);
-        }
-    }
-    // Resto del codigo de jefes
-    if (pid == 0) {
-        jefe_init(jefe);
-        jefe_run(jefe);
-        jefe_end(jefe);
-        jefe_destroy(jefe);
-        exit(EXIT_SUCCESS);
+        }   
     }
 }
 
@@ -249,5 +255,4 @@ void sim_esperar_jefes(tipo_sim *sim) {
     for (int i = 0; i < N_EQUIPOS; i++)
         wait(NULL);
 }
-
 

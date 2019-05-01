@@ -13,6 +13,9 @@
 * sem_unlink en los errores? 
 * OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
 
+
+* !!! Necesito un manejador de sigint especifico para naves? o vale con el de jefes?
+
 ## Quizas
 * types.h DONE
 * error enums 

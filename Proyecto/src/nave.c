@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "msg.h"
 
@@ -11,6 +12,30 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
+void nave_manejador_SIGINT(int sig) {
+    exit(EXIT_SUCCESS);
+}
+
+void nave_launch(int equipo, int id) {
+    tipo_nave * nave; 
+    struct sigaction act;
+
+    // Establece el manejador de sigint especifico del jefe
+    act.sa_handler = nave_manejador_SIGINT;
+    sigemptyset(&(act.sa_mask));
+    act.sa_flags = 0;
+    if (sigaction(SIGINT, &act, NULL) < 0) {
+        msg_ERR(fpo, "sigaction de SIGINT en nave_launch");
+        exit(EXIT_FAILURE);
+    }
+
+    nave = nave_create(equipo, id);
+    nave_init(nave);
+    nave_run(nave);
+    nave_end(nave);
+    nave_destroy(nave);
+    exit(EXIT_SUCCESS);
+}
 tipo_nave * nave_create(int equipo, int id) {
     
     tipo_nave *new_nave;
@@ -45,7 +70,6 @@ void nave_destroy(tipo_nave *nave){
     sprintf(out_buffer, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buffer);
     free(nave);
-    exit(EXIT_SUCCESS);
 }
 
 

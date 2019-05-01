@@ -3,6 +3,7 @@
 
 #include <semaphore.h>
 #include <stdbool.h>
+#include <signal.h>
 
 #define STRING_MAX 1000
 #define TAG_MAX 50  // Tiene que ser bastante menor que STRING MAX para que
@@ -18,6 +19,7 @@
 /*** SIMULACION ***/
 #define N_EQUIPOS 4 // Número de equipos
 #define N_NAVES 3   // Número de naves por equipo
+#define TURNO_INTERVAL 1
 
 #define VIDA_MAX 50       // Vida inicial de una nave
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque
@@ -32,7 +34,7 @@
 #define MAPA_MAXY 20         // Número de filas del mapa
 
 /*** SCREEN ***/
-#define SCREEN_REFRESH 10000 // Frequencia de refresco del mapa en el monitor
+#define SCREEN_REFRESH 10000 // !!! TURNO_INTERVAL // Frequencia de refresco del mapa en el monitor
 #define SYMB_VACIO '.'       // Símbolo para casilla vacia
 #define SYMB_TOCADO '%'      // Símbolo para tocado
 #define SYMB_DESTRUIDO 'X'   // Símbolo para destruido
