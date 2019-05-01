@@ -30,13 +30,13 @@ typedef struct _tipo_msg tipo_msg;
 
 // Status
 #define ERROR_SC   RED     "ERR"       COLOR_RESET 
-#define OK_SC      GREEN   "OK "       COLOR_RESET
+#define OK_SC      GREEN   "OK"        COLOR_RESET " "
 #define ERROR_S   "ERR" 
 #define OK_S      "OK " 
 
 // Tags
-#define SIM_C         MAGENTA   "SIM         "       COLOR_RESET 
-#define JEFE_C        YELLOW    "JEFE E:%d    "      COLOR_RESET 
+#define SIM_C         MAGENTA   "SIM" COLOR_RESET "         " 
+#define JEFE_C        YELLOW    "JEFE E:%d"    COLOR_RESET "    "   
 #define NAVE_C        BLUE      "NAVE E:%d/N:%.1d"   COLOR_RESET  
 #define SIM                     "SIM         " 
 #define JEFE                    "JEFE E:%d    " 
