@@ -20,9 +20,11 @@ void nave_launch(int equipo, int id) {
     tipo_nave * nave; 
     struct sigaction act;
 
+    // signal(SIGALRM, SIG_DFL); Ya estan quitadas en el jefe
     // Establece el manejador de sigint especifico del jefe
     act.sa_handler = nave_manejador_SIGINT;
     sigemptyset(&(act.sa_mask));
+    //sigaddset(&act.sa_mask, SIGALRM); !!! No hace falta porque esta puesta "por defecto"
     act.sa_flags = 0;
     if (sigaction(SIGINT, &act, NULL) < 0) {
         msg_ERR(fpo, "sigaction de SIGINT en nave_launch");

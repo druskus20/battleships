@@ -80,8 +80,8 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg){
 }
 
 
-void msg_signal(char * msg) {
+void msg_signal(FILE * fpo, char * msg) {
     char out_buffer[STRING_MAX];    
     sprintf(out_buffer, STATUS_MSG, OK_S, msg);
-    fprintf(stdout, out_buffer);
+    fprintf(stdout, "%s", out_buffer);
 }

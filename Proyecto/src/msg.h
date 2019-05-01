@@ -68,5 +68,5 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 void estilo_set_default();
 void estilo_set_colorful();
 
-void msg_signal(char * msg) ;
+void msg_signal(FILE * fpo, char * msg) ;
 #endif 

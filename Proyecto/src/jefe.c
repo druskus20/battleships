@@ -24,9 +24,13 @@ void jefe_launch(int equipo, int pipe_sim[2]) {
         tipo_jefe * jefe;
         struct sigaction act;
 
+        signal(SIGALRM, SIG_DFL);
+
         // Establece el manejador de sigint especifico del jefe
+        
         act.sa_handler = jefe_manejador_SIGINT;
         sigemptyset(&(act.sa_mask));
+        //sigaddset(&act.sa_mask, SIGALRM); !!! No hace falta porque esta puesta "por defecto"
         act.sa_flags = 0;
         if (sigaction(SIGINT, &act, NULL) < 0) {
             msg_ERR(fpo, "sigaction de SIGINT en jefe_launch");
@@ -44,7 +48,6 @@ void jefe_launch(int equipo, int pipe_sim[2]) {
 tipo_jefe * jefe_create(int equipo, int pipe_sim[2]) {
     
     tipo_jefe *new_jefe;
-    int pipe_status;
 
     new_jefe = (tipo_jefe *)malloc(sizeof(tipo_jefe));
    
@@ -92,7 +95,6 @@ void jefe_destroy(tipo_jefe *jefe){
 
 void jefe_run_naves(tipo_jefe *jefe){
     int pid = -1;
-    tipo_nave * nave;
     msg_jefeOK(fpo, jefe, "Ejecutando naves");
     // creacion de naves
     for (int i = 0; i < N_NAVES; i++) {

@@ -79,7 +79,7 @@ void leer_argumentos(int argc, char **argv) {
 void sim_manejador_SIGINT(int sig) {
     fprintf(stdout, "\n");
     // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
-    msg_signal("Finalizando ejecucion...");
+    msg_signal(stdout, "Finalizando ejecucion...");
     fflush(stdout);
     sleep(1);
     exit(EXIT_SUCCESS);
@@ -91,7 +91,9 @@ void sim_manejador_SIGINT(int sig) {
 void sim_manejador_SIGALRM(int sig) {
     char out_buffer[STRING_MAX];
     sprintf(out_buffer, "Nuevo %s", estilo.turno_tag);
-    msg_OK(fpo, out_buffer);
+    msg_signal(fpo, out_buffer);
+    sprintf(out_buffer, "END %s", estilo.turno_tag);
+      
 }
 
 // Establece los parametros de ejecucion por defecto
@@ -139,6 +141,7 @@ int main(int argc, char **argv) {
     // Inicializacion del manejador SIGINT
     act_sigint.sa_handler = sim_manejador_SIGINT;
     sigemptyset(&(act_sigint.sa_mask));
+    sigaddset(&act_sigint.sa_mask, SIGALRM);
     act_sigint.sa_flags = 0;
     if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
         msg_simERR(fpo, "sigaction de SIGINT");
@@ -155,15 +158,11 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }  
 
-
-    // alarm(TURNO_INTERVAL);  
-   
+    
     sim_init(sim);
     sem_post(sem_sim);   // avisa al monitor
     sim_run(sim);
-    sleep(10);
     sim_end(sim);
-    
     sim_destroy(sim);
 
     // Elimina el manejador sigint
@@ -199,9 +198,13 @@ void sim_init(tipo_sim * sim) {
 void sim_run(tipo_sim * sim) {
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
-    sleep(1);
-
     sim_run_jefes(sim);
+    
+    while(true){
+        alarm(1); 
+        pause(); 
+    }
+
 }
 
 void sim_end(tipo_sim * sim) {
@@ -232,8 +235,6 @@ void sim_init_pipes_jefes(tipo_sim * sim) {
 // Ejecuta los jefes
 void sim_run_jefes(tipo_sim *sim) {      
     int pid = -1;
-    struct sigaction act; 
-    tipo_jefe * jefe;
     int i;
     msg_simOK(fpo, "Ejecutando jefes");
     // creacion de jefes
