@@ -10,6 +10,11 @@
 * Quitar imprimir semaforo
 * msgs.c / .h  sim_print, sim_perror + mover estilo -> msgs.c
 	* nave_create_tag....
+
+* setters y getters
+
+* OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
+
 ## Quizas
 * types.h DONE
 * error enums

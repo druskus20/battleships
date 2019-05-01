@@ -44,6 +44,7 @@ void nave_destroy(tipo_nave *nave){
     char out_buffer[STRING_MAX];
     sprintf(out_buffer, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buffer);
+    free(nave);
     exit(EXIT_SUCCESS);
 }
 

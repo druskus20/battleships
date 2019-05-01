@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
     
     struct sigaction act;
     char out_buffer[STRING_MAX];
-    
+    sem_t *sem_sim; // semaforo monitor-simulador	
     tipo_sim  * sim; 
                      
     // Inicializacion de parametros por defecto
@@ -134,25 +134,25 @@ int main(int argc, char **argv) {
     }
     
     // Inicializacion de semaforo simulador
-    if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+    if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, sim, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
 
     sim_init(sim);
-    sem_post(sim->sem_sim);  // avisa al monitor
+    sem_post(sem_sim);  // avisa al monitor
     sim_run(sim);
     sim_end(sim);
-
+    sim_destroy(sim);
     // Removemos el manejador de señal para evitar errores 
     // mientras liberamos recursos.
+    
     signal(SIGINT, SIG_DFL);
-    sem_close(sim->sem_sim);
+    sem_close(sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     if (args.fichero_out)   
         fclose(fpo);
-    
-    sim_destroy(sim);
+
     return 0;
 }
 
@@ -176,13 +176,14 @@ void sim_init(tipo_sim * sim) {
 void sim_run(tipo_sim * sim) {
     // Comienzo simulador
     msg_simOK(fpo, sim, "Comenzando");
-    msg_simOK(fpo, sim, "Ejecutando jefes");
+    sleep(1);
+
     sim_run_jefes(sim);
 
 }
 
 void sim_end(tipo_sim * sim) {
-    msg_simOK(fpo, sim, "Esperando jefes");
+
     sim_esperar_jefes(sim);
     msg_simOK(fpo, sim, "Finalizando");  // quizas ponerlo fuera
 }
@@ -192,11 +193,11 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buffer, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, sim, out_buffer);    
     free(sim);
-    exit(EXIT_SUCCESS);
 }
 
 // Inicializa pipes a jefes
 void sim_init_pipes_jefes(tipo_sim * sim) { 
+    msg_simOK(fpo, sim, "Inicializando pipes");
     int pipe_status;
     for (int i = 0; i < N_EQUIPOS; i++){
         pipe_status = pipe(sim->pipes_jefes[i]);
@@ -209,9 +210,9 @@ void sim_init_pipes_jefes(tipo_sim * sim) {
 
 // Ejecuta los jefes
 void sim_run_jefes(tipo_sim *sim) {      
+    msg_simOK(fpo, sim, "Ejecutando jefes");
     int pid = -1;
     tipo_jefe * jefe;
-    msg_simOK(fpo, sim, "Inicializando jefes");
     // creacion de jefes
     for (int i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
@@ -229,11 +230,13 @@ void sim_run_jefes(tipo_sim *sim) {
         jefe_init(jefe);
         jefe_run(jefe);
         jefe_end(jefe);
+        jefe_destroy(jefe);
         exit(EXIT_SUCCESS);
     }
 }
 
 void sim_esperar_jefes(tipo_sim *sim) {
+    msg_simOK(fpo, sim, "Esperando jefes");
     for (int i = 0; i < N_EQUIPOS; i++)
         wait(NULL);
 }

@@ -94,7 +94,7 @@ typedef struct {
 /*** SIM ***/
 typedef struct {
 	// int equipos_rest; // <- se puede? con los waits...
-	sem_t *sem_sim; // semaforo monitor-simulador		
+	
 	// int pid_jefes[N_EQUIPOS]; !!! NO
 	// !!! array de pipes a jefes
 	int pipes_jefes[N_EQUIPOS][2];

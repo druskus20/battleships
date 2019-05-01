@@ -47,14 +47,12 @@ void jefe_init(tipo_jefe *jefe) {
 }
 void jefe_run(tipo_jefe *jefe){
     msg_jefeOK(fpo, jefe, "Comenzando");
-    msg_jefeOK(fpo, jefe, "Ejecutando naves");
+    sleep(1);
     jefe_run_naves(jefe);
-
-
 }
 
 void jefe_end(tipo_jefe *jefe) {
-    msg_jefeOK(fpo, jefe, "Esperando naves");
+    
     jefe_esperar_naves(jefe);
     msg_jefeOK(fpo, jefe, "Finalizando");
     
@@ -63,14 +61,14 @@ void jefe_destroy(tipo_jefe *jefe){
     char out_buffer[STRING_MAX];
     sprintf(out_buffer, "Destruyendo %s", jefe->tag);
     msg_jefeOK(fpo, jefe, out_buffer);
+    free(jefe);
     exit(EXIT_SUCCESS);
-
 }
 
 void jefe_run_naves(tipo_jefe *jefe){
     int pid = -1;
     tipo_nave * nave;
-    msg_jefeOK(fpo, jefe, "Inicializando naves ");
+    msg_jefeOK(fpo, jefe, "Ejecutando naves");
     // creacion de naves
     for (int i = 0; i < N_NAVES; i++) {
         pid = fork();
@@ -88,11 +86,13 @@ void jefe_run_naves(tipo_jefe *jefe){
         nave_init(nave);
         nave_run(nave);
         nave_end(nave);
+        nave_destroy(nave);
         exit(EXIT_SUCCESS);
     }
 }
 
 void jefe_esperar_naves(tipo_jefe *jefe) {
+    msg_jefeOK(fpo, jefe, "Esperando naves");
     for (int i = 0; i < N_NAVES; i++)
         wait(NULL);
 }
