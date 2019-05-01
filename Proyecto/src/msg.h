@@ -1,10 +1,19 @@
-#ifndef SRC_STYLE_H_
-#define SRC_STYLE_H_
+#ifndef SRC_MSG_H
+#define SRC_MSG_H
+
+
 
 #include "types.h"
+#include <stdio.h>
 // Definiciones de colores para salida en la terminal
 // Fuente: https://stackoverflow.com/questions/3219393/stdlib-and-colored-output-in-c
 // Uso: ver ../tests/style_test.c
+
+tipo_estilo estilo;
+
+
+typedef struct _tipo_msg tipo_msg;
+
 
 #define RED         "\x1b[31m"
 #define GREEN       "\x1b[32m" 
@@ -15,6 +24,9 @@
 #define COLOR_RESET "\x1b[0m"
 
 
+// Espaciados y lineas
+#define ESP                     "         "
+#define LINE                    "------------  "
 
 // Status
 #define ERROR_SC   RED     "ERR"       COLOR_RESET 
@@ -22,9 +34,7 @@
 #define ERROR_S   "ERR" 
 #define OK_S      "OK " 
 
-// Nombres
-#define ESP                     "         "
-#define LINE                    "------------  "
+// Tags
 #define SIM_C         MAGENTA   "SIM         "       COLOR_RESET 
 #define JEFE_C        YELLOW    "JEFE E:%d    "      COLOR_RESET 
 #define NAVE_C        BLUE      "NAVE E:%d/N:%.1d"   COLOR_RESET  
@@ -33,17 +43,26 @@
 #define NAVE                    "NAVE E:%d/N:%.1d" 
 
 // Mensajes
-#define SIM_MC                     "%s  %s -> %s\n"
-#define JEFE_MC                    "%s  %s -> %s\n"
-#define NAVE_MC                    "%s  %s -> %s\n"
-#define OK_MC          LINE   OK_SC    " -> %s\n"
-#define ERROR_MC       LINE   ERROR_SC " -> %s\n"
+#define STD_MSG                           "%s  %s -> %s\n"
+#define STATUS_MSG          LINE          "%s -> %s\n"
 
-#define SIM_M                      "%s  %s -> %s\n"
-#define JEFE_M                     "%s  %s -> %s\n"
-#define NAVE_M                     "%s  %s -> %s\n" 
-#define OK_M           LINE   OK_S     " -> %s\n"
-#define ERROR_M        LINE   ERROR_S  " -> %s\n"
+
+
+
+void msg_OK(FILE * fpo, char * msg);
+void msg_ERR(FILE * fpo, char * msg);
+
+void load_sim_tag(char tag[TAG_MAX]);
+void msg_simOK(FILE * fpo, tipo_sim * sim, char * msg);
+void msg_simERR(FILE * fpo,  tipo_sim * sim, char * msg);
+
+void load_jefe_tag(int equipo, char tag[TAG_MAX]);
+void msg_jefeOK(FILE * fpo, tipo_jefe * jefe, char * msg);
+void msg_jefeERR(FILE * fpo, tipo_jefe * jefe, char * msg);
+
+void load_nave_tag(int equipo, int numero, char tag[TAG_MAX]);
+void msg_naveOK(FILE * fpo, tipo_nave * nave, char * msg);
+void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 
 
 

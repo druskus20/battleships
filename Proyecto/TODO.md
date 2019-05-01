@@ -8,7 +8,8 @@
 * Hacer funciones de "print_msg" -> CAMBIADO POR: Cambiar formato de impresion DONE
 * sem_unlink en los errores?
 * Quitar imprimir semaforo
-
+* msgs.c / .h  sim_print, sim_perror + mover estilo -> msgs.c
+	* nave_create_tag....
 ## Quizas
 * types.h DONE
 * error enums

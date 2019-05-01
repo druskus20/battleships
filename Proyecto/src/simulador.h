@@ -4,14 +4,22 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <semaphore.h>
-#include "style.h"
+#include "msg.h"
 #include "types.h"
 
 // variables globales 
 // !!! por que solo funcionan aqui??
 tipo_argumentos args;
-tipo_estilo estilo;
-FILE * fpo;
+FILE * fpo;      
+extern tipo_estilo estilo;             // Ver msg.h            
+extern char symbol_equipos[N_EQUIPOS]; // Ver mapa.c
+
+
+tipo_sim * sim_create();
+void sim_init(tipo_sim * sim);
+void sim_run(tipo_sim * sim); 
+void sim_end(tipo_sim * sim); 
+void sim_destroy(tipo_sim * sim); 
 
 
 void sim_run_jefes(tipo_sim *sim);

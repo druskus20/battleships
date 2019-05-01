@@ -17,10 +17,10 @@ clean:
 simulador:
 	@echo "Building simulador"
 	@mkdir -p $(TARGET)
-	@$(CC) $(CFLAGS)  simulador.c nave.c jefe.c mapa.c -o $(TARGET)/simulador $(LDLIBS) -lm
+	@$(CC) $(CFLAGS)  simulador.c nave.c jefe.c mapa.c msg.c -o $(TARGET)/simulador $(LDLIBS) -lm
 	
 monitor:
 	@echo "Building monitor"
 	@mkdir -p $(TARGET)
-	@$(CC) $(CFLAGS) gamescreen.c  nave.c  mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
+	@$(CC) $(CFLAGS) gamescreen.c  mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
 		

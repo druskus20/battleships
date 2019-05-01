@@ -4,7 +4,7 @@
 #include <semaphore.h>
 #include <stdbool.h>
 
-#define STRING_MAX 500
+#define STRING_MAX 1000
 #define TAG_MAX 50  // Tiene que ser bastante menor que STRING MAX para que
                     // los sprintfs no den error.
 
@@ -50,13 +50,12 @@ typedef struct {
 /*** ESTILO ***/
 // Formato para los mensajes en la terminal
 typedef struct {
-	char sim[STYLE_STRING_L];
-	char jefe[STYLE_STRING_L];	
-	char nave[STYLE_STRING_L];	
-	char ok_msg[STYLE_STRING_L];		
-	char error_msg[STYLE_STRING_L];
-	char ok[STYLE_STRING_L];
-	char err[STYLE_STRING_L];
+	// messages
+	char std_msg[STYLE_STRING_L];	
+	char status_msg[STYLE_STRING_L];		
+	// status
+	char ok_status[STYLE_STRING_L];
+	char err_status[STYLE_STRING_L];
 	// tags
 	char nave_tag[TAG_MAX];
 	char jefe_tag[TAG_MAX];

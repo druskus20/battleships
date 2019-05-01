@@ -4,39 +4,42 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "style.h"
+
+#include "msg.h"
 
 extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-
-tipo_nave * nave_init(int equipo, int id) {
+tipo_nave * nave_create(int equipo, int id) {
     
     tipo_nave *new_nave;
-    char out_buffer[STRING_MAX];
-    
     new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
    
     new_nave->equipo = equipo;
     new_nave->id = id;
-    sprintf(new_nave->tag,  estilo.nave_tag, new_nave->equipo, new_nave->id); // !!!
+    load_nave_tag(equipo, id, new_nave->tag);
     
-    // !!! jefe_crear_naves aqui o en simulador
-    sprintf(out_buffer, "Iniciando %s", new_nave->tag);
-
-    fprintf(fpo, estilo.nave, new_nave->tag, estilo.ok, out_buffer);
     return new_nave;
 }
-
+void nave_init(tipo_nave * nave){
+    char out_buffer[STRING_MAX];
+    sprintf(out_buffer, "Iniciando %s", nave->tag);
+    msg_naveOK(fpo, nave, out_buffer);
+}
 void nave_run(tipo_nave *nave){
-   fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Ejecutando");
+    msg_naveOK(fpo, nave, "Ejecutando");
    sleep(1);
    nave_destroy(nave);
 }
+void nave_end(tipo_nave * nave){
+    char out_buffer[STRING_MAX];
+    sprintf(out_buffer, "Finalizando %s", nave->tag);
+    msg_naveOK(fpo, nave, out_buffer);
+}
 
 void nave_destroy(tipo_nave *nave){
-    fprintf(fpo, estilo.nave, nave->tag, estilo.ok, "Destruida");
+    // free
     exit(EXIT_SUCCESS);
 }
 
