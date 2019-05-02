@@ -45,6 +45,7 @@
 * Como funcionaba la memoria dinamica con los semáforos??
 
 
+
 ## Planning: 
 martes 30: simulador / jefes, pipes
 miercoles 1: jefes / naves, pipes 

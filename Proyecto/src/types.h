@@ -6,8 +6,10 @@
 #include <signal.h>
 
 #define STRING_MAX 1000
+#define MSG_MAX 750	// Tiene que ser menor que string max, o los prints de 
+					// 	"out_buffer[STRING_MAX] = recibido msng + buff[MSG_MAX] fallarán"
 #define TAG_MAX 50  // Tiene que ser bastante menor que STRING MAX para que
-                    // los sprintfs no den error.
+                    // 	los sprintfs no den error.
 
 #define MAX_FICHERO_OUT 100
 #define STYLE_STRING_L 100
@@ -40,6 +42,22 @@
 #define SYMB_DESTRUIDO 'X'   // Símbolo para destruido
 #define SYMB_AGUA 'w'        // Símbolo para agua
 
+// Mensajes
+#define NUEVO_TURNO  "NUEVO TURNO"  // sim y jefe
+#define FIN 		 "FIN"		    // sim y jefe
+#define DESTRUIR_TAG "DESTRUIR %s"  // sim
+#define DESTRUIR 	 "DESTRUIR"     // jefe
+#define ATACAR_TAG   "ATACAR %s"	// nave
+#define MOVER_DIR    "MOVER_DIR D:%s V:%d"  // nave, direccion - valor
+// !!! la nave no tiene "DESTRUIR" como pone en el enunciado
+
+// Direcciones
+#define NORTE	"NORTE"
+#define SUR		"SUR"
+#define ESTE	"ESTE"
+#define OESTE	"OESTE"
+
+
 /*** ARGUMENTOS ***/
 // Argumentos de ejecucion
 typedef struct {
@@ -68,15 +86,16 @@ typedef struct {
 /*** NAVE ***/
 // Información de nave
 typedef struct {
-	int id; // !!! Setter
+	int num; 	   // Numero de la nave en el equipo (id)
 	int vida; 	   // Vida que le queda a la nave
 	int dmg;	   // El daño que inflinge
 	int alcance;
 	int posx; 	   // Columna en el mapa
 	int posy;  	   // Fila en el mapa
 	int equipo;    // Equipo de la nave
-	int num_nave;  // Numero de la nave en el equipo
+	
 	bool viva;     // Si la nave está viva o ha sido destruida
+	int max_mov;   // maximo movimiento
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
 } tipo_nave;
@@ -84,9 +103,7 @@ typedef struct {
 
 /*** JEFE ***/
 typedef struct {
-	int id; // !!! Setter
-	// int naves_rest; // <- se puede? con los waits...
-	int equipo;
+	int equipo;		// equipo del jefe (id)
 	// int pid_naves[N_NAVES]; !!! NO
 	// !!! quizas pipes de naves hijas
 	int pipes_naves[N_NAVES][2];
@@ -118,5 +135,13 @@ typedef struct {
 	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
 	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
 } tipo_mapa;
+
+
+
+
+
+
+
+
 
 #endif

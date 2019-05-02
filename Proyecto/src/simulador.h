@@ -25,4 +25,5 @@ void sim_destroy(tipo_sim * sim);
 void sim_run_jefes(tipo_sim *sim);
 void sim_esperar_jefes(tipo_sim *sim);
 void sim_init_pipes_jefes(tipo_sim *sim);
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo);
 #endif 

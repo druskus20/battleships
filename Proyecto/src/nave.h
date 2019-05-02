@@ -7,9 +7,9 @@
 
 
 
-void nave_launch(int equipo, int id);
+void nave_launch(int equipo, int num, int pipe_jefe[2]);
 
-tipo_nave * nave_create(int equipo, int id);
+tipo_nave * nave_create(int equipo, int num, int pipe_jefe[2]);
 void nave_init(tipo_nave * nave);
 void nave_run(tipo_nave *nave);
 void nave_end(tipo_nave * nave);
@@ -32,8 +32,8 @@ void nave_set_posy(tipo_nave *nave, int posy);
 int nave_get_equipo(tipo_nave *nave);
 void nave_set_equipo(tipo_nave *nave, int equipo);
 
-int nave_get_num_nave(tipo_nave *nave);
-void nave_set_num_nave(tipo_nave *nave, int num_nave);
+int nave_get_num(tipo_nave *nave);
+void nave_set_num(tipo_nave *nave, int num);
 
 bool nave_is_viva(tipo_nave *nave);
 void nave_set_viva(tipo_nave *nave, bool viva);

@@ -17,7 +17,9 @@ void jefe_run(tipo_jefe *jefe);
 void jefe_end(tipo_jefe *jefe);
 void jefe_destroy(tipo_jefe *jefe);
 
+void jefe_init_pipes_naves(tipo_jefe * jefe);
 void jefe_run_naves(tipo_jefe *jefe);
 void jefe_esperar_naves(tipo_jefe *jefe);
+void jefe_recibir_msg_sim(tipo_jefe *jefe);
 
 #endif

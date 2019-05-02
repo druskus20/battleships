@@ -12,33 +12,17 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-void nave_manejador_SIGINT(int sig) {
-    exit(EXIT_SUCCESS);
-}
-
-void nave_launch(int equipo, int id) {
+void nave_launch(int equipo, int num, int pipe_jefe[2]) {
     tipo_nave * nave; 
-    struct sigaction act;
 
-    // signal(SIGALRM, SIG_DFL); Ya estan quitadas en el jefe
-    // Establece el manejador de sigint especifico del jefe
-    act.sa_handler = nave_manejador_SIGINT;
-    sigemptyset(&(act.sa_mask));
-    //sigaddset(&act.sa_mask, SIGALRM); !!! No hace falta porque esta puesta "por defecto"
-    act.sa_flags = 0;
-    if (sigaction(SIGINT, &act, NULL) < 0) {
-        msg_ERR(fpo, "sigaction de SIGINT en nave_launch");
-        exit(EXIT_FAILURE);
-    }
-
-    nave = nave_create(equipo, id);
+    nave = nave_create(equipo, num, pipe_jefe);
     nave_init(nave);
     nave_run(nave);
     nave_end(nave);
     nave_destroy(nave);
     exit(EXIT_SUCCESS);
 }
-tipo_nave * nave_create(int equipo, int id) {
+tipo_nave * nave_create(int equipo, int num, int pipe_jefe[2]) {
     
     tipo_nave *new_nave;
     char out_buffer[STRING_MAX];
@@ -46,8 +30,9 @@ tipo_nave * nave_create(int equipo, int id) {
     new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
    
     new_nave->equipo = equipo;
-    new_nave->id = id;
-    load_nave_tag(equipo, id, new_nave->tag);
+    new_nave->num = num;
+    new_nave->pipe_jefe = pipe_jefe;
+    load_nave_tag(equipo, num, new_nave->tag);
     
     sprintf(out_buffer, "Creando %s", new_nave->tag);
     msg_naveOK(fpo, new_nave, out_buffer);
@@ -131,11 +116,11 @@ void nave_set_equipo(tipo_nave *nave, int equipo) {
     nave->equipo = equipo;
 }
 
-int nave_get_num_nave(tipo_nave *nave) {
-    return nave->num_nave;
+int nave_get_num(tipo_nave *nave) {
+    return nave->num;
 }
-void nave_set_num_nave(tipo_nave *nave, int num_nave) {
-    nave->num_nave = num_nave;
+void nave_set_num(tipo_nave *nave, int num) {
+    nave->num = num;
 }
 
 bool nave_is_viva(tipo_nave *nave) {

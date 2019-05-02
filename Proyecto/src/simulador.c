@@ -80,12 +80,9 @@ void sim_manejador_SIGINT(int sig) {
     fprintf(stdout, "\n");
     // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
     msg_signal(stdout, "Finalizando ejecucion...");
-    fflush(stdout);
     sleep(1);
     exit(EXIT_SUCCESS);
 }
-
-
 
 // Manejador de la señal Ctrl+C (SIGINT)
 void sim_manejador_SIGALRM(int sig) {
@@ -115,8 +112,6 @@ void abrir_log() {
         exit(EXIT_FAILURE);
     }
 }
-
-
 
 // Rutina principal
 int main(int argc, char **argv) {
@@ -199,17 +194,23 @@ void sim_run(tipo_sim * sim) {
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
-    
-    while(true){
+    sleep(2);
+    sim_mandar_msg_jefe(sim, 0);
+    sim_mandar_msg_jefe(sim, 1);
+    sim_mandar_msg_jefe(sim, 2);
+    sim_mandar_msg_jefe(sim, 3);
+    for(int i = 0; i < 4; i++){
         alarm(1); 
         pause(); 
+        
     }
 
 }
 
 void sim_end(tipo_sim * sim) {
+    msg_simOK(fpo, "Esperando jefes"); 
     sim_esperar_jefes(sim);
-    msg_simOK(fpo, "Finalizando");  // quizas ponerlo fuera
+    
 }
 
 void sim_destroy(tipo_sim * sim) {
@@ -221,7 +222,7 @@ void sim_destroy(tipo_sim * sim) {
 
 // Inicializa pipes a jefes
 void sim_init_pipes_jefes(tipo_sim * sim) { 
-    msg_simOK(fpo, "Inicializando pipes");
+    msg_simOK(fpo, "Inicializando pipes a jefes");
     int pipe_status;
     for (int i = 0; i < N_EQUIPOS; i++){
         pipe_status = pipe(sim->pipes_jefes[i]);
@@ -257,3 +258,19 @@ void sim_esperar_jefes(tipo_sim *sim) {
         wait(NULL);
 }
 
+
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo) {
+    char tag[TAG_MAX];
+    char out_buffer[STRING_MAX];
+    char msg_buffer[MSG_MAX];
+    int * fd; // pipe
+
+    load_jefe_tag(equipo, tag);
+    sprintf(out_buffer, "Avisando a jefe %s", tag);
+    msg_simOK(fpo, out_buffer);
+    fd = sim->pipes_jefes[equipo];
+    // cierra el descriptor de entrada en el jefe
+    // close(fd[0]); 
+    sprintf(msg_buffer, "HOLA %s", tag);
+    write(fd[0], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+}
