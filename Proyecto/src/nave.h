@@ -15,7 +15,7 @@ void nave_run(tipo_nave *nave);
 void nave_end(tipo_nave * nave);
 void nave_destroy(tipo_nave *nave);
 
-
+void nave_recibir_msg_jefe(tipo_nave *nave);
 void nave_run_naves(tipo_nave *nave);
 
 

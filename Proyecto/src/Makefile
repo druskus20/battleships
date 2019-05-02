@@ -8,16 +8,16 @@ BOLD=\e[1m
 NC=\e[0m
 
 
-all: simulador monitor 
+all: launcher monitor 
 
 clean: 
 	@echo "Building style_test"
 	@rm -r -f $(TARGET)
 
-simulador:
-	@echo "Building simulador"
+launcher:
+	@echo "Building launcher"
 	@mkdir -p $(TARGET)
-	@$(CC) $(CFLAGS)  simulador.c nave.c jefe.c mapa.c msg.c -o $(TARGET)/simulador $(LDLIBS) -lm
+	@$(CC) $(CFLAGS) launcher.c simulador.c nave.c jefe.c mapa.c msg.c -o $(TARGET)/launcher $(LDLIBS) -lm
 	
 monitor:
 	@echo "Building monitor"

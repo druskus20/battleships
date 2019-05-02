@@ -12,8 +12,11 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
+tipo_nave * nave; // Creada de forma global para usarla en los manejadores de señal
+
+
 void nave_launch(int equipo, int num, int pipe_jefe[2]) {
-    tipo_nave * nave; 
+   
 
     nave = nave_create(equipo, num, pipe_jefe);
     nave_init(nave);
@@ -46,6 +49,7 @@ void nave_init(tipo_nave * nave){
 void nave_run(tipo_nave *nave){
     msg_naveOK(fpo, nave, "Comenzando");
     sleep(1);
+    nave_recibir_msg_jefe(nave);
 }
 
 void nave_end(tipo_nave * nave){
@@ -128,4 +132,22 @@ bool nave_is_viva(tipo_nave *nave) {
 }
 void nave_set_viva(tipo_nave *nave, bool viva){
     nave->viva = viva;
+}
+
+
+void nave_recibir_msg_jefe(tipo_nave *nave) {
+    char tag[TAG_MAX];
+    char out_buffer[STRING_MAX];
+    char msg_buffer[MSG_MAX];
+    int * fd; // pipe
+
+    load_jefe_tag(nave->equipo, tag);
+    sprintf(out_buffer, "Esperando mensaje de %s", tag);
+    msg_naveOK(fpo, nave, out_buffer);
+    fd = nave->pipe_jefe;
+    // cierra el descriptor de salida en el sim
+    close(fd[1]); 
+    read(fd[0], msg_buffer, MSG_MAX);
+    sprintf(out_buffer, "Recibido mensaje: %s", msg_buffer);
+    msg_naveOK(fpo, nave, out_buffer);
 }

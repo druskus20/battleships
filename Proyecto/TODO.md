@@ -12,7 +12,7 @@
 * setters y getters
 * sem_unlink en los errores? 
 * OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
-
+* README.md
 
 * !!! Necesito un manejador de sigint especifico para naves? o vale con el de jefes?
 
@@ -55,3 +55,41 @@ sabado-domingo 4, 5 : memoria compartida (mapa), acciones de las naves
 
 ### Entrega:
 Jueves 9 de mayo
+
+
+
+
+SECUENCIA DE TURNO: 
+
+*Simulador*
+while(true) {
+	leer_mensaje_nave() // cola
+	reaccionar_mensaje_nave
+}	
+
+*Jefe* 
+while (true) {
+	leer_mensaje_simulador
+	reaccionar_mensaje_simulador
+}
+
+*Nave* 
+while (true) {
+	leer_mensaje_jefe
+	reaccionar_mensaje_jefe
+}
+
+
+*ALARM*  (simulador) 
+Para cada jefe
+	mandar_mensaje_jefes (TURNO)
+
+*SIGINT* (simulador)
+Para cada jefe
+	mandar_mensaje_jefes (END)
+esperar_jefes
+
+*SIGINT* (Jefe)
+Para cada nave
+	mandar_mensaje_nave (END)
+esperar_naves

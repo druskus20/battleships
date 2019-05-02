@@ -14,10 +14,10 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-
+tipo_jefe * jefe; // Creada de forma global para usarla en los manejadores de señal
 
 void jefe_launch(int equipo, int pipe_sim[2]) {
-        tipo_jefe * jefe;
+        
 
         signal(SIGALRM, SIG_DFL);
         signal(SIGINT, SIG_DFL);
@@ -55,9 +55,12 @@ void jefe_init(tipo_jefe *jefe) {
 
 void jefe_run(tipo_jefe *jefe){
     msg_jefeOK(fpo, jefe, "Comenzando");
-    sleep(1);
     jefe_run_naves(jefe); 
     jefe_recibir_msg_sim(jefe);
+    jefe_mandar_msg_nave(jefe, 0);
+    jefe_mandar_msg_nave(jefe, 1);
+    jefe_mandar_msg_nave(jefe, 2);
+    jefe_mandar_msg_nave(jefe, 3);
 }
 
 void jefe_end(tipo_jefe *jefe) {
@@ -110,14 +113,34 @@ void jefe_init_pipes_naves(tipo_jefe * jefe) {
 
 
 void jefe_recibir_msg_sim(tipo_jefe *jefe) {
+    char tag[TAG_MAX];
     char out_buffer[STRING_MAX];
     char msg_buffer[MSG_MAX];
     int * fd; // pipe
 
+    load_sim_tag(tag);
+    sprintf(out_buffer, "Esperando mensaje de %s", tag);
+    msg_jefeOK(fpo, jefe, out_buffer);
     fd = jefe->pipe_sim;
     // cierra el descriptor de salida en el sim
     close(fd[1]); 
     read(fd[0], msg_buffer, MSG_MAX);
     sprintf(out_buffer, "Recibido mensaje: %s", msg_buffer);
     msg_jefeOK(fpo, jefe, out_buffer);
+}
+
+void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
+    char tag[TAG_MAX];
+    char out_buffer[STRING_MAX];
+    char msg_buffer[MSG_MAX];
+    int * fd; // pipe
+
+    load_nave_tag(jefe->equipo, num_nave, tag);
+    sprintf(out_buffer, "Avisando a nave %s", tag);
+    msg_jefeOK(fpo, jefe, out_buffer);
+    fd = jefe->pipes_naves[num_nave];
+    // cierra el descriptor de entrada en el jefe
+    close(fd[0]); 
+    sprintf(msg_buffer, "HOLA %s", tag);
+    write(fd[1], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }

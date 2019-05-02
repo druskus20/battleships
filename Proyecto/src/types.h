@@ -29,8 +29,6 @@
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
 #define TURNO_SECS 5      // Segundos que dura un turno
 
-
-
 /*** MAPA ***/
 #define MAPA_MAXX 20         // Número de columnas del mapa
 #define MAPA_MAXY 20         // Número de filas del mapa
