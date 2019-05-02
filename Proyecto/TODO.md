@@ -14,8 +14,8 @@
 * OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
 * README.md
 
-* !!! Necesito un manejador de sigint especifico para naves? o vale con el de jefes?
 
+* Setters y getters
 ## Quizas
 * types.h DONE
 * error enums 

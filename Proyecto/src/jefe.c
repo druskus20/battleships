@@ -64,7 +64,7 @@ void jefe_run(tipo_jefe *jefe){
 }
 
 void jefe_end(tipo_jefe *jefe) {
-    msg_jefeOK(fpo, jefe, "Esperando naves");
+    
     jefe_esperar_naves(jefe);
     
     

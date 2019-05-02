@@ -119,7 +119,6 @@ void sim_run(tipo_sim * sim) {
 }
 
 void sim_end(tipo_sim *sim) {
-    msg_simOK(fpo, "Esperando jefes"); 
     sim_esperar_jefes();
     
 }
