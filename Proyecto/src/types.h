@@ -6,22 +6,28 @@
 #include <signal.h>
 #include <mqueue.h> 
 
-#define STRING_MAX 1000
+#define BUFF_MAX 1000
 #define MSG_MAX 750	// Tiene que ser menor que string max, o los prints de 
-					// 	"out_buffer[STRING_MAX] = recibido msng + buff[MSG_MAX] fallarán"
+					// 	"out_buff[BUFF_MAX] = recibido msng + buff[MSG_MAX] fallarán"
 #define TAG_MAX 50  // Tiene que ser bastante menor que STRING MAX para que
                     // 	los sprintfs no den error.
 
 #define MAX_FICHERO_OUT 100
 #define STYLE_STRING_L 100
+#define MAX_QUEUE_MSGS 10  			 // Maximo numero de mensajes en la cola
+
 
 // Semaforos
 #define SEM_SIMULADOR "/sem_simulador"
 #define SHM_MAP_NAME "/shm_naves"
 
+// Colas
+#define COLA_SIM "/cola_sim"
+
+
 /*** SIMULACION ***/
-#define N_EQUIPOS 4 // Número de equipos
-#define N_NAVES 3   // Número de naves por equipo
+#define N_EQUIPOS 1 	  // Número de equipos
+#define N_NAVES 1   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 
 #define VIDA_MAX 50       // Vida inicial de una nave
@@ -121,6 +127,7 @@ typedef struct {
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
 	int equipos_res;		// equipos (jefes) restantes
+	mqd_t cola_msg_naves;
 } tipo_sim;
 
 /*** MAPA ***/

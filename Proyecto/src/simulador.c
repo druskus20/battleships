@@ -17,8 +17,8 @@
 #include "jefe.h"
 #include "nave.h"
 
-tipo_sim  * sim;  // Creada de forma global para usarla en los manejadores de señal
-sem_t *sem_sim; // semaforo monitor-simulador	
+tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
+sem_t *sem_sim;          // semaforo monitor-simulador	
 
 // Manejador de la señal Ctrl+C (SIGINT), con mensajes
 void sim_manejador_SIGINT(int sig) {
@@ -31,18 +31,48 @@ void sim_manejador_SIGINT(int sig) {
 
 // Manejador de la señal Ctrl+C (SIGINT)
 void sim_manejador_SIGALRM(int sig) {
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Nuevo %s", estilo.turno_tag);
-    msg_simOK(fpo, out_buffer);
-    sprintf(out_buffer, "END %s", estilo.turno_tag);
+    char out_buff[BUFF_MAX];
+    sprintf(out_buff, "Nuevo %s", estilo.turno_tag);
+    msg_simOK(fpo, out_buff);
+    sprintf(out_buff, "END %s", estilo.turno_tag);
       
 }
 
 
 void sim_launch() {
+    sim_global = sim_create();
+    sim_init(sim_global);
+    sem_post(sem_sim);   // avisa al monitor
+    sim_run(sim_global);
+    sim_end(sim_global);
+    sim_destroy(sim_global);
+}
+
+tipo_sim * sim_create() {
+    tipo_sim * new_sim;
+    char out_buff[BUFF_MAX];
+
+
+    new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
+    load_sim_tag(new_sim->tag);
+    
+    sprintf(out_buff, "Creando %s", new_sim->tag);
+    msg_simOK(fpo, out_buff);
+    return new_sim;
+}
+
+void sim_init(tipo_sim * sim) {
     struct sigaction act_sigint, act_sigalrm;
-    char out_buffer[STRING_MAX];
- 
+    char out_buff[BUFF_MAX];
+
+    msg_simOK(fpo, "Inicializando");
+    
+    // Inicializacion de semaforo simulador
+    if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_sim""");
+		exit(EXIT_FAILURE);
+	}  
+    
 
     // Inicializacion del manejador SIGINT
     act_sigint.sa_handler = sim_manejador_SIGINT;
@@ -59,45 +89,11 @@ void sim_launch() {
     sigemptyset(&(act_sigalrm.sa_mask));
     act_sigalrm.sa_flags = 0;
     if (sigaction(SIGALRM, &act_sigalrm, NULL) < 0) {
-        sprintf(out_buffer, "sigaction de SIGALRM: %s", strerror(errno));
-        msg_simERR(fpo, out_buffer);
+        sprintf(out_buff, "sigaction de SIGALRM: %s", strerror(errno));
+        msg_simERR(fpo, out_buff);
         exit(EXIT_FAILURE);
     }  
 
-    // Inicializacion de semaforo simulador
-    if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_simERR(fpo, "sem_open de ""sem_sim""");
-		exit(EXIT_FAILURE);
-	}  
-    
-    sim = sim_create();
-    sim_init(sim);
-    sem_post(sem_sim);   // avisa al monitor
-    sim_run(sim);
-    sim_end(sim);
-    sim_destroy(sim);
-
-    // Elimina el manejador sigint
-    signal(SIGINT, SIG_DFL); // CAMBIAR !!!
-    sem_close(sem_sim);
-    sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
-}
-
-tipo_sim * sim_create() {
-    tipo_sim * new_sim;
-    char out_buffer[STRING_MAX];
-
-
-    new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
-    load_sim_tag(new_sim->tag);
-    
-    sprintf(out_buffer, "Creando %s", new_sim->tag);
-    msg_simOK(fpo, out_buffer);
-    return new_sim;
-}
-
-void sim_init(tipo_sim * sim) {
-    msg_simOK(fpo, "Inicializando");
     sim_init_pipes_jefes(sim);
 }
 
@@ -122,10 +118,15 @@ void sim_end(tipo_sim *sim) {
 }
 
 void sim_destroy(tipo_sim * sim) {
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Destruyendo %s", sim->tag);
-    msg_simOK(fpo, out_buffer);    
+    char out_buff[BUFF_MAX];
+    sprintf(out_buff, "Destruyendo %s", sim->tag);
+    msg_simOK(fpo, out_buff);    
+
+    // Elimina el manejador sigint antes de liberar
+    signal(SIGINT, SIG_DFL); // CAMBIAR !!!
     free(sim);
+    sem_close(sem_sim);
+    sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
 }
 
 // Inicializa pipes a jefes
@@ -150,6 +151,8 @@ void sim_run_jefes(tipo_sim *sim) {
     for (i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
         if (pid == 0) {  // jefe
+            signal(SIGALRM, SIG_DFL);
+            signal(SIGINT, SIG_DFL);
             //free(sim); //!!!!!!!!!!!
             sem_close(sem_sim);     //!!!!!!!!!!!!
             jefe_launch(i, sim->pipes_jefes[i]);
@@ -171,16 +174,54 @@ void sim_esperar_jefes() {
 
 void sim_mandar_msg_jefe(tipo_sim *sim, int equipo) {
     char tag[TAG_MAX];
-    char out_buffer[STRING_MAX];
+    char out_buff[BUFF_MAX];
     char msg_buffer[MSG_MAX];
     int * fd; // pipe
 
     load_jefe_tag(equipo, tag);
-    sprintf(out_buffer, "Avisando a jefe %s", tag);
-    msg_simOK(fpo, out_buffer);
+    sprintf(out_buff, "Mandando mensaje a %s", tag);
+    msg_simOK(fpo, out_buff);
     fd = sim->pipes_jefes[equipo];
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
     int len = sprintf(msg_buffer, "HOLA %s", tag);
     write(fd[1], msg_buffer, len); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+}
+
+
+
+void sim_init_cola_nave(tipo_sim * sim) {
+    struct mq_attr attributes;
+     msg_simOK(fpo, "Inicializando cola de mensajes a simulador");
+
+	attributes.mq_flags = O_NONBLOCK;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
+	attributes.mq_maxmsg = MAX_QUEUE_MSGS;
+	attributes.mq_curmsgs = 0;
+	attributes.mq_msgsize = MSG_MAX;
+    
+    sim->cola_msg_naves = mq_open(COLA_SIM,
+                O_CREAT | O_RDONLY,  // This process is only going to receive messages 
+                S_IRUSR | S_IWUSR,  // The user can read and write 
+                &attributes); 
+
+	if(sim->cola_msg_naves == (mqd_t)-1) {
+        msg_simERR(fpo, "mq_open");
+		exit(EXIT_FAILURE);
+	}
+
+}
+
+void sim_recibir_msg_nave(tipo_sim * sim) {
+    //char tag[TAG_MAX];
+    char out_buff[BUFF_MAX];
+    char msg_buffer[MSG_MAX] = "";  // !!! solucciona invalid read creo
+    
+    msg_simOK(fpo, "Esperando mensaje de nave");
+    if(mq_receive(sim->cola_msg_naves, (char *)&msg_buffer, sizeof(msg_buffer), NULL) == -1) {
+        msg_simERR(fpo, "mq_receive");
+        exit(EXIT_FAILURE); 
+    }
+
+    sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
+    msg_simOK(fpo, out_buff);
 }

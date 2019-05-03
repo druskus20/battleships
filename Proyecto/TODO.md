@@ -17,6 +17,7 @@ NO TENER FUNC PRIVADAS
 * OJO QUE PASA CUANDO SE CREA LA COLA DEL SIMULADOR ANTES QUE LA DE LA NAVE?
 
 * Setters y getters
+
 ## Quizas
 * types.h DONE
 * error enums 
@@ -45,6 +46,11 @@ NO TENER FUNC PRIVADAS
 * Como funciona la señal de alarma del turno ?
 * Como funcionaba la memoria dinamica con los semáforos??
 * !!!!!!!!! OJO SOBREESCRIBIR SIGPIPE POR SI JEFE ACABA ANTES Q SIM? creo q nos
+!!!!!!!!!!!!!!!!!!!!!!
+ERROR LIBERACION DE MEMORIA, MEMORIA RESERVADA SE COPIA!?
+!!! Liberar memoria al final?
+* PUEDO BORRAR LOS PARAMETROS "SIGACTION" DESPUES DE EJECUTAR "SIGACTION()"?
+* PUEDO BORRAR LOS PARAMETROS "attributes" DESPUES DE EJECUTAR "queue_open()"?
 
 
 ## Planning: 

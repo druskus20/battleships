@@ -26,4 +26,6 @@ void sim_run_jefes(tipo_sim *sim);
 void sim_esperar_jefes();
 void sim_init_pipes_jefes(tipo_sim *sim);
 void sim_mandar_msg_jefe(tipo_sim *sim, int equipo);
+void sim_recibir_msg_nave(tipo_sim * sim);
+void sim_init_cola_nave(tipo_sim * sim);
 #endif 

@@ -17,7 +17,7 @@
 // de ejecucion necesarios
 void leer_argumentos(int argc, char **argv) {
     // NOTA: No deben aplicarse colores en esta funcion
-    char out_buffer[STRING_MAX];
+    char out_buff[BUFF_MAX];
 	int long_index = 0;
 	char opt;
     
@@ -57,8 +57,8 @@ void leer_argumentos(int argc, char **argv) {
             case '3' : 
 			case '?' :
 			default:
-                sprintf(out_buffer, "Ejecucion: %s <-f fichero_log> <-c>", argv[0]);
-                msg_ERR(fpo, out_buffer);
+                sprintf(out_buff, "Ejecucion: %s <-f fichero_log> <-c>", argv[0]);
+                msg_ERR(fpo, out_buff);
 				exit(EXIT_FAILURE);
 				break;
 		}
@@ -77,11 +77,11 @@ void set_default_params() {
 
 // Abre un fichero de log
 void abrir_log() {
-    char out_buffer[STRING_MAX];
+    char out_buff[BUFF_MAX];
     fpo = fopen(args.fichero_out, "w");
     if  (!fpo) {
-        sprintf(out_buffer, "No se ha podido abrir el fichero: %s", args.fichero_out);
-        msg_ERR(stdout, out_buffer);
+        sprintf(out_buff, "No se ha podido abrir el fichero: %s", args.fichero_out);
+        msg_ERR(stdout, out_buff);
         exit(EXIT_FAILURE);
     }
 }
@@ -90,17 +90,17 @@ void abrir_log() {
 // Rutina principal
 int main(int argc, char **argv) {
     
-   
-
     set_default_params();
-    leer_argumentos(argc, argv); 
+    leer_argumentos(argc, argv);
+
     if (args.F_fichero_out) 
         abrir_log();
 
 
+    msg_OK(fpo, "Lanzando simulacion");
     sim_launch();
+    msg_OK(fpo, "Finalizando simulacion");
 
-  
     if (args.fichero_out)   
         fclose(fpo);
 

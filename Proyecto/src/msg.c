@@ -29,11 +29,11 @@ void estilo_set_colorful(){
 
 
 void msg_OK(FILE * fpo, char * msg){
-    fprintf(fpo, estilo.ok_status, estilo.status_msg, msg);  
+    fprintf(fpo, estilo.status_msg, estilo.ok_status, msg);  
 }
 
 void msg_ERR(FILE * fpo, char * msg){
-    fprintf(fpo, estilo.err_status, estilo.status_msg, msg);  
+    fprintf(fpo, estilo.status_msg, estilo.err_status, msg);  
 }
 
 

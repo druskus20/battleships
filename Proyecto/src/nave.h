@@ -18,8 +18,6 @@ void nave_destroy(tipo_nave *nave);
 void nave_recibir_msg_jefe(tipo_nave *nave);
 void nave_run_naves(tipo_nave *nave);
 
-
-
 int nave_get_vida(tipo_nave *nave);
 void nave_set_vida(tipo_nave *nave, int vida);
 
@@ -47,8 +45,10 @@ int nave_get_dmg(tipo_nave *nave);
 void nave_set_dmg(tipo_nave *nave, int dmg); 
 
 
-int nave_get_alcance(tipo_nave *nave);
 
+int nave_get_alcance(tipo_nave *nave);
 void nave_set_alcance(tipo_nave *nave, int alcance);
+void nave_init_cola_sim(tipo_nave * nave);
+void nave_mandar_msg_sim(tipo_nave * nave);
 
 #endif

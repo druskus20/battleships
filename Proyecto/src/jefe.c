@@ -14,19 +14,14 @@ extern tipo_argumentos args;
 extern tipo_estilo estilo;
 extern FILE * fpo;
 
-tipo_jefe * jefe; // Creada de forma global para usarla en los manejadores de señal
+tipo_jefe * jefe_global; // Creada de forma global para usarla en los manejadores de señal
 
-void jefe_launch(int equipo, int *pipe_sim) {
-        
-
-        signal(SIGALRM, SIG_DFL);
-        signal(SIGINT, SIG_DFL);
-        
-        jefe = jefe_create(equipo, pipe_sim);
-        jefe_init(jefe);
-        jefe_run(jefe);
-        jefe_end(jefe);
-        jefe_destroy(jefe);
+void jefe_launch(int equipo, int *pipe_sim) {     
+        jefe_global = jefe_create(equipo, pipe_sim);
+        jefe_init(jefe_global);
+        jefe_run(jefe_global);
+        jefe_end(jefe_global);
+        jefe_destroy(jefe_global);
         exit(EXIT_SUCCESS);
 }
 
@@ -42,9 +37,9 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     load_jefe_tag(equipo, new_jefe->tag);
 
 
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Creando %s", new_jefe->tag);
-    msg_jefeOK(fpo, new_jefe, out_buffer);
+    char out_buff[BUFF_MAX];
+    sprintf(out_buff, "Creando %s", new_jefe->tag);
+    msg_jefeOK(fpo, new_jefe, out_buff);
     
     return new_jefe;
 }
@@ -70,9 +65,9 @@ void jefe_end(tipo_jefe *jefe) {
     
 }
 void jefe_destroy(tipo_jefe *jefe){
-    char out_buffer[STRING_MAX];
-    sprintf(out_buffer, "Destruyendo %s", jefe->tag);
-    msg_jefeOK(fpo, jefe, out_buffer);
+    char out_buff[BUFF_MAX];
+    sprintf(out_buff, "Destruyendo %s", jefe->tag);
+    msg_jefeOK(fpo, jefe, out_buff);
     free(jefe);
 }
 
@@ -115,30 +110,30 @@ void jefe_init_pipes_naves(tipo_jefe * jefe) {
 
 void jefe_recibir_msg_sim(tipo_jefe *jefe) {
     char tag[TAG_MAX];
-    char out_buffer[STRING_MAX];
+    char out_buff[BUFF_MAX];
     char msg_buffer[MSG_MAX] =  ""; // !!! solucciona "error uninitialised value"
     int * fd; // pipe
 
     load_sim_tag(tag);
-    sprintf(out_buffer, "Esperando mensaje de %s", tag);
-    msg_jefeOK(fpo, jefe, out_buffer);
+    sprintf(out_buff, "Esperando mensaje de %s", tag);
+    msg_jefeOK(fpo, jefe, out_buff);
     fd = jefe->pipe_sim;
     // cierra el descriptor de salida en el sim
     close(fd[1]); 
     read(fd[0], msg_buffer, MSG_MAX);
-    sprintf(out_buffer, "Recibido mensaje: %s", msg_buffer);
-    msg_jefeOK(fpo, jefe, out_buffer);
+    sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
+    msg_jefeOK(fpo, jefe, out_buff);
 }
 
 void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
     char tag[TAG_MAX];
-    char out_buffer[STRING_MAX];
+    char out_buff[BUFF_MAX];
     char msg_buffer[MSG_MAX];
     int * fd; // pipe
 
     load_nave_tag(jefe->equipo, num_nave, tag);
-    sprintf(out_buffer, "Avisando a nave %s", tag);
-    msg_jefeOK(fpo, jefe, out_buffer);
+    sprintf(out_buff, "Mandando mensaje a %s", tag);
+    msg_jefeOK(fpo, jefe, out_buff);
     fd = jefe->pipes_naves[num_nave];
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
