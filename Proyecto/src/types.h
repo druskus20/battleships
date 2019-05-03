@@ -4,6 +4,7 @@
 #include <semaphore.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <mqueue.h> 
 
 #define STRING_MAX 1000
 #define MSG_MAX 750	// Tiene que ser menor que string max, o los prints de 
@@ -96,6 +97,7 @@ typedef struct {
 	int max_mov;   // maximo movimiento
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
+	mqd_t cola_sim;
 } tipo_nave;
 
 
@@ -107,6 +109,7 @@ typedef struct {
 	int pipes_naves[N_NAVES][2];
 	int * pipe_sim;
 	char tag[TAG_MAX]; 	
+	int naves_res;	// naves restantes
 } tipo_jefe;
 
 /*** SIM ***/
@@ -117,6 +120,7 @@ typedef struct {
 	// !!! array de pipes a jefes
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
+	int equipos_res;		// equipos (jefes) restantes
 } tipo_sim;
 
 /*** MAPA ***/

@@ -16,7 +16,7 @@ extern FILE * fpo;
 
 tipo_jefe * jefe; // Creada de forma global para usarla en los manejadores de señal
 
-void jefe_launch(int equipo, int pipe_sim[2]) {
+void jefe_launch(int equipo, int *pipe_sim) {
         
 
         signal(SIGALRM, SIG_DFL);
@@ -30,12 +30,13 @@ void jefe_launch(int equipo, int pipe_sim[2]) {
         exit(EXIT_SUCCESS);
 }
 
-tipo_jefe * jefe_create(int equipo, int pipe_sim[2]) {
+
+tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     
     tipo_jefe *new_jefe;
 
-    new_jefe = (tipo_jefe *)malloc(sizeof(tipo_jefe));
-   
+    new_jefe = (tipo_jefe *)malloc(sizeof(new_jefe[0]));
+
     new_jefe->equipo = equipo;
     new_jefe->pipe_sim = pipe_sim;
     load_jefe_tag(equipo, new_jefe->tag);
@@ -57,10 +58,9 @@ void jefe_run(tipo_jefe *jefe){
     msg_jefeOK(fpo, jefe, "Comenzando");
     jefe_run_naves(jefe); 
     jefe_recibir_msg_sim(jefe);
-    jefe_mandar_msg_nave(jefe, 0);
-    jefe_mandar_msg_nave(jefe, 1);
-    jefe_mandar_msg_nave(jefe, 2);
-    jefe_mandar_msg_nave(jefe, 3);
+    sleep(10);  // sigpipe err, porq el sim acaba antes q el jefe !!!
+    for (int i = 0; i < N_NAVES; i++)
+        jefe_mandar_msg_nave(jefe, i);
 }
 
 void jefe_end(tipo_jefe *jefe) {
@@ -83,6 +83,7 @@ void jefe_run_naves(tipo_jefe *jefe){
     for (int i = 0; i < N_NAVES; i++) {
         pid = fork();
         if (pid == 0) {  // nave
+            //free(jefe); // !!!!!!!
             nave_launch(jefe->equipo, i, jefe->pipes_naves[i]);
             break;
         }
@@ -115,7 +116,7 @@ void jefe_init_pipes_naves(tipo_jefe * jefe) {
 void jefe_recibir_msg_sim(tipo_jefe *jefe) {
     char tag[TAG_MAX];
     char out_buffer[STRING_MAX];
-    char msg_buffer[MSG_MAX];
+    char msg_buffer[MSG_MAX] =  ""; // !!! solucciona "error uninitialised value"
     int * fd; // pipe
 
     load_sim_tag(tag);
@@ -141,6 +142,6 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
     fd = jefe->pipes_naves[num_nave];
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
-    sprintf(msg_buffer, "HOLA %s", tag);
-    write(fd[1], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+    int len = sprintf(msg_buffer, "HOLA %s", tag);
+    write(fd[1], msg_buffer, len); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }

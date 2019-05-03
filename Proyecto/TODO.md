@@ -13,7 +13,8 @@
 * sem_unlink en los errores? 
 * OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
 * README.md
-
+NO TENER FUNC PRIVADAS
+* OJO QUE PASA CUANDO SE CREA LA COLA DEL SIMULADOR ANTES QUE LA DE LA NAVE?
 
 * Setters y getters
 ## Quizas
@@ -43,21 +44,24 @@
 ## Preguntas 
 * Como funciona la señal de alarma del turno ?
 * Como funcionaba la memoria dinamica con los semáforos??
-
+* !!!!!!!!! OJO SOBREESCRIBIR SIGPIPE POR SI JEFE ACABA ANTES Q SIM? creo q nos
 
 
 ## Planning: 
-martes 30: simulador / jefes, pipes
-miercoles 1: jefes / naves, pipes 
-juves 2: naves / simulador, cola de msg
+martes 30:
+miercoles 1: 
+juves 2: 
+viernes 3: cola de msg, setters/getters, inits, valgrind
 
 sabado-domingo 4, 5 : memoria compartida (mapa), acciones de las naves
 
-### Entrega:
+## Entrega:
 Jueves 9 de mayo
 
 
-
+## Memoria
+* Hablar de como se manejan las excepciones -> "FIN" en lugar de manejadores
+* !!!!!! HABLAR DE LOS FREES Y SEM_CLOSE ANTES DE FORKS
 
 SECUENCIA DE TURNO: 
 
@@ -93,3 +97,13 @@ esperar_jefes
 Para cada nave
 	mandar_mensaje_nave (END)
 esperar_naves
+
+
+// En sus init correspondientes
+void nave_crear_cola_msg() {
+
+}
+void jefe_abrir_cola_msg() {
+    
+}
+

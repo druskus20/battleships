@@ -7,9 +7,9 @@
 
 
 
-void nave_launch(int equipo, int num, int pipe_jefe[2]);
+void nave_launch(int equipo, int num, int *pipe_jefe);
 
-tipo_nave * nave_create(int equipo, int num, int pipe_jefe[2]);
+tipo_nave * nave_create(int equipo, int num, int *pipe_jefe);
 void nave_init(tipo_nave * nave);
 void nave_run(tipo_nave *nave);
 void nave_end(tipo_nave * nave);

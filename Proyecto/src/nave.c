@@ -15,7 +15,7 @@ extern FILE * fpo;
 tipo_nave * nave; // Creada de forma global para usarla en los manejadores de señal
 
 
-void nave_launch(int equipo, int num, int pipe_jefe[2]) {
+void nave_launch(int equipo, int num, int *pipe_jefe) {
    
 
     nave = nave_create(equipo, num, pipe_jefe);
@@ -25,12 +25,12 @@ void nave_launch(int equipo, int num, int pipe_jefe[2]) {
     nave_destroy(nave);
     exit(EXIT_SUCCESS);
 }
-tipo_nave * nave_create(int equipo, int num, int pipe_jefe[2]) {
+tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
     
     tipo_nave *new_nave;
     char out_buffer[STRING_MAX];
 
-    new_nave = (tipo_nave *)malloc(sizeof(tipo_nave));
+    new_nave = (tipo_nave *)malloc(sizeof(new_nave[0]));
    
     new_nave->equipo = equipo;
     new_nave->num = num;
@@ -138,7 +138,7 @@ void nave_set_viva(tipo_nave *nave, bool viva){
 void nave_recibir_msg_jefe(tipo_nave *nave) {
     char tag[TAG_MAX];
     char out_buffer[STRING_MAX];
-    char msg_buffer[MSG_MAX];
+    char msg_buffer[MSG_MAX] = ""; // !!! solucciona "error uninitialised value"
     int * fd; // pipe
 
     load_jefe_tag(nave->equipo, tag);
@@ -151,3 +151,4 @@ void nave_recibir_msg_jefe(tipo_nave *nave) {
     sprintf(out_buffer, "Recibido mensaje: %s", msg_buffer);
     msg_naveOK(fpo, nave, out_buffer);
 }
+
