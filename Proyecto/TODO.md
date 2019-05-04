@@ -18,6 +18,7 @@ NO TENER FUNC PRIVADAS
 
 * Setters y getters
 
+
 ## Quizas
 * types.h DONE
 * error enums 
@@ -68,7 +69,8 @@ Jueves 9 de mayo
 ## Memoria
 * Hablar de como se manejan las excepciones -> "FIN" en lugar de manejadores
 * !!!!!! HABLAR DE LOS FREES Y SEM_CLOSE ANTES DE FORKS
-
+* hablar de que cada proceso tiene 5 acciones basicas, por ello, creamos funciones: create, init, run ....
+* HABLAR DE INIT-END etc..., como facilitan la codificacion al unificar el procedimiento de "fin" en los sigints
 SECUENCIA DE TURNO: 
 
 *Simulador*
