@@ -5,6 +5,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <mqueue.h>
+#include <sys/stat.h>
+#include <math.h>
+
 
 #include "msg.h"
 
@@ -14,11 +18,25 @@ extern FILE * fpo;
 
 tipo_nave * nave_global;   // Creada de forma global para usarla en los manejadores de señal
 
+// Manejador de la señal Ctrl+C (SIGINT)
+void nave_manejador_SIGINT(int sig) {
+    fprintf(stdout, "\n");
+    // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
+    msg_naveOK(stdout, nave_global, "Finalizando ejecucion...");
+    nave_end(nave_global);
+    nave_destroy(nave_global);
+    fflush(fpo);
+    exit(EXIT_SUCCESS);
+}
 
 void nave_launch(int equipo, int num, int *pipe_jefe) {
     nave_global = nave_create(equipo, num, pipe_jefe);
     nave_init(nave_global);
     nave_run(nave_global);
+
+    // Elimina el manejador sigint antes de liberar
+    signal(SIGINT, SIG_DFL); // CAMBIAR !!!
+    
     nave_end(nave_global);
     nave_destroy(nave_global);
     exit(EXIT_SUCCESS);
@@ -42,6 +60,18 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 }
 void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
+    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
+    
+    // Inicializacion del manejador SIGINT
+    act_sigint.sa_handler = nave_manejador_SIGINT;
+    sigemptyset(&(act_sigint.sa_mask));
+    sigaddset(&act_sigint.sa_mask, SIGALRM);
+    act_sigint.sa_flags = 0;
+    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
+        msg_naveERR(fpo, nave, "sigaction de SIGINT");
+        exit(EXIT_FAILURE);
+    }
+
     nave_init_cola_sim(nave);
 }
 

@@ -20,7 +20,7 @@
 tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
 sem_t *sem_sim;          // semaforo monitor-simulador	
 
-// Manejador de la señal Ctrl+C (SIGINT), con mensajes
+// Manejador de la señal Ctrl+C (SIGINT)
 void sim_manejador_SIGINT(int sig) {
     fprintf(stdout, "\n");
     // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
@@ -44,6 +44,10 @@ void sim_launch() {
     sim_init(sim_global);
     sem_post(sem_sim);   // avisa al monitor
     sim_run(sim_global);
+
+    // Elimina el manejador sigint antes de liberar
+    signal(SIGINT, SIG_DFL); // CAMBIAR !!!
+
     sim_end(sim_global);
     sim_destroy(sim_global);
 }
@@ -108,7 +112,7 @@ void sim_run(tipo_sim * sim) {
 
     for (int i = 0; i < N_EQUIPOS * N_NAVES; i++) // !!! naves restantes y mierdas
         sim_recibir_msg_nave(sim);
-        
+
     for(int i = 0; i < 4; i++){
         alarm(1); 
         pause(); 
@@ -127,8 +131,6 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
 
-    // Elimina el manejador sigint antes de liberar
-    signal(SIGINT, SIG_DFL); // CAMBIAR !!!
     free(sim);
     sem_close(sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
@@ -157,7 +159,7 @@ void sim_run_jefes(tipo_sim *sim) {
         pid = fork();
         if (pid == 0) {  // jefe
             signal(SIGALRM, SIG_DFL);
-            signal(SIGINT, SIG_DFL);
+            signal(SIGINT, SIG_DFL); // Momentaneamente desactivamos el manejador !!! 
             //free(sim); //!!!!!!!!!!!
             sem_close(sem_sim);     //!!!!!!!!!!!!
             jefe_launch(i, sim->pipes_jefes[i]);

@@ -16,10 +16,25 @@ extern FILE * fpo;
 
 tipo_jefe * jefe_global; // Creada de forma global para usarla en los manejadores de señal
 
+// Manejador de la señal Ctrl+C (SIGINT)
+void jefe_manejador_SIGINT(int sig) {
+    fprintf(stdout, "\n");
+    // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
+    msg_jefeOK(stdout, jefe_global, "Finalizando ejecucion...");
+    jefe_end(jefe_global);
+    jefe_destroy(jefe_global);
+    fflush(fpo);
+    exit(EXIT_SUCCESS);
+}
+
 void jefe_launch(int equipo, int *pipe_sim) {     
         jefe_global = jefe_create(equipo, pipe_sim);
         jefe_init(jefe_global);
         jefe_run(jefe_global);
+
+        // Elimina el manejador sigint antes de liberar
+        signal(SIGINT, SIG_DFL); // CAMBIAR !!!
+
         jefe_end(jefe_global);
         jefe_destroy(jefe_global);
         exit(EXIT_SUCCESS);
@@ -45,7 +60,22 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
 }
 
 void jefe_init(tipo_jefe *jefe) {
+    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
+    
     msg_jefeOK(fpo, jefe, "Inicializando");
+    
+    // Inicializacion del manejador SIGINT
+    act_sigint.sa_handler = jefe_manejador_SIGINT;
+    sigemptyset(&(act_sigint.sa_mask));
+    sigaddset(&act_sigint.sa_mask, SIGALRM);
+    act_sigint.sa_flags = 0;
+    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
+        msg_jefeERR(fpo, jefe, "sigaction de SIGINT");
+        exit(EXIT_FAILURE);
+    }
+    // !!!!!!!!!!!!!
+    // En la memoria comentar por que esta aqui, (mensajes del manejador, logica))
+
     jefe_init_pipes_naves(jefe);
 }
 
@@ -79,6 +109,7 @@ void jefe_run_naves(tipo_jefe *jefe){
         pid = fork();
         if (pid == 0) {  // nave
             //free(jefe); // !!!!!!!
+            signal(SIGINT, SIG_DFL); // Momentaneamente desactivamos el manejador !!! 
             nave_launch(jefe->equipo, i, jefe->pipes_naves[i]);
             break;
         }
