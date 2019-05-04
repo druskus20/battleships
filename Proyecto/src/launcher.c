@@ -36,7 +36,7 @@ void leer_argumentos(int argc, char **argv) {
 		{
 			case '1' :     
                 args.F_color = true;
-                estilo_set_colorful();
+                estiloMSG_set_colorful();
 				break;
 	
 			case '2' :
@@ -72,7 +72,7 @@ void set_default_params() {
     strcpy(args.fichero_out, "");
     fpo = stdout;
     args.F_color = false;
-    estilo_set_default();
+    estiloMSG_set_default();
 }
 
 // Abre un fichero de log

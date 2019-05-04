@@ -20,10 +20,12 @@
 #define CYAN        "\x1b[0;36m"
 #define BOLD_RED    "\x1b[1;31m" 
 #define BOLD_GREEN  "\x1b[1;32m" 
-#define COLOR_RESET "\x1b[0;0m"
+#define COLOR_RESET "\x1b[0;00m" // !!!
 
+#define NO_TAG_L 0
+#define COLOR_TAG_L 10  // longitud de la tag de color
 
-// Espaciados y lineas
+// Espaciados y lineas           
 #define ESP                     "         "
 #define LINE                    "------------"
 
@@ -36,11 +38,11 @@
 // Tags
 #define SIM_C         MAGENTA   "SIM"               COLOR_RESET "         " 
 #define JEFE_C        YELLOW    "JEFE E:%d"         COLOR_RESET "    "   
-#define NAVE_C        BLUE      "NAVE E:%d/N:%.1d"  COLOR_RESET  
+#define NAVE_C        BLUE      "NAVE E:%d/N:%d"    COLOR_RESET  
 #define TURNO_C       CYAN      "TURNO"             COLOR_RESET "       "
 #define SIM                     "SIM         " 
 #define JEFE                    "JEFE E:%d    " 
-#define NAVE                    "NAVE E:%d/N:%.1d" 
+#define NAVE                    "NAVE E:%d/N:%d" 
 #define TURNO                   "TURNO       "
 
 // Mensajes
@@ -53,20 +55,27 @@
 void msg_OK(FILE * fpo, char * msg);
 void msg_ERR(FILE * fpo, char * msg);
 
+// tag es parametro de salida
 void load_sim_tag(char tag[TAG_MAX]);
 void msg_simOK(FILE * fpo, char * msg);
 void msg_simERR(FILE * fpo, char * msg);
 
+// tag es parametro de salida
 void load_jefe_tag(int equipo, char tag[TAG_MAX]);
+// equipo es parametro de salida
+void extractv_jefe_tag(char tag[TAG_MAX], int * equipo);
 void msg_jefeOK(FILE * fpo, tipo_jefe * jefe, char * msg);
 void msg_jefeERR(FILE * fpo, tipo_jefe * jefe, char * msg);
 
+// tag es parametro de salida
 void load_nave_tag(int equipo, int numero, char tag[TAG_MAX]);
+// equipo y numero_nave son parametros de salida
+void extractv_nave_tag(char tag[TAG_MAX], int * equipo, int * num_nave);
 void msg_naveOK(FILE * fpo, tipo_nave * nave, char * msg);
 void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 
-void estilo_set_default();
-void estilo_set_colorful();
+void estiloMSG_set_default();
+void estiloMSG_set_colorful();
 
 
 #endif 

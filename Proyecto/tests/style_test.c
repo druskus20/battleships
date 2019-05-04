@@ -84,8 +84,16 @@ int main (int argc, char const *argv[]) {
          CYAN    "R" COLOR_RESET 
          RED     "I" COLOR_RESET 
          GREEN   "S" COLOR_RESET 
-                 "\n"           );
+                 "\n\n"           );
 
+  int equipo;
+  int num_nave;
   
+
+  extractv_jefe_tag("JEFE E:1", &equipo);
+  printf("JEFE E:1, equipo: %d\n", equipo);
+  extractv_nave_tag("NAVE E:1/N:2", &equipo, &num_nave);
+  printf("NAVE E:1/N:2, equipo: %d, num_nave: %d\n", equipo, num_nave);
+
   return 0;
 }

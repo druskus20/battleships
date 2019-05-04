@@ -1,12 +1,12 @@
 # To Do List (Proyecto de Sistemas Operativos)
 * Implementar filtro de colores en los logs (o crear script) DONE
 * Capturar Ctrl+C tanto en el monitor como en el simulado DONE
-* Modificar estilo para que cada entidad tenga una propiedad "tag" DONE
-* Modificar estilo para usar "tag" en los mensajes DONE
+* Modificar estiloMSG para que cada entidad tenga una propiedad "tag" DONE
+* Modificar estiloMSG para usar "tag" en los mensajes DONE
 * Hacer el orden de ejecucion monitor-simulador independiente DONE
 * Hacer funciones de "print_msg" -> CAMBIADO POR: Cambiar formato de impresion DONE
 * Quitar imprimir semaforo DONE
-* msgs.c / .h  sim_print, sim_perror + mover estilo -> msgs.c DONE
+* msgs.c / .h  sim_print, sim_perror + mover estiloMSG -> msgs.c DONE
 	* nave_create_tag.... DONE
 
 * setters y getters
@@ -17,7 +17,7 @@ NO TENER FUNC PRIVADAS
 * OJO QUE PASA CUANDO SE CREA LA COLA DEL SIMULADOR ANTES QUE LA DE LA NAVE? DONE
 
 * Setters y getters
-
+* Funciones para extraer valores de tags
 
 ## Quizas
 * types.h DONE

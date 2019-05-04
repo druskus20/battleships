@@ -10,8 +10,7 @@
 #include "nave.h"
 #include "msg.h" 
 
-extern tipo_argumentos args;
-extern tipo_estilo estilo;
+
 extern FILE * fpo;
 
 tipo_jefe * jefe_global; // Creada de forma global para usarla en los manejadores de señal

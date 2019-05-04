@@ -9,9 +9,9 @@
 #define BUFF_MAX 1000
 #define MSG_MAX 750	// Tiene que ser menor que string max, o los prints de 
 					// 	"out_buff[BUFF_MAX] = recibido msng + buff[MSG_MAX] fallarán"
-#define TAG_MAX 50  // Tiene que ser bastante menor que STRING MAX para que
-                    // 	los sprintfs no den error.
 
+#define TAG_MAX 50      // Tiene que ser bastante menor que BUFF_LEN para que
+                        // 	los sprintfs no den error. 
 #define MAX_FICHERO_OUT 100
 #define STYLE_STRING_L 100
 #define MAX_QUEUE_MSGS 10  			 // Maximo numero de mensajes en la cola
@@ -45,15 +45,15 @@
 #define SYMB_VACIO '.'       // Símbolo para casilla vacia
 #define SYMB_TOCADO '%'      // Símbolo para tocado
 #define SYMB_DESTRUIDO 'X'   // Símbolo para destruido
-#define SYMB_AGUA 'w'        // Símbolo para agua
+#define SYMB_AGUA 'W'        // Símbolo para agua
 
 // Mensajes
-#define NUEVO_TURNO  "NUEVO TURNO"  // sim y jefe
-#define FIN 		 "FIN"		    // sim y jefe
-#define DESTRUIR_TAG "DESTRUIR %s"  // sim
-#define DESTRUIR 	 "DESTRUIR"     // jefe
-#define ATACAR_TAG   "ATACAR %s"	// nave
-#define MOVER_DIR    "MOVER_DIR D:%s V:%d"  // nave, direccion - valor
+#define NUEVO_TURNO  	  "TURNO"  		 // sim y jefe
+#define FIN 		 	  "FIN"		     // sim y jefe
+#define DESTRUIR 	 	  "DESTRUIR"     // jefe y sim
+#define ACCION		 	  "ACCION"
+#define ATACAR       	  "ATACAR"		 // nave
+#define MOVER_ALEATORIO   "MOVER_ALEATORIO"
 // !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
@@ -86,7 +86,8 @@ typedef struct {
 	char nave_tag[TAG_MAX];
 	char jefe_tag[TAG_MAX];
 	char sim_tag[TAG_MAX];	
-} tipo_estilo;
+	int tag_offset;
+} tipo_estiloMSG;
 
 /*** NAVE ***/
 // Información de nave

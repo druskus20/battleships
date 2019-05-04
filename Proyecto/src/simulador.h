@@ -11,7 +11,7 @@
 // !!! por que solo funcionan aqui??
 tipo_argumentos args;
 FILE * fpo;      
-extern tipo_estilo estilo;             // Ver msg.c            
+extern tipo_estiloMSG estiloMSG;             // Ver msg.c            
 extern char symbol_equipos[N_EQUIPOS]; // Ver mapa.c
 
 void sim_launch();
@@ -25,7 +25,7 @@ void sim_destroy(tipo_sim * sim);
 void sim_run_jefes(tipo_sim *sim);
 void sim_esperar_jefes();
 void sim_init_pipes_jefes(tipo_sim *sim);
-void sim_mandar_msg_jefe(tipo_sim *sim, int equipo);
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]);
 void sim_recibir_msg_nave(tipo_sim * sim);
 void sim_init_cola_nave(tipo_sim * sim);
 bool sim_evaluar_fin(tipo_sim * sim);

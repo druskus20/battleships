@@ -34,9 +34,13 @@ void sim_manejador_SIGINT(int sig) {
 // Manejador de la señal Ctrl+C (SIGINT)
 void sim_manejador_SIGALRM(int sig) {
     char out_buff[BUFF_MAX];
-    sprintf(out_buff, "Nuevo %s", estilo.turno_tag);
+    sprintf(out_buff, "Nuevo %s", estiloMSG.turno_tag);
     msg_simOK(fpo, out_buff);
-    sprintf(out_buff, "END %s", estilo.turno_tag);
+    
+    for (int i = 0; i < N_EQUIPOS; i++)
+        sim_mandar_msg_jefe(sim_global, i, NUEVO_TURNO);
+
+    sprintf(out_buff, "END %s", estiloMSG.turno_tag);
       
 }
 
@@ -79,8 +83,6 @@ void sim_init(tipo_sim * sim) {
     sim_inicializar_signal_handlers ();
     sim_init_pipes_jefes(sim);
     sim_init_cola_nave(sim);
-
-    
 }
 
 void sim_run(tipo_sim * sim) {
@@ -90,15 +92,24 @@ void sim_run(tipo_sim * sim) {
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
     sleep(2);
+
+   
     for (int i = 0; i < N_EQUIPOS; i++)
-        sim_mandar_msg_jefe(sim, i);
+        sim_mandar_msg_jefe(sim, i, "AAAAAAAAAAAAA");
+    
 
     for (int i = 0; i < N_EQUIPOS * N_NAVES; i++) // !!! naves restantes y mierdas
         sim_recibir_msg_nave(sim);
 
     for(int i = 0; i < 4; i++){
+       
+    }
+    
+    while(sim_evaluar_fin(sim)) {
         alarm(1); 
         pause(); 
+        
+
     }
 
     signal(SIGALRM, SIG_DFL);
@@ -164,10 +175,10 @@ void sim_esperar_jefes() {
 }
 
 
-void sim_mandar_msg_jefe(tipo_sim *sim, int equipo) {
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX] = "";
+    // char msg_buffer[MSG_MAX] = "";
     int * fd; // pipe
 
     load_jefe_tag(equipo, tag);
@@ -176,8 +187,9 @@ void sim_mandar_msg_jefe(tipo_sim *sim, int equipo) {
     fd = sim->pipes_jefes[equipo];
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
-    int len = sprintf(msg_buffer, "HOLA %s", tag);
-    write(fd[1], msg_buffer, len); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+    // int len = sprintf(msg_buffer, "HOLA %s", tag);
+    write(fd[1], msg, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+    // !!! aqui antes ponia "len"
 }
 
 

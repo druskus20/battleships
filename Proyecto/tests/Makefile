@@ -12,7 +12,7 @@ all: style_test
 style_test:
 	@echo "Building style_test"
 	@mkdir -p $(TARGET)
-	@$(CC) style_test.c -o $(TARGET)/style_test $(LDLIBS) -lm
+	@$(CC) style_test.c ../src/msg.c -o $(TARGET)/style_test $(LDLIBS) -lm
 
 clean: 
 	rm -r -f $(TARGET)
