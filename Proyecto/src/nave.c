@@ -194,13 +194,15 @@ void nave_init_cola_sim(tipo_nave * nave) {
 
 
 void nave_mandar_msg_sim(tipo_nave * nave) {
-        char tag[TAG_MAX];
+        char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
-        char msg_buffer[MSG_MAX] = "ADIOS";
+        char msg_buffer[MSG_MAX];
 
-        load_sim_tag(tag);
+        sprintf(msg_buffer, "MENSAJE DE %s", nave->tag);
 
-        sprintf(out_buff, "Mandando mensaje a %s", tag);
+        load_sim_tag(sim_tag);
+
+        sprintf(out_buff, "Mandando mensaje a %s", sim_tag);
         msg_naveOK(fpo, nave, out_buff);
         if(mq_send(nave->cola_sim, (char *)&msg_buffer, sizeof(msg_buffer), 1) == -1) {
             msg_naveERR(fpo, nave, "mq_send");

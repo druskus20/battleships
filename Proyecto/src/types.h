@@ -26,8 +26,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 1 	  // Número de equipos
-#define N_NAVES 1   	  // Número de naves por equipo
+#define N_EQUIPOS 4 	  // Número de equipos
+#define N_NAVES 3   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 
 #define VIDA_MAX 50       // Vida inicial de una nave

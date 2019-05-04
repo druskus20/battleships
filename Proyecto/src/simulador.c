@@ -95,6 +95,7 @@ void sim_init(tipo_sim * sim) {
     }  
 
     sim_init_pipes_jefes(sim);
+    sim_init_cola_nave(sim);
 }
 
 void sim_run(tipo_sim * sim) {
@@ -104,6 +105,10 @@ void sim_run(tipo_sim * sim) {
     sleep(2);
     for (int i = 0; i < N_EQUIPOS; i++)
         sim_mandar_msg_jefe(sim, i);
+
+    for (int i = 0; i < N_EQUIPOS * N_NAVES; i++) // !!! naves restantes y mierdas
+        sim_recibir_msg_nave(sim);
+        
     for(int i = 0; i < 4; i++){
         alarm(1); 
         pause(); 
