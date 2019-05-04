@@ -128,6 +128,7 @@ typedef struct {
 	char tag[TAG_MAX];
 	int equipos_res;		// equipos (jefes) restantes
 	mqd_t cola_msg_naves;
+	sem_t *sem_sim;		// semaforo para avisar al monitor
 } tipo_sim;
 
 /*** MAPA ***/

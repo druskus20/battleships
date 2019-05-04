@@ -18,7 +18,7 @@
 #include "nave.h"
 
 tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
-sem_t *sem_sim;          // semaforo monitor-simulador	
+          // semaforo monitor-simulador	
 
 // Manejador de la señal Ctrl+C (SIGINT)
 void sim_manejador_SIGINT(int sig) {
@@ -42,7 +42,7 @@ void sim_manejador_SIGALRM(int sig) {
 void sim_launch() {
     sim_global = sim_create();
     sim_init(sim_global);
-    sem_post(sem_sim);   // avisa al monitor
+    
     sim_run(sim_global);
 
     // Elimina el manejador sigint antes de liberar
@@ -72,7 +72,7 @@ void sim_init(tipo_sim * sim) {
     msg_simOK(fpo, "Inicializando");
     
     // Inicializacion de semaforo simulador
-    if((sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+    if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
@@ -100,9 +100,12 @@ void sim_init(tipo_sim * sim) {
 
     sim_init_pipes_jefes(sim);
     sim_init_cola_nave(sim);
+
+    
 }
 
 void sim_run(tipo_sim * sim) {
+    sem_post(sim->sem_sim);   // avisa al monitor
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
@@ -130,10 +133,11 @@ void sim_destroy(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
-
-    free(sim);
-    sem_close(sem_sim);
+    mq_close(sim->cola_msg_naves);
+    sem_close(sim->sem_sim);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
+    free(sim);
+   
 }
 
 // Inicializa pipes a jefes
@@ -161,7 +165,7 @@ void sim_run_jefes(tipo_sim *sim) {
             signal(SIGALRM, SIG_DFL);
             signal(SIGINT, SIG_DFL); // Momentaneamente desactivamos el manejador !!! 
             //free(sim); //!!!!!!!!!!!
-            sem_close(sem_sim);     //!!!!!!!!!!!!
+            sem_close(sim->sem_sim);     //!!!!!!!!!!!! normalmente iria en destroy
             jefe_launch(i, sim->pipes_jefes[i]);
             break;  
         }
@@ -182,7 +186,7 @@ void sim_esperar_jefes() {
 void sim_mandar_msg_jefe(tipo_sim *sim, int equipo) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX];
+    char msg_buffer[MSG_MAX] = "";
     int * fd; // pipe
 
     load_jefe_tag(equipo, tag);

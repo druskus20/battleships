@@ -90,6 +90,7 @@ void nave_destroy(tipo_nave *nave){
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buff);
+    mq_close(nave->cola_sim);
     free(nave);
 }
 
@@ -226,7 +227,7 @@ void nave_init_cola_sim(tipo_nave * nave) {
 void nave_mandar_msg_sim(tipo_nave * nave) {
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
-        char msg_buffer[MSG_MAX];
+        char msg_buffer[MSG_MAX] = "";
 
         sprintf(msg_buffer, "MENSAJE DE %s", nave->tag);
 
