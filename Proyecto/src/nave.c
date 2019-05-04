@@ -60,18 +60,7 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 }
 void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
-    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
-    
-    // Inicializacion del manejador SIGINT
-    act_sigint.sa_handler = nave_manejador_SIGINT;
-    sigemptyset(&(act_sigint.sa_mask));
-    sigaddset(&act_sigint.sa_mask, SIGALRM);
-    act_sigint.sa_flags = 0;
-    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
-        msg_naveERR(fpo, nave, "sigaction de SIGINT");
-        exit(EXIT_FAILURE);
-    }
-
+    nave_inicializar_signal_handlers(nave);
     nave_init_cola_sim(nave);
 }
 
@@ -158,12 +147,6 @@ void nave_set_num(tipo_nave *nave, int num) {
     nave->num = num;
 }
 
-bool nave_is_viva(tipo_nave *nave) {
-    return nave->viva;
-}
-void nave_set_viva(tipo_nave *nave, bool viva){
-    nave->viva = viva;
-}
 
 
 void nave_recibir_msg_jefe(tipo_nave *nave) {
@@ -241,4 +224,24 @@ void nave_mandar_msg_sim(tipo_nave * nave) {
         }
 }
 
+
+bool nave_evaluar_fin(tipo_nave * nave) {
+    if (nave->vida == 0) 
+        return true;
+    return false;
+}
+
+void nave_inicializar_signal_handlers(tipo_nave * nave) {
+    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
+    msg_naveOK(fpo, nave, "Inicializando manejadores de señal");
+    // Inicializacion del manejador SIGINT
+    act_sigint.sa_handler = nave_manejador_SIGINT;
+    sigemptyset(&(act_sigint.sa_mask));
+    sigaddset(&act_sigint.sa_mask, SIGALRM);
+    act_sigint.sa_flags = 0;
+    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
+        msg_naveERR(fpo, nave, "sigaction de SIGINT");
+        exit(EXIT_FAILURE);
+    }
+}
 

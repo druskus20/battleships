@@ -10,11 +10,11 @@
 	* nave_create_tag.... DONE
 
 * setters y getters
-* sem_unlink en los errores? 
-* OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c
-* README.md
-NO TENER FUNC PRIVADAS
-* OJO QUE PASA CUANDO SE CREA LA COLA DEL SIMULADOR ANTES QUE LA DE LA NAVE?
+* sem_unlink en los errores?  
+* OJO! hacer que simulador, se cierre correctamente, esperando a los procesos cuando se pulsa ctrl + c DONE
+* README.md 
+NO TENER FUNC PRIVADAS 
+* OJO QUE PASA CUANDO SE CREA LA COLA DEL SIMULADOR ANTES QUE LA DE LA NAVE? DONE
 
 * Setters y getters
 
@@ -27,24 +27,25 @@ NO TENER FUNC PRIVADAS
 
 ## Nave
 * Añadir alcance y daño DONE
-* Implementar cola de mensajes nave-simulador: 
+* Implementar cola de mensajes nave-simulador: 	DONE
 	* Añadir funcion de evaluar accion (manda el mensaje al simulador)
 * init
 
 ## Jefe
-* Añadir funcion de comunicar accion a nave (pipes)
-* Init
+* Añadir funcion de comunicar accion a nave (pipes) DONE
+* Init	
 
 ## Simulador
-* tag
+* tag	DONE
 * Init 
 * Acciones de las naves
+* Mensaje "GANADOR: X"
 
 ## Monitor
 * Hacer funcionar el mapa
 
 ## Preguntas 
-* Como funciona la señal de alarma del turno ?
+* Como funciona la señal de alarma del turno ? 
 * Como funcionaba la memoria dinamica con los semáforos??
 * !!!!!!!!! OJO SOBREESCRIBIR SIGPIPE POR SI JEFE ACABA ANTES Q SIM? creo q nos
 !!!!!!!!!!!!!!!!!!!!!!

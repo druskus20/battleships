@@ -98,8 +98,7 @@ typedef struct {
 	int posx; 	   // Columna en el mapa
 	int posy;  	   // Fila en el mapa
 	int equipo;    // Equipo de la nave
-	
-	bool viva;     // Si la nave está viva o ha sido destruida
+
 	int max_mov;   // maximo movimiento
 	int * pipe_jefe;
 	char tag[TAG_MAX];   

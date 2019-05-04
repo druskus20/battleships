@@ -60,22 +60,8 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
 }
 
 void jefe_init(tipo_jefe *jefe) {
-    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
-    
     msg_jefeOK(fpo, jefe, "Inicializando");
-    
-    // Inicializacion del manejador SIGINT
-    act_sigint.sa_handler = jefe_manejador_SIGINT;
-    sigemptyset(&(act_sigint.sa_mask));
-    sigaddset(&act_sigint.sa_mask, SIGALRM);
-    act_sigint.sa_flags = 0;
-    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
-        msg_jefeERR(fpo, jefe, "sigaction de SIGINT");
-        exit(EXIT_FAILURE);
-    }
-    // !!!!!!!!!!!!!
-    // En la memoria comentar por que esta aqui, (mensajes del manejador, logica))
-
+    jefe_inicializar_signal_handlers(jefe);
     jefe_init_pipes_naves(jefe);
 }
 
@@ -171,3 +157,29 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
     int len = sprintf(msg_buffer, "HOLA %s", tag);
     write(fd[1], msg_buffer, len); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }
+
+bool jefe_evaluar_fin(tipo_jefe * jefe) {
+    if (jefe->naves_res == 0)
+        return true;
+    return false;
+}
+
+
+
+
+void jefe_inicializar_signal_handlers(tipo_jefe * jefe) {
+    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
+    msg_jefeOK(fpo, jefe, "Inicializando manejadores de señal");
+    // Inicializacion del manejador SIGINT
+    act_sigint.sa_handler = jefe_manejador_SIGINT;
+    sigemptyset(&(act_sigint.sa_mask));
+    sigaddset(&act_sigint.sa_mask, SIGALRM);
+    act_sigint.sa_flags = 0;
+    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
+        msg_jefeERR(fpo, jefe, "sigaction de SIGINT");
+        exit(EXIT_FAILURE);
+    }
+    // !!!!!!!!!!!!!
+    // En la memoria comentar por que esta aqui, (mensajes del manejador, logica)) 
+}
+
