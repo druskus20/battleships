@@ -25,6 +25,8 @@ void sim_manejador_SIGINT(int sig) {
     fprintf(stdout, "\n");
     // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
     msg_simOK(stdout, "Finalizando ejecucion...");
+    sim_end(sim_global);
+    sim_destroy(sim_global);
     sleep(1);
     exit(EXIT_SUCCESS);
 }
@@ -42,12 +44,9 @@ void sim_manejador_SIGALRM(int sig) {
 void sim_launch() {
     sim_global = sim_create();
     sim_init(sim_global);
-    
     sim_run(sim_global);
-
     // Elimina el manejador sigint antes de liberar
     signal(SIGINT, SIG_DFL); // Va aqui y no en "end" por que seria redundante en Ctrl+c !!!
-
     sim_end(sim_global);
     sim_destroy(sim_global);
 }
@@ -66,7 +65,7 @@ tipo_sim * sim_create() {
 }
 
 void sim_init(tipo_sim * sim) {
-    char out_buff[BUFF_MAX];
+
 
     msg_simOK(fpo, "Inicializando");
 

@@ -64,7 +64,7 @@ bool mapa_set_nave(tipo_mapa *mapa, tipo_nave nave) {
 	if (nave.equipo >= N_EQUIPOS) return false;
 	if (nave.num >= N_NAVES) return false;
 	mapa->info_naves[nave.equipo][nave.num]=nave;
-	if (nave.viva) {
+	if (nave.vida <= 0) { // !!!!!!!!!!!!! cambiado, antes ponia if (nave.viva)
 		mapa->casillas[nave.posy][nave.posx].equipo=nave.equipo;
 		mapa->casillas[nave.posy][nave.posx].num_nave=nave.num;
 		mapa->casillas[nave.posy][nave.posx].simbolo=symbol_equipos[nave.equipo];
