@@ -26,8 +26,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 4 	  // Número de equipos
-#define N_NAVES 3   	  // Número de naves por equipo
+#define N_EQUIPOS 1 	  // Número de equipos
+#define N_NAVES 1   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 
 #define VIDA_MAX 50       // Vida inicial de una nave
@@ -47,20 +47,34 @@
 #define SYMB_DESTRUIDO 'X'   // Símbolo para destruido
 #define SYMB_AGUA 'W'        // Símbolo para agua
 
-// Mensajes
-#define NUEVO_TURNO  	  "TURNO"  		 // sim y jefe
-#define FIN 		 	  "FIN"		     // sim y jefe
-#define DESTRUIR 	 	  "DESTRUIR"     // jefe y sim
-#define ACCION		 	  "ACCION"
-#define ATACAR       	  "ATACAR"		 // nave
-#define MOVER_ALEATORIO   "MOVER_ALEATORIO"
+// Cadenas de opcion
+#define M_FIN 		  		  "FIN"		     // sim y jefe
+#define M_MOVER  			  "MOVER"
+#define M_ATACAR       	  	  "ATACAR"		 // nave
+#define M_DESTRUIR 	 	  	  "DESTRUIR"     // jefe y sim
+#define M_TURNO     	  	  "TURNO"  		 // sim y jefe
+#define M_ACCION		 	  "ACCION"
 // !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
-#define NORTE	"NORTE"
-#define SUR		"SUR"
-#define ESTE	"ESTE"
-#define OESTE	"OESTE"
+#define COORDENADA "X:%d/Y:%d"
+#define NORTE	   "NORTE"
+#define SUR		   "SUR"
+#define ESTE	   "ESTE"
+#define OESTE	   "OESTE"
+
+// Acciones
+typedef enum {
+	FIN = 0,
+	MOVER_ALEATORIO = 1,
+	ATACAR = 2,
+	DESTRUIR = 3,
+	TURNO = 4,
+	MOVER = 5
+} ACCIONES;
+
+
+
 
 
 /*** ARGUMENTOS ***/
@@ -99,8 +113,7 @@ typedef struct {
 	int posx; 	   // Columna en el mapa
 	int posy;  	   // Fila en el mapa
 	int equipo;    // Equipo de la nave
-
-	int max_mov;   // maximo movimiento
+	
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
 	mqd_t cola_sim;
@@ -115,6 +128,7 @@ typedef struct {
 	int pipes_naves[N_NAVES][2];
 	int * pipe_sim;
 	char tag[TAG_MAX]; 	
+	int pid_naves[N_NAVES];
 	int naves_res;	// naves restantes
 } tipo_jefe;
 
@@ -145,9 +159,6 @@ typedef struct {
 	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
 	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
 } tipo_mapa;
-
-
-
 
 
 

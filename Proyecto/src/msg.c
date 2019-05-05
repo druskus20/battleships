@@ -9,25 +9,25 @@ tipo_estiloMSG estiloMSG;
 void estiloMSG_set_default(){
     strcpy(estiloMSG.std_msg, STD_MSG);
     strcpy(estiloMSG.status_msg, STATUS_MSG);
-    strcpy(estiloMSG.ok_status, OK_S);
-    strcpy(estiloMSG.err_status, ERROR_S);
-    strcpy(estiloMSG.nave_tag, NAVE);
-    strcpy(estiloMSG.jefe_tag, JEFE);
-    strcpy(estiloMSG.sim_tag, SIM);
-    strcpy(estiloMSG.turno_tag, TURNO);
+    strcpy(estiloMSG.ok_status, S_OK);
+    strcpy(estiloMSG.err_status, S_ERROR);
+    strcpy(estiloMSG.nave_tag, T_NAVE);
+    strcpy(estiloMSG.jefe_tag, T_JEFE);
+    strcpy(estiloMSG.sim_tag, T_SIM);
+    strcpy(estiloMSG.turno_tag, T_TURNO);
     estiloMSG.tag_offset = NO_TAG_L;
 }
 void estiloMSG_set_colorful(){
     strcpy(estiloMSG.std_msg, STD_MSG);
     strcpy(estiloMSG.status_msg, STATUS_MSG);
-    strcpy(estiloMSG.ok_status, OK_SC);
-    strcpy(estiloMSG.err_status, ERROR_SC);
-    strcpy(estiloMSG.nave_tag, NAVE_C);
-    strcpy(estiloMSG.jefe_tag, JEFE_C);
-    strcpy(estiloMSG.sim_tag, SIM_C);   
-    strcpy(estiloMSG.turno_tag, TURNO_C);   
+    strcpy(estiloMSG.ok_status, S_OK_C);
+    strcpy(estiloMSG.err_status, S_ERROR_C);
+    strcpy(estiloMSG.nave_tag, T_NAVE_C);
+    strcpy(estiloMSG.jefe_tag, T_JEFE_C);
+    strcpy(estiloMSG.sim_tag, T_SIM_C);   
+    strcpy(estiloMSG.turno_tag, T_TURNO_C);   
     estiloMSG.tag_offset = COLOR_TAG_L;
-}
+}   
 
 
 void msg_OK(FILE * fpo, char * msg){

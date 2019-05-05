@@ -30,20 +30,20 @@
 #define LINE                    "------------"
 
 // Status
-#define ERROR_SC   "["BOLD_RED     "ERR"       COLOR_RESET "]"
-#define OK_SC      "["BOLD_GREEN   "OK"        COLOR_RESET " ]"
-#define ERROR_S   "[ERR]" 
-#define OK_S      "[OK ]" 
+#define S_ERROR_C   "["BOLD_RED     "ERR"       COLOR_RESET "]"
+#define S_OK_C      "["BOLD_GREEN   "OK"        COLOR_RESET " ]"
+#define S_ERROR     "[ERR]" 
+#define S_OK        "[OK ]" 
 
 // Tags
-#define SIM_C         MAGENTA   "SIM"               COLOR_RESET "         " 
-#define JEFE_C        YELLOW    "JEFE E:%d"         COLOR_RESET "    "   
-#define NAVE_C        BLUE      "NAVE E:%d/N:%d"    COLOR_RESET  
-#define TURNO_C       CYAN      "TURNO"             COLOR_RESET "       "
-#define SIM                     "SIM         " 
-#define JEFE                    "JEFE E:%d    " 
-#define NAVE                    "NAVE E:%d/N:%d" 
-#define TURNO                   "TURNO       "
+#define T_SIM_C         MAGENTA   "SIM"               COLOR_RESET "         " 
+#define T_JEFE_C        YELLOW    "JEFE E:%d"         COLOR_RESET "    "   
+#define T_NAVE_C        BLUE      "NAVE E:%d/N:%d"    COLOR_RESET  
+#define T_TURNO_C       CYAN      "TURNO"             COLOR_RESET "       "
+#define T_SIM                     "SIM         " 
+#define T_JEFE                    "JEFE E:%d    " 
+#define T_NAVE                    "NAVE E:%d/N:%d" 
+#define T_TURNO                   "TURNO       "
 
 // Mensajes
 #define STD_MSG      "%s %s > %s\n"

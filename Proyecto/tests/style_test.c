@@ -30,48 +30,48 @@ int main (int argc, char const *argv[]) {
   char tag_jefe_c[200];
   char tag_nave_c[200];
 
-  sprintf(tag_sim, SIM);
-  sprintf(tag_jefe, JEFE, 1);
-  sprintf(tag_nave, NAVE, 1, 2);  
-  sprintf(tag_sim_c, SIM_C);
-  sprintf(tag_jefe_c, JEFE_C, 1);
-  sprintf(tag_nave_c, NAVE_C, 1, 2);
+  sprintf(tag_sim, T_SIM);
+  sprintf(tag_jefe, T_JEFE, 1);
+  sprintf(tag_nave, T_NAVE, 1, 2);  
+  sprintf(tag_sim_c, T_SIM_C);
+  sprintf(tag_jefe_c, T_JEFE_C, 1);
+  sprintf(tag_nave_c, T_NAVE_C, 1, 2);
   
   
   printf("\n[TAGS]\n");
-  printf("%s %s", tag_sim_c,  "Esto es [SIM_C]\n");
-  printf("%s %s", tag_jefe_c, "Esto es [JEFE_C] del equipo ""1""\n");
-  printf("%s %s", tag_nave_c, "Esto es [NAVE_C] del equipo ""1"" con numero ""2""\n");
-  printf(OK_SC      "          Esto es [OK_SC]\n");
-  printf(ERROR_SC   "          Esto es [ERROR_SC]\n");
+  printf("%s %s", tag_sim_c,  "Esto es [T_SIM_C]\n");
+  printf("%s %s", tag_jefe_c, "Esto es [T_JEFE_C] del equipo ""1""\n");
+  printf("%s %s", tag_nave_c, "Esto es [T_NAVE_C] del equipo ""1"" con numero ""2""\n");
+  printf(S_OK_C      "          Esto es [S_OK_C]\n");
+  printf(S_ERROR_C   "          Esto es [S_ERROR_C]\n");
 
-  printf("%s %s", tag_sim,     "Esto es [SIM]\n");
-  printf("%s %s", tag_jefe,    "Esto es [JEFE] del equipo ""1""\n");
-  printf("%s %s", tag_nave,    "Esto es [NAVE] del equipo ""1"" con numero ""2""\n");
-  printf(OK_S          "        Esto es [OK_S]\n");
-  printf(ERROR_S       "        Esto es [ERROR_S]\n");
+  printf("%s %s", tag_sim,     "Esto es [T_SIM]\n");
+  printf("%s %s", tag_jefe,    "Esto es [T_JEFE] del equipo ""1""\n");
+  printf("%s %s", tag_nave,    "Esto es [T_NAVE] del equipo ""1"" con numero ""2""\n");
+  printf(S_OK          "        Esto es [S_OK]\n");
+  printf(S_ERROR       "        Esto es [S_ERROR]\n");
 
 
   printf("\n[MENSAJES]\n");
-  printf(STD_MSG,         tag_sim_c, OK_SC,     "Esto es [STD_MSG], del simulador, con status [OK_SC]");
-  printf(STD_MSG,         tag_jefe_c, OK_SC,    "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [OK_SC]");
-  printf(STD_MSG,         tag_nave_c, OK_SC,    "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [OK_SC]");
-  printf(STD_MSG,         tag_sim_c, ERROR_SC,  "Esto es [STD_MSG], del simulador, con status [ERR_SC]");
-  printf(STD_MSG,         tag_jefe_c, ERROR_SC, "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [ERR_SC]");
-  printf(STD_MSG,         tag_nave_c, ERROR_SC, "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [ERR_SC]");
-  printf(STATUS_MSG,        OK_SC,              "Esto es [STATUS_MSG], con status [OK_SC]");
-  printf(STATUS_MSG,        ERROR_SC,           "Esto es [STATUS_MSG], con status [ERR_SC]");
+  printf(STD_MSG,         tag_sim_c, S_OK_C,     "Esto es [STD_MSG], del simulador, con status [S_OK_C]");
+  printf(STD_MSG,         tag_jefe_c, S_OK_C,    "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [S_OK_C]");
+  printf(STD_MSG,         tag_nave_c, S_OK_C,    "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [S_OK_C]");
+  printf(STD_MSG,         tag_sim_c, S_ERROR_C,  "Esto es [STD_MSG], del simulador, con status [S_ERROR_C]");
+  printf(STD_MSG,         tag_jefe_c, S_ERROR_C, "Esto es [STD_MSG], del jefe, del equipo ""1"", con status [S_ERROR_C]");
+  printf(STD_MSG,         tag_nave_c, S_ERROR_C, "Esto es [STD_MSG], de la nave, del equipo ""1"" con numero ""2"", con status [S_ERROR_C]");
+  printf(STATUS_MSG,      S_OK_C,                "Esto es [STATUS_MSG], con status [OK_SC]");
+  printf(STATUS_MSG,      S_ERROR_C,             "Esto es [STATUS_MSG], con status [ERR_SC]");
 
   printf("\n");
   
-  printf(STD_MSG,            tag_sim, OK_S,     "Esto es [SIM_M], del simulador, con status [OK_S]");
-  printf(STD_MSG,           tag_jefe, OK_S,     "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [OK_S]");
-  printf(STD_MSG,           tag_nave, OK_S,     "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [OK_S]");
-  printf(STD_MSG,            tag_sim, ERROR_S,  "Esto es [SIM_M], del simulador, con status [ERR_S]");
-  printf(STD_MSG,           tag_jefe, ERROR_S,  "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [ERR_S]");
-  printf(STD_MSG,           tag_nave, ERROR_S,  "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [ERR_S]");
-  printf(STATUS_MSG,          OK_S,             "Esto es [STATUS_MSG], con status [OK_S]");
-  printf(STATUS_MSG,          ERROR_S,          "Esto es [STATUS_MSG], con status [ERR_S]");
+  printf(STD_MSG,           tag_sim, S_OK,       "Esto es [SIM_M], del simulador, con status [S_OK]");
+  printf(STD_MSG,           tag_jefe, S_OK,      "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [S_OK]");
+  printf(STD_MSG,           tag_nave, S_OK,      "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [S_OK]");
+  printf(STD_MSG,           tag_sim, S_ERROR,    "Esto es [SIM_M], del simulador, con status [S_ERROR]");
+  printf(STD_MSG,           tag_jefe, S_ERROR,   "Esto es [JEFE_M], del jefe, del equipo ""1"", con status [S_ERROR]");
+  printf(STD_MSG,           tag_nave, S_ERROR,   "Esto es [NAVE_M], de la nave, del equipo ""1"" con numero ""2"", con status [S_ERROR]");
+  printf(STATUS_MSG,        S_OK,                "Esto es [STATUS_MSG], con status [S_OK]");
+  printf(STATUS_MSG,        S_ERROR,             "Esto es [STATUS_MSG], con status [S_ERROR]");
 
 
 

@@ -14,10 +14,9 @@
 extern FILE * fpo;
 
 tipo_jefe * jefe_global; // Creada de forma global para usarla en los manejadores de señal
-
+/*
 // Manejador de la señal Ctrl+C (SIGINT)
 void jefe_manejador_SIGINT(int sig) {
-    fprintf(stdout, "\n");
     // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
     msg_jefeOK(stdout, jefe_global, "Finalizando ejecucion...");
     jefe_end(jefe_global);
@@ -25,16 +24,18 @@ void jefe_manejador_SIGINT(int sig) {
     fflush(fpo);
     exit(EXIT_SUCCESS);
 }
+*/
 
 void jefe_launch(int equipo, int *pipe_sim) {     
         jefe_global = jefe_create(equipo, pipe_sim);
         jefe_init(jefe_global);
         jefe_run(jefe_global);
-
-        // Elimina el manejador sigint antes de liberar
-        signal(SIGINT, SIG_DFL); // CAMBIAR !!!
+ 
+        // Elimina el manejador sigint antes de liberar !!!
+        // signal(SIGINT, SIG_DFL); // CAMBIAR !!!
 
         jefe_end(jefe_global);
+        //jefe_esperar_naves(jefe_global);
         jefe_destroy(jefe_global);
         exit(EXIT_SUCCESS);
 }
@@ -60,21 +61,40 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
 
 void jefe_init(tipo_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Inicializando");
-    jefe_inicializar_signal_handlers(jefe);
+    //jefe_inicializar_signal_handlers(jefe);
     jefe_init_pipes_naves(jefe);
 }
 
 void jefe_run(tipo_jefe *jefe){
+    int action_code = -1;
+    char msg_buffer[MSG_MAX] =  "";
+
     msg_jefeOK(fpo, jefe, "Comenzando");
     jefe_run_naves(jefe); 
-    jefe_recibir_msg_sim(jefe);
-    sleep(10);  // sigpipe err, porq el sim acaba antes q el jefe !!!
+    jefe_recibir_msg_sim(jefe, msg_buffer);
+    strcpy (msg_buffer, "");
+    jefe_recibir_msg_sim(jefe, msg_buffer);
+    strcpy (msg_buffer, "");
+    jefe_recibir_msg_sim(jefe, msg_buffer);
+    strcpy (msg_buffer, "");
+    jefe_recibir_msg_sim(jefe, msg_buffer);
+    strcpy (msg_buffer, "");
+    jefe_recibir_msg_sim(jefe, msg_buffer);
+    strcpy (msg_buffer, "");
+    
+    //jefe_recibir_msg_sim(jefe, msg_buffer);
+    // !!!!! DIVIDIR EL MENSAJE
+
+    action_code = parse_accion(msg_buffer);
+    jefe_actua (jefe, action_code, NULL);
+
+    sleep(3);  // sigpipe err, porq el sim acaba antes q el jefe !!!
     for (int i = 0; i < N_NAVES; i++)
         jefe_mandar_msg_nave(jefe, i);
 }
 
 void jefe_end(tipo_jefe *jefe) {
-    
+    msg_jefeOK(fpo, jefe, "Finalizando");
     jefe_esperar_naves(jefe);
     
     
@@ -97,6 +117,9 @@ void jefe_run_naves(tipo_jefe *jefe){
             signal(SIGINT, SIG_DFL); // Momentaneamente desactivamos el manejador !!! 
             nave_launch(jefe->equipo, i, jefe->pipes_naves[i]);
             break;
+        }
+        else if (pid > 0) { // jefe
+            jefe->pid_naves[i] = pid;
         }
         else if (pid < 0) {
             msg_jefeERR(fpo, jefe, "jefe_run_naves");
@@ -124,37 +147,39 @@ void jefe_init_pipes_naves(tipo_jefe * jefe) {
 }
 
 
-void jefe_recibir_msg_sim(tipo_jefe *jefe) {
+void jefe_recibir_msg_sim(tipo_jefe *jefe, char * msg_buffer) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX] =  ""; // !!! solucciona "error uninitialised value"
     int * fd; // pipe
 
     load_sim_tag(tag);
     sprintf(out_buff, "Esperando mensaje de %s", tag);
     msg_jefeOK(fpo, jefe, out_buff);
     fd = jefe->pipe_sim;
+
     // cierra el descriptor de salida en el sim
     close(fd[1]); 
     read(fd[0], msg_buffer, MSG_MAX);
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_jefeOK(fpo, jefe, out_buff);
+
 }
 
 void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX];
-    int * fd; // pipe
+    char msg_buffer[MSG_MAX] = "";
+    int * fd; 
 
     load_nave_tag(jefe->equipo, num_nave, tag);
     sprintf(out_buff, "Mandando mensaje a %s", tag);
     msg_jefeOK(fpo, jefe, out_buff);
     fd = jefe->pipes_naves[num_nave];
+
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
-    int len = sprintf(msg_buffer, "HOLA %s", tag);
-    write(fd[1], msg_buffer, len); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+    sprintf(msg_buffer, "HOLA %s", tag);
+    write(fd[1], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }
 
 bool jefe_evaluar_fin(tipo_jefe * jefe) {
@@ -165,7 +190,7 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 
 
-
+/*
 void jefe_inicializar_signal_handlers(tipo_jefe * jefe) {
     struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
     msg_jefeOK(fpo, jefe, "Inicializando manejadores de señal");
@@ -182,3 +207,21 @@ void jefe_inicializar_signal_handlers(tipo_jefe * jefe) {
     // En la memoria comentar por que esta aqui, (mensajes del manejador, logica)) 
 }
 
+*/
+
+void jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
+    switch (accion_jefe){
+        
+        case DESTRUIR:
+        break;
+
+        case TURNO: 
+        break;
+        
+        case FIN:
+        default:
+        for (int i = 0; i < N_NAVES; i++) 
+            //kill(jefe->pid_naves[i],SIGTERM);
+        break;
+    }
+}

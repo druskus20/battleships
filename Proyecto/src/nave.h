@@ -15,6 +15,16 @@ void nave_run(tipo_nave *nave);
 void nave_end(tipo_nave * nave);
 void nave_destroy(tipo_nave *nave);
 
+
+void nave_init_cola_sim(tipo_nave * nave);
+void nave_mandar_msg_sim(tipo_nave * nave);
+bool nave_evaluar_fin(tipo_nave * nave);
+// void nave_inicializar_signal_handlers(tipo_nave * nave);
+void nave_actua (tipo_nave * nave, int accion_nave, char * extra);
+
+int nave_get_alcance(tipo_nave *nave);
+void nave_set_alcance(tipo_nave *nave, int alcance);
+
 void nave_recibir_msg_jefe(tipo_nave *nave);
 void nave_run_naves(tipo_nave *nave);
 
@@ -43,15 +53,5 @@ void nave_set_tag(tipo_nave *nave, char *tag);
 int nave_get_dmg(tipo_nave *nave);
 
 void nave_set_dmg(tipo_nave *nave, int dmg); 
-
-
-
-int nave_get_alcance(tipo_nave *nave);
-void nave_set_alcance(tipo_nave *nave, int alcance);
-void nave_init_cola_sim(tipo_nave * nave);
-void nave_mandar_msg_sim(tipo_nave * nave);
-bool nave_evaluar_fin(tipo_nave * nave);
-void nave_inicializar_signal_handlers(tipo_nave * nave);
-
 
 #endif

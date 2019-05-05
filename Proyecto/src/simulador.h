@@ -30,4 +30,8 @@ void sim_recibir_msg_nave(tipo_sim * sim);
 void sim_init_cola_nave(tipo_sim * sim);
 bool sim_evaluar_fin(tipo_sim * sim);
 void sim_inicializar_signal_handlers();
+
+
+int parse_accion(char * accion);
+
 #endif 
