@@ -76,6 +76,7 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 
 void estiloMSG_set_default();
 void estiloMSG_set_colorful();
+void dividir_msg(char * msg,  char * msg_1, char * msg_2);
 
 
 #endif 

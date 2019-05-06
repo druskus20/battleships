@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "types.h"
 #include "msg.h"
@@ -90,12 +91,14 @@ void abrir_log() {
 // Rutina principal
 int main(int argc, char **argv) {
     
+
     set_default_params();
     leer_argumentos(argc, argv);
 
     if (args.F_fichero_out) 
         abrir_log();
 
+    srand(time(NULL));
 
     msg_OK(fpo, "Lanzando simulacion");
     sim_launch();

@@ -94,6 +94,12 @@ int main (int argc, char const *argv[]) {
   printf("JEFE E:1, equipo: %d\n", equipo);
   extractv_nave_tag("NAVE E:1/N:2", &equipo, &num_nave);
   printf("NAVE E:1/N:2, equipo: %d, num_nave: %d\n", equipo, num_nave);
-
+  
+  char msg_1[1000];
+  char msg_2[1000];
+  char msg[100] = "ACCION BATA CATA";
+  dividir_msg(msg, msg_1, msg_2);
+  printf("MSG1: %s\n", msg_1);
+  printf("MSG2: %s\n", msg_2);
   return 0;
 }

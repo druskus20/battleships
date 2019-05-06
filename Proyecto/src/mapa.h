@@ -46,4 +46,6 @@ void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves);
 void mapa_set_symbol(tipo_mapa *mapa, int posy, int posx, char symbol);
 
 
+// HABLAR EN LA MEMORIA !!!
+int mapa_generate_pos_nave( int equipo, int num_nave, int pos[2]);
 #endif 

@@ -13,7 +13,7 @@
 
 extern FILE * fpo;
 
-tipo_jefe * jefe_global; // Creada de forma global para usarla en los manejadores de señal
+
 /*
 // Manejador de la señal Ctrl+C (SIGINT)
 void jefe_manejador_SIGINT(int sig) {
@@ -27,16 +27,17 @@ void jefe_manejador_SIGINT(int sig) {
 */
 
 void jefe_launch(int equipo, int *pipe_sim) {     
-        jefe_global = jefe_create(equipo, pipe_sim);
-        jefe_init(jefe_global);
-        jefe_run(jefe_global);
+        tipo_jefe * jefe;
+        jefe = jefe_create(equipo, pipe_sim);
+        jefe_init(jefe);
+        jefe_run(jefe);
  
         // Elimina el manejador sigint antes de liberar !!!
         // signal(SIGINT, SIG_DFL); // CAMBIAR !!!
 
-        jefe_end(jefe_global);
-        //jefe_esperar_naves(jefe_global);
-        jefe_destroy(jefe_global);
+        jefe_end(jefe);
+        //jefe_esperar_naves(jefe);
+        jefe_destroy(jefe);
         exit(EXIT_SUCCESS);
 }
 
@@ -48,7 +49,12 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     new_jefe = (tipo_jefe *)malloc(sizeof(new_jefe[0]));
 
     new_jefe->equipo = equipo;
+    new_jefe->naves_res = 0;    // !!!
     new_jefe->pipe_sim = pipe_sim;
+    
+    for (int i = 0; i < N_NAVES; i++)
+        new_jefe->pid_naves[i] = -1;
+
     load_jefe_tag(equipo, new_jefe->tag);
 
 
@@ -66,32 +72,28 @@ void jefe_init(tipo_jefe *jefe) {
 }
 
 void jefe_run(tipo_jefe *jefe){
-    int action_code = -1;
-    char msg_buffer[MSG_MAX] =  "";
 
+
+    bool fin = false;
+    char * msg_recibido;
+    
     msg_jefeOK(fpo, jefe, "Comenzando");
     jefe_run_naves(jefe); 
-    jefe_recibir_msg_sim(jefe, msg_buffer);
-    strcpy (msg_buffer, "");
-    jefe_recibir_msg_sim(jefe, msg_buffer);
-    strcpy (msg_buffer, "");
-    jefe_recibir_msg_sim(jefe, msg_buffer);
-    strcpy (msg_buffer, "");
-    jefe_recibir_msg_sim(jefe, msg_buffer);
-    strcpy (msg_buffer, "");
-    jefe_recibir_msg_sim(jefe, msg_buffer);
-    strcpy (msg_buffer, "");
-    
-    //jefe_recibir_msg_sim(jefe, msg_buffer);
-    // !!!!! DIVIDIR EL MENSAJE
 
-    action_code = parse_accion(msg_buffer);
-    jefe_actua (jefe, action_code, NULL);
-
-    sleep(3);  // sigpipe err, porq el sim acaba antes q el jefe !!!
-    for (int i = 0; i < N_NAVES; i++)
-        jefe_mandar_msg_nave(jefe, i);
-}
+    while(!fin) {
+        int action_code = -1;
+        char extra_buff[BUFF_MAX] = "";
+        char main_buff[BUFF_MAX] = "";
+        msg_recibido = jefe_recibir_msg_sim(jefe);
+        dividir_msg(msg_recibido, main_buff, extra_buff);
+        printf("MSG_RECIBIDO: %s\n", msg_recibido);
+        printf("MAIN_BUFFER: %s-\n", main_buff);
+        action_code = parse_accion(main_buff);
+     
+        fin = jefe_actua(jefe, action_code, extra_buff);
+        free(msg_recibido);
+    }   
+} 
 
 void jefe_end(tipo_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Finalizando");
@@ -119,9 +121,10 @@ void jefe_run_naves(tipo_jefe *jefe){
             break;
         }
         else if (pid > 0) { // jefe
+            jefe->naves_res++;
             jefe->pid_naves[i] = pid;
         }
-        else if (pid < 0) {
+        else  {
             msg_jefeERR(fpo, jefe, "jefe_run_naves");
             exit(EXIT_FAILURE);
         }
@@ -147,10 +150,14 @@ void jefe_init_pipes_naves(tipo_jefe * jefe) {
 }
 
 
-void jefe_recibir_msg_sim(tipo_jefe *jefe, char * msg_buffer) {
+char * jefe_recibir_msg_sim(tipo_jefe *jefe) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
+    char * msg_buffer;
     int * fd; // pipe
+
+    msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
+    strcpy(msg_buffer, "");
 
     load_sim_tag(tag);
     sprintf(out_buff, "Esperando mensaje de %s", tag);
@@ -162,6 +169,7 @@ void jefe_recibir_msg_sim(tipo_jefe *jefe, char * msg_buffer) {
     read(fd[0], msg_buffer, MSG_MAX);
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_jefeOK(fpo, jefe, out_buff);
+    return msg_buffer;
 
 }
 
@@ -178,7 +186,7 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
 
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
-    sprintf(msg_buffer, "HOLA %s", tag);
+    sprintf(msg_buffer, "ACCION ATACAR COSA EXTRA");
     write(fd[1], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }
 
@@ -209,9 +217,10 @@ void jefe_inicializar_signal_handlers(tipo_jefe * jefe) {
 
 */
 
-void jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
-    switch (accion_jefe){
-        
+int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
+    printf("ACCION JEFE %d\n", accion_jefe);
+    
+    switch (accion_jefe){   
         case DESTRUIR:
         break;
 
@@ -220,8 +229,11 @@ void jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
         
         case FIN:
         default:
-        for (int i = 0; i < N_NAVES; i++) 
-            //kill(jefe->pid_naves[i],SIGTERM);
-        break;
+            for (int i = 0; i < N_NAVES; i++) {
+                if (jefe->pid_naves[i] > 0)
+                    kill(jefe->pid_naves[i],SIGTERM);
+            }
+            return 1;
     }
+    return 0;
 }

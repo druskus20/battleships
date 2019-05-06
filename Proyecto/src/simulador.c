@@ -70,6 +70,7 @@ tipo_sim * sim_create() {
     char out_buff[BUFF_MAX];
 
     new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
+    new_sim->equipos_res = 0;
     load_sim_tag(new_sim->tag);
     
     sprintf(out_buff, "Creando %s", new_sim->tag);
@@ -95,34 +96,32 @@ void sim_init(tipo_sim * sim) {
 }
 
 void sim_run(tipo_sim * sim) {
+
+    bool fin = false;
+    char * msg_recibido;
+
     msg_simOK(fpo, "Avisando al proceso monitor");
     sem_post(sim->sem_sim);   // avisa al monitor
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
+
     sleep(2);
 
-   
-    for (int i = 0; i < N_EQUIPOS; i++)
-        sim_mandar_msg_jefe(sim, i, M_DESTRUIR);
-    
-
-    for (int i = 0; i < N_EQUIPOS * N_NAVES; i++) // !!! naves restantes y mierdas
-        sim_recibir_msg_nave(sim);
-    
-    
-    for(int i = 0; i < 4; i++){
-        alarm(1); 
-        pause(); 
-    } 
-    /*
-    while(sim_evaluar_fin(sim)) {
-        alarm(1); 
-        pause(); 
-    }*/
+    while(!fin) {
+        alarm(1);
+        pause();    // CREO !!!
+        int action_code = -1;
+        char extra_buff[BUFF_MAX] = "";
+        char main_buff[BUFF_MAX] = "";
+        msg_recibido = sim_recibir_msg_nave(sim);
+        action_code = parse_accion(main_buff);
+        fin = sim_actua(sim, action_code, extra_buff);
+        free(msg_recibido);
+    }   
 
     signal(SIGALRM, SIG_DFL);  // !!! quizas en end? 
-   sleep(10);
+    sleep(5);
 }
 
 // 
@@ -169,12 +168,15 @@ void sim_run_jefes(tipo_sim *sim) {
         if (pid == 0) {  // jefe
             //free(sim);      
             signal(SIGALRM, SIG_DFL);
-            signal(SIGINT, SIG_IGN); // Momentaneamente desactivamos el manejador !!! 
+            signal(SIGINT, SIG_IGN); 
             sem_close(sim->sem_sim);     //!!!!!!!!!!!! normalmente iria en destroy
             jefe_launch(i, sim->pipes_jefes[i]);
             break;  
         }
-        else if (pid < 0) {
+        else if (pid > 0) {
+            sim->equipos_res++;
+        }
+        else {
             msg_simERR(fpo, "sim_run_jefes");
             exit(EXIT_FAILURE);
         }   
@@ -232,12 +234,15 @@ void sim_init_cola_nave(tipo_sim * sim) {
     */
 }
 
-void sim_recibir_msg_nave(tipo_sim * sim) {
-    /*
+char * sim_recibir_msg_nave(tipo_sim * sim) {
+    
     //char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX] = "";  // !!! solucciona invalid read creo
+    char * msg_buffer;  // !!! solucciona invalid read creo
     
+    msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
+    strcpy(msg_buffer, "");
+
     msg_simOK(fpo, "Esperando mensaje de nave");
     if(mq_receive(sim->cola_msg_naves, (char *)&msg_buffer, sizeof(msg_buffer), NULL) == -1) {
         msg_simERR(fpo, "mq_receive");
@@ -246,7 +251,9 @@ void sim_recibir_msg_nave(tipo_sim * sim) {
 
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_simOK(fpo, out_buff);
-    */
+
+    return msg_buffer;
+    
 }
 
 
@@ -283,18 +290,32 @@ void sim_inicializar_signal_handlers() {
 }
 
 int parse_accion(char * accion) {
-    if (strcmp(accion, M_FIN))    
+    if (strcmp(accion, M_FIN) == 0)    
         return FIN;
-    else if (strcmp(accion, M_MOVER)) 
+    else if (strcmp(accion, M_MOVER) == 0) 
         return MOVER;
-    else if (strcmp(accion, M_ATACAR)) 
+    else if (strcmp(accion, M_ATACAR) == 0) 
         return ATACAR;
-    else if (strcmp(accion, M_DESTRUIR)) 
+    else if (strcmp(accion, M_DESTRUIR) == 0) 
         return DESTRUIR;
-    else if (strcmp(accion, M_TURNO)) 
+    else if (strcmp(accion, M_TURNO) == 0) 
         return TURNO;
-    else if (strcmp(accion, M_ACCION)) 
+    else if (strcmp(accion, M_ACCION) == 0) 
         return TURNO;
     return -1;
 }
 
+int sim_actua(tipo_sim * sim, int accion_sim, char * extra) {
+
+    switch (accion_sim){   
+        case ATACAR:
+        break;
+
+        case MOVER: 
+        break;
+        
+        default:
+            return 1;
+    }
+    return 0;
+}

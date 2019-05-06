@@ -9,14 +9,14 @@
 #include <sys/stat.h>
 #include <math.h>
 
-
+#include "mapa.h"
 #include "msg.h"
 
 
 
 extern FILE * fpo;
 
-tipo_nave * nave_global;   // Creada de forma global para usarla en los manejadores de señal
+
 
 /*
 // Manejador de la señal Ctrl+C (SIGINT)
@@ -30,15 +30,16 @@ void nave_manejador_SIGINT(int sig) {
 } */
 
 void nave_launch(int equipo, int num, int *pipe_jefe) {
-    nave_global = nave_create(equipo, num, pipe_jefe);
-    nave_init(nave_global);
-    nave_run(nave_global);
+    tipo_nave * nave;   
+    nave = nave_create(equipo, num, pipe_jefe);
+    nave_init(nave);
+    nave_run(nave);
 
     // Elimina el manejador sigint antes de liberar !!!
     //signal(SIGINT, SIG_DFL); // CAMBIAR !!!
     
-    nave_end(nave_global);
-    nave_destroy(nave_global);
+    nave_end(nave);
+    nave_destroy(nave);
     exit(EXIT_SUCCESS);
 }
 tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
@@ -50,10 +51,22 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
    
     new_nave->equipo = equipo;
     new_nave->num = num;
+    new_nave->vida = VIDA_MAX;
+    new_nave->alcance = ATAQUE_ALCANCE;
+
+    int pos[2];
+    if (mapa_generate_pos_nave(equipo, num, pos) == -1) {
+        msg_naveERR(fpo, new_nave, "generate_pos_nave");
+        exit(EXIT_FAILURE);
+    }
+
+    new_nave->posx = pos[0];
+    new_nave->posy = pos[1];
+
     new_nave->pipe_jefe = pipe_jefe;
     load_nave_tag(equipo, num, new_nave->tag);
     
-    sprintf(out_buff, "Creando %s", new_nave->tag);
+    sprintf(out_buff, "Creando %s con posicion: X:%d/Y:%d", new_nave->tag, new_nave->posx, new_nave->posy);
     msg_naveOK(fpo, new_nave, out_buff);
     
     return new_nave;
@@ -65,10 +78,22 @@ void nave_init(tipo_nave * nave){
 }
 
 void nave_run(tipo_nave *nave){
+    bool fin = false;
+    char * msg_recibido;
+
     msg_naveOK(fpo, nave, "Comenzando");
     sleep(1);
-    nave_recibir_msg_jefe(nave);
-    nave_mandar_msg_sim(nave);  // !!!  que reciba un argumento mas
+    while (!fin) {
+        int action_code = -1;
+        char extra_buff[BUFF_MAX] = "";
+        char main_buff[BUFF_MAX] = "";
+        msg_recibido = nave_recibir_msg_jefe(nave);
+        dividir_msg(msg_recibido, main_buff, extra_buff);
+        action_code = parse_accion(main_buff);
+        fin = nave_actua(nave, action_code, extra_buff);
+        free(msg_recibido);
+
+    }
 }
 
 void nave_end(tipo_nave * nave){
@@ -149,11 +174,14 @@ void nave_set_num(tipo_nave *nave, int num) {
 
 
 
-void nave_recibir_msg_jefe(tipo_nave *nave) {
+char * nave_recibir_msg_jefe(tipo_nave *nave) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX] = ""; // !!! solucciona "error uninitialised value"
+    char * msg_buffer;
     int * fd; // pipe
+
+    msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
+    strcpy(msg_buffer, "");
 
     load_jefe_tag(nave->equipo, tag);
     sprintf(out_buff, "Esperando mensaje de %s", tag);
@@ -164,6 +192,7 @@ void nave_recibir_msg_jefe(tipo_nave *nave) {
     read(fd[0], msg_buffer, MSG_MAX);
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_naveOK(fpo, nave, out_buff);
+    return msg_buffer;
 }
 
 
@@ -207,7 +236,7 @@ void nave_init_cola_sim(tipo_nave * nave) {
 }
 
 
-void nave_mandar_msg_sim(tipo_nave * nave) {
+void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
     /*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
@@ -228,11 +257,7 @@ void nave_mandar_msg_sim(tipo_nave * nave) {
 }
 
 
-bool nave_evaluar_fin(tipo_nave * nave) {
-    if (nave->vida == 0) 
-        return true;
-    return false;
-}
+
 
 /*
 void nave_inicializar_signal_handlers(tipo_nave * nave) {
@@ -249,18 +274,22 @@ void nave_inicializar_signal_handlers(tipo_nave * nave) {
     }
 }*/
 
-
-void nave_actua (tipo_nave * nave, int accion_nave, char * extra) {
-    switch (accion_nave){
-        
+// retorna bool "fin"
+int nave_actua (tipo_nave * nave, int action_code, char * extra) {
+    switch (action_code){
         case MOVER_ALEATORIO:
-        break;
+            nave_mandar_msg_sim(nave, "MOVER");  // !!!  que reciba un argumento mas
+            break;
 
         case ATACAR: 
-        break;
+            nave_mandar_msg_sim(nave, "ATACAR");  // !!!  que reciba un argumento mas
+            break;
 
         default:
-        case FIN: // !!! NO
-        break;
+            return 1; 
+            
     }
+    return 0;
 }
+
+

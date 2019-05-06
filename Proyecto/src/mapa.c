@@ -117,3 +117,79 @@ void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int
 	mapa_set_symbol(mapa,py, px,ps);
 }
 
+
+// retorna -1 si error, 0 si no. pos[2] es un argumento de salida, un buffer de coordenadas
+int mapa_generate_pos_nave(int equipo, int num_nave, int pos[2]) {
+	if (equipo >= MAX_EQUIPOS)
+		return -1;
+	if (num_nave >= MAX_NAVES)
+		return -1;
+	
+	// Establece en que cuadrante del tablero comenzará el equipo
+	int offsetx;
+	int offsety;
+
+	switch (equipo)
+	{
+		case 1:
+			offsetx = (int)ceil(MAPA_MAXX/2*1.0) - 1;
+			offsety = (int)ceil(MAPA_MAXY/2*1.0) - 1;
+			break;
+		case 2: 
+			offsetx = (int)ceil(MAPA_MAXX/2*1.0) - 1;
+			offsety = 0;
+			break;
+		case 3:
+			offsetx = 0;
+			offsety = (int)ceil(MAPA_MAXY/2*1.0) - 1;
+			break;
+		case 0:
+		default:
+			offsetx = 0;
+			offsety = 0;
+			break;
+	}
+
+	int off_rel_x;
+	int off_rel_y;
+
+
+	// Establece en que sub-cuadrante del cuadrante comenzará cada nave del equipo
+	switch (num_nave)
+	{
+
+		case 1:
+			off_rel_x = (int)ceil(MAPA_MAXX/4*1.0) - 1;
+			off_rel_y = (int)ceil(MAPA_MAXY/4*1.0) - 1;
+			break;
+
+		case 2:
+			off_rel_x = (int)ceil(MAPA_MAXX/4*1.0) - 1;
+			off_rel_y = 0;
+			break;
+
+		case 3:
+			off_rel_x = 0;
+			off_rel_y = (int)ceil(MAPA_MAXY/4*1.0) - 1;			
+			break;
+
+		case 0:
+		default:
+			off_rel_x = 0;
+			off_rel_y = 0;
+
+			break;
+	}
+
+
+			
+	pos[0] = 1 + (rand() % ((int)ceil(MAPA_MAXX/4*1.0) - 1));
+	pos[1] = 1 + (rand() % ((int)ceil(MAPA_MAXY/4*1.0) - 1));
+
+	pos[0] += (offsetx +  off_rel_x);
+	pos[1] += (offsety + off_rel_y);
+
+
+
+	return 0;
+}

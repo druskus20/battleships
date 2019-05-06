@@ -91,3 +91,37 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.err_status, nave->tag, msg);
 }
 
+
+// divide el mensaje "msg" en msg_1 y msg_2 por el token ' '
+// msg_1 y msg_2 son buffers vacios, argumentos de salida
+void dividir_msg(char * msg, char * msg_1, char * msg_2) { 
+    int i = 0;
+    char msg_temp[strlen(msg)];  // para evitar erroes en declaraciones implicitas !!!
+    strcpy (msg_temp, msg);
+    strcpy (msg_1, msg_temp);
+    int len  = strlen(msg_temp);
+    for (i = 0; i < len; i++) {
+        if (msg_temp[i] == ' '){
+            msg_temp[i] = '\0';
+            strcpy(msg_1, msg_temp);
+            strcpy(msg_2, &(msg_temp[i+1])); 
+            break;
+        }
+    }
+    printf("MSG_1: %s\n", msg_1);
+    printf("MSG_2: %s\n", msg_2);
+    // si es un mensaje de accion, tiene 3 partes
+    if (strcmp(msg_1, "ACCION") == 0) {
+        strcpy (msg_temp, msg_2);
+        int len  = strlen(msg_temp);
+        for (i = 0; i < len; i++) {
+            if (msg_temp[i] == ' '){
+                msg_temp[i] = '\0';
+                strcpy(msg_1, msg_temp);
+                strcpy(msg_2, &(msg_temp[i+1])); 
+                break;
+            }
+        }
+    }
+
+}
