@@ -55,7 +55,6 @@ NO TENER FUNC PRIVADAS
 
 ## Preguntas 
 
-* Como funciona la señal de alarma del turno ? pause?
 * NECESITO AVISAR AL SIMULADOR CUANDO LAS NAVES ESTAN LISTAS?
 * Al acabar con sigterm, va a haber errores de valgrind	
 * MAPA

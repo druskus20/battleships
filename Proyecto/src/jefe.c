@@ -209,7 +209,7 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
         break;
 
         case TURNO: 
-            for (int i = 0; i < jefe->naves_res; i++) {
+            for (int i = 0; i < N_NAVES; i++) {
                 jefe_mandar_msg_nave(jefe, i);
             }
             break;

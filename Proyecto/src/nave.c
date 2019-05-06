@@ -15,32 +15,29 @@
 
 
 extern FILE * fpo;
+tipo_nave * nave_global;
 
 
 
-/*
-// Manejador de la señal Ctrl+C (SIGINT)
-void nave_manejador_SIGINT(int sig) {
-    // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
-    msg_naveOK(stdout, nave_global, "Finalizando ejecucion...");
-    // nave_end(nave_global);
+// Manejador de la señal (SIGTERM)
+void nave_manejador_SIGTERM(int sig) {    
+    //nave_end(nave_global);
     nave_destroy(nave_global);
-    fflush(fpo);
+    
     exit(EXIT_SUCCESS);
-} */
+} 
 
 void nave_launch(int equipo, int num, int *pipe_jefe) {
     
-    tipo_nave * nave;   
-    nave = nave_create(equipo, num, pipe_jefe);
-    nave_init(nave);
-    nave_run(nave);
+    nave_global = nave_create(equipo, num, pipe_jefe);
+    nave_init(nave_global);
+    nave_run(nave_global);
 
     // Elimina el manejador sigint antes de liberar !!!
     //signal(SIGINT, SIG_DFL); // CAMBIAR !!!
     
-    nave_end(nave);
-    nave_destroy(nave);
+    nave_end(nave_global);
+    nave_destroy(nave_global);
     exit(EXIT_SUCCESS);
 }
 tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
@@ -75,6 +72,7 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
     nave_init_cola_sim(nave);
+    nave_init_signal_handlers(nave);
 }
 
 void nave_run(tipo_nave *nave){
@@ -218,10 +216,27 @@ void nave_init_cola_sim(tipo_nave * nave) {
 		exit(EXIT_FAILURE);
 	}
 
-    
-
 }
 
+
+void nave_init_signal_handlers (tipo_nave * nave) {
+    struct sigaction act_sigterm;
+
+    msg_naveOK(fpo, nave, "Inicializando manejadores de señal");
+
+    // Inicializacion del manejador SIGINT
+    act_sigterm.sa_handler = nave_manejador_SIGTERM;
+    sigemptyset(&(act_sigterm.sa_mask));
+    sigaddset(&act_sigterm.sa_mask, SIGALRM);
+    sigaddset(&act_sigterm.sa_mask, SIGINT);
+    sigaddset(&act_sigterm.sa_mask, SIGPIPE);
+    act_sigterm.sa_flags = 0;
+
+    if (sigaction(SIGINT, &act_sigterm, NULL) < 0) {
+        msg_naveERR(fpo, nave, "sigaction de SIGTERM");
+        exit(EXIT_FAILURE);
+    }
+}
 
 void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
