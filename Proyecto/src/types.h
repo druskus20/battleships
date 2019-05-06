@@ -14,7 +14,6 @@
                         // 	los sprintfs no den error. 
 #define MAX_FICHERO_OUT 100
 #define STYLE_STRING_L 100
-#define MAX_QUEUE_MSGS 10  			 // Maximo numero de mensajes en la cola
 
 
 // Semaforos
@@ -27,10 +26,13 @@
 
 /*** SIMULACION ***/
 #define N_EQUIPOS 4 	  // Número de equipos
-#define N_NAVES 3   	  // Número de naves por equipo
+#define N_NAVES 4   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
+
+#define MAX_QUEUE_MSGS 10  			 // Maximo numero de mensajes en la cola
+
 
 #define VIDA_MAX 50       // Vida inicial de una nave
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque

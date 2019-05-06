@@ -203,7 +203,7 @@ void nave_init_cola_sim(tipo_nave * nave) {
     struct mq_attr attributes;
      msg_naveOK(fpo, nave,"Inicializando cola de mensajes a simulador");
 
-	attributes.mq_flags = O_NONBLOCK;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
+	attributes.mq_flags = 0;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
 	attributes.mq_maxmsg = MAX_QUEUE_MSGS;
 	attributes.mq_curmsgs = 0;
 	attributes.mq_msgsize = MSG_MAX;
