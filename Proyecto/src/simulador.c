@@ -213,7 +213,7 @@ void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
 
 
 void sim_init_cola_nave(tipo_sim * sim) {
-    /*
+    
     struct mq_attr attributes;
      msg_simOK(fpo, "Inicializando cola de mensajes a simulador");
 
@@ -231,7 +231,7 @@ void sim_init_cola_nave(tipo_sim * sim) {
         msg_simERR(fpo, "mq_open");
 		exit(EXIT_FAILURE);
 	}
-    */
+    
 }
 
 char * sim_recibir_msg_nave(tipo_sim * sim) {

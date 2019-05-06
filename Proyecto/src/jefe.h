@@ -23,7 +23,6 @@ void jefe_esperar_naves();
 char * jefe_recibir_msg_sim(tipo_jefe *jefe);
 void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave);
 bool jefe_evaluar_fin(tipo_jefe * jefe);
-// void jefe_inicializar_signal_handlers(tipo_jefe * jefe);
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra);
 
 #endif

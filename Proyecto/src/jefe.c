@@ -67,7 +67,6 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
 
 void jefe_init(tipo_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Inicializando");
-    //jefe_inicializar_signal_handlers(jefe);
     jefe_init_pipes_naves(jefe);
 }
 
@@ -198,24 +197,6 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 
 
-/*
-void jefe_inicializar_signal_handlers(tipo_jefe * jefe) {
-    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
-    msg_jefeOK(fpo, jefe, "Inicializando manejadores de señal");
-    // Inicializacion del manejador SIGINT
-    act_sigint.sa_handler = jefe_manejador_SIGINT;
-    sigemptyset(&(act_sigint.sa_mask));
-    sigaddset(&act_sigint.sa_mask, SIGALRM);
-    act_sigint.sa_flags = 0;
-    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
-        msg_jefeERR(fpo, jefe, "sigaction de SIGINT");
-        exit(EXIT_FAILURE);
-    }
-    // !!!!!!!!!!!!!
-    // En la memoria comentar por que esta aqui, (mensajes del manejador, logica)) 
-}
-
-*/
 
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
     printf("ACCION JEFE %d\n", accion_jefe);

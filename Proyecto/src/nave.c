@@ -73,7 +73,6 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 }
 void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
-    // nave_inicializar_signal_handlers(nave);
     nave_init_cola_sim(nave);
 }
 
@@ -198,21 +197,9 @@ char * nave_recibir_msg_jefe(tipo_nave *nave) {
 
 
 
-/*
-
-	queue1 = mq_open(mq_name,
-                O_CREAT | O_WRONLY,  // This process is only going to send messages 
-                S_IRUSR | S_IWUSR,  // The user can read and write 
-                &attributes); 
-
-	if(queue1 == (mqd_t)-1) {
-		fprintf (stderr, "[A] Error opening the queue: %s\n", mq_name); 
-		return EXIT_FAILURE;
-	}
-*/
 
 void nave_init_cola_sim(tipo_nave * nave) {
-    /*
+    
     struct mq_attr attributes;
      msg_naveOK(fpo, nave,"Inicializando cola de mensajes a simulador");
 
@@ -232,12 +219,12 @@ void nave_init_cola_sim(tipo_nave * nave) {
 	}
 
     
-*/
+
 }
 
 
 void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
-    /*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
         char msg_buffer[MSG_MAX] = "";
@@ -253,26 +240,11 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
             exit(EXIT_FAILURE); 
         }
 
-    */
+    
 }
 
 
 
-
-/*
-void nave_inicializar_signal_handlers(tipo_nave * nave) {
-    struct sigaction act_sigint; // !!! esto se puede hacer en una sub-funcion?
-    msg_naveOK(fpo, nave, "Inicializando manejadores de señal");
-    // Inicializacion del manejador SIGINT
-    act_sigint.sa_handler = nave_manejador_SIGINT;
-    sigemptyset(&(act_sigint.sa_mask));
-    sigaddset(&act_sigint.sa_mask, SIGALRM);
-    act_sigint.sa_flags = 0;
-    if (sigaction(SIGINT, &act_sigint, NULL) < 0) {
-        msg_naveERR(fpo, nave, "sigaction de SIGINT");
-        exit(EXIT_FAILURE);
-    }
-}*/
 
 // retorna bool "fin"
 int nave_actua (tipo_nave * nave, int action_code, char * extra) {
