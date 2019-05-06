@@ -101,7 +101,7 @@ void sim_run(tipo_sim * sim) {
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
-    sleep(5);
+    sleep(2);
   
     alarm(TURNO_SECS);
 
@@ -232,7 +232,7 @@ void sim_init_cola_nave(tipo_sim * sim) {
     struct mq_attr attributes;
      msg_simOK(fpo, "Inicializando cola de mensajes a simulador");
 
-	attributes.mq_flags = 0;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
+	attributes.mq_flags = O_NONBLOCK;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
 	attributes.mq_maxmsg = MAX_QUEUE_MSGS;
 	attributes.mq_curmsgs = 0;
 	attributes.mq_msgsize = MSG_MAX;
@@ -254,15 +254,24 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
     //char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
     char * msg_buffer;  // !!! solucciona invalid read creo
+    int err = 0;
+
     msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
     strcpy(msg_buffer, "");
 
 
     msg_simOK(fpo, "Esperando mensaje de nave");
-    if(mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL) == -1) {
+    
+    do {
+        err = mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL);
+        printf("ERRNO: %s\n", strerror(errno));
+    } while (errno == EAGAIN);
+
+    if (err == -1) {
         msg_simERR(fpo, "mq_receive");
-        exit(EXIT_FAILURE); 
+        exit(EXIT_FAILURE);
     }
+
     
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_simOK(fpo, out_buff);
