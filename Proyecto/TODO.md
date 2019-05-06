@@ -44,7 +44,9 @@ NO TENER FUNC PRIVADAS
 .Comprobar si secumplen todos los requisitos para poder realizar la acción 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+* SOBREESCRIBIR SIGPIPE POR SI JEFE ACABA ANTES Q SIM? creo q nos
+* PUEDO BORRAR LOS PARAMETROS "SIGACTION" DESPUES DE EJECUTAR "SIGACTION()"?
+* PUEDO BORRAR LOS PARAMETROS "attributes" DESPUES DE EJECUTAR "queue_open()"?
 
 
 
@@ -52,25 +54,11 @@ NO TENER FUNC PRIVADAS
 * Hacer funcionar el mapa
 
 ## Preguntas 
+
 * Como funciona la señal de alarma del turno ? pause?
-* Como funcionaba la memoria dinamica con los semáforos??
-* !!!!!!!!! OJO SOBREESCRIBIR SIGPIPE POR SI JEFE ACABA ANTES Q SIM? creo q nos
-!!!!!!!!!!!!!!!!!!!!!!
-ERROR LIBERACION DE MEMORIA, MEMORIA RESERVADA SE COPIA!?
-!!! Liberar memoria al final?
-* PUEDO BORRAR LOS PARAMETROS "SIGACTION" DESPUES DE EJECUTAR "SIGACTION()"?
-* PUEDO BORRAR LOS PARAMETROS "attributes" DESPUES DE EJECUTAR "queue_open()"?
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-FIN DE EJECUCION: 1) "FIN" 2) "CTRL+C" 
-1) se recibe el mensaje en orden normal, y se finaliza la ejecucion, termina _run, empieza _end y _destroy
-2) se utiliza el sub-manejador de señal sigint, por q al ser un CTRL+c forzoso, no puedes depender de que la pipe lea el mensaje bien, podría ser que
-   se hubiera bloqueado.
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
- // Solo esperar jefes, no mandar "FIN" !!!!!!!!!!!!!!!!!!!
-
-
- * NECESITO AVISAR AL SIMULADOR CUANDO LAS NAVES ESTAN READY?
+* NECESITO AVISAR AL SIMULADOR CUANDO LAS NAVES ESTAN LISTAS?
+* Al acabar con sigterm, va a haber errores de valgrind	
+* MAPA
 
 ## Planning: 
 martes 30:

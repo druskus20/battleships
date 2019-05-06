@@ -86,7 +86,6 @@ void jefe_run(tipo_jefe *jefe){
         msg_recibido = jefe_recibir_msg_sim(jefe);
         dividir_msg(msg_recibido, main_buff, extra_buff);
         action_code = parse_accion(main_buff);
-     
         fin = jefe_actua(jefe, action_code, extra_buff);
         free(msg_recibido);
     }   
@@ -107,6 +106,7 @@ void jefe_destroy(tipo_jefe *jefe){
 
 void jefe_run_naves(tipo_jefe *jefe){
     int pid = -1;
+    int equipo = jefe->equipo;
     msg_jefeOK(fpo, jefe, "Ejecutando naves");
     // creacion de naves
     for (int i = 0; i < N_NAVES; i++) {
@@ -114,7 +114,12 @@ void jefe_run_naves(tipo_jefe *jefe){
         if (pid == 0) {  // nave
             //free(jefe); // !!!!!!!
             signal(SIGINT, SIG_IGN); // Momentaneamente desactivamos el manejador !!! 
-            nave_launch(jefe->equipo, i, jefe->pipes_naves[i]);
+            
+            int fd[2];
+            fd[0] = jefe->pipes_naves[i][0];
+            fd[1] = jefe->pipes_naves[i][1];
+            free(jefe);
+            nave_launch(equipo, i, fd);
             break;
         }
         else if (pid > 0) { // jefe
@@ -215,6 +220,7 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
                 if (jefe->pid_naves[i] > 0)
                     kill(jefe->pid_naves[i],SIGTERM);
             }
+            
             return 1;
     }
     return 0;

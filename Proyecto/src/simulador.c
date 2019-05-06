@@ -187,11 +187,16 @@ void sim_run_jefes(tipo_sim *sim) {
     for (i = 0; i < N_EQUIPOS; i++) {
         pid = fork();
         if (pid == 0) {  // jefe
-            //free(sim);      
+                  
             signal(SIGALRM, SIG_DFL);
             signal(SIGINT, SIG_IGN); 
             sem_close(sim->sem_sim);     //!!!!!!!!!!!! normalmente iria en destroy
-            jefe_launch(i, sim->pipes_jefes[i]);
+            int fd[2];
+            fd[0] = sim->pipes_jefes[i][0];
+            fd[1] = sim->pipes_jefes[i][1];
+            free(sim);
+            jefe_launch(i, fd);
+            
             break;  
         }
         else if (pid > 0) {
