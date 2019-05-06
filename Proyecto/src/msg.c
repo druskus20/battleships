@@ -32,10 +32,12 @@ void estiloMSG_set_colorful(){
 
 void msg_OK(FILE * fpo, char * msg){
     fprintf(fpo, estiloMSG.status_msg, estiloMSG.ok_status, msg);  
+    fflush(fpo);
 }
 
 void msg_ERR(FILE * fpo, char * msg){
     fprintf(fpo, estiloMSG.status_msg, estiloMSG.err_status, msg);  
+    fflush(fpo);
 }
 
 
@@ -46,10 +48,12 @@ void load_sim_tag(char tag[TAG_MAX]) {
 
 void msg_simOK(FILE * fpo, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.ok_status, estiloMSG.sim_tag,  msg);
+    fflush(fpo);
 }
 
 void msg_simERR(FILE * fpo,  char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.err_status, estiloMSG.sim_tag,  msg);
+    fflush(fpo);
 }
 
 
@@ -65,10 +69,12 @@ void extractv_jefe_tag(char tag[TAG_MAX], int * equipo) {
 
 void msg_jefeOK(FILE * fpo, tipo_jefe * jefe, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.ok_status, jefe->tag, msg);
+    fflush(fpo);
 }
 
 void msg_jefeERR(FILE * fpo, tipo_jefe * jefe, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.err_status, jefe->tag, msg);
+    fflush(fpo);
 }
 
 
@@ -85,10 +91,12 @@ void extractv_nave_tag(char tag[TAG_MAX], int * equipo, int * num_nave) {
 
 void msg_naveOK(FILE * fpo, tipo_nave * nave, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.ok_status, nave->tag, msg);
+    fflush(fpo);
 }
 
 void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.err_status, nave->tag, msg);
+    fflush(fpo);
 }
 
 

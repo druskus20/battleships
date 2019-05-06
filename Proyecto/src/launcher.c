@@ -79,7 +79,7 @@ void set_default_params() {
 // Abre un fichero de log
 void abrir_log() {
     char out_buff[BUFF_MAX];
-    fpo = fopen(args.fichero_out, "w");
+    fpo = fopen(args.fichero_out, "a");
     if  (!fpo) {
         sprintf(out_buff, "No se ha podido abrir el fichero: %s", args.fichero_out);
         msg_ERR(stdout, out_buff);

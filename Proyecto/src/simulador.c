@@ -24,7 +24,8 @@ tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadore
 void sim_manejador_SIGINT(int sig) {
 
     fprintf(fpo, "\n");
-    msg_simOK(stdout,   "Finalizando ejecucion...");
+    fflush(fpo);
+    msg_simOK(fpo,   "Finalizando ejecucion...");
     // sim_end(sim_global); No es necesario
    
    
