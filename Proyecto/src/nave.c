@@ -30,6 +30,7 @@ void nave_manejador_SIGINT(int sig) {
 } */
 
 void nave_launch(int equipo, int num, int *pipe_jefe) {
+    
     tipo_nave * nave;   
     nave = nave_create(equipo, num, pipe_jefe);
     nave_init(nave);

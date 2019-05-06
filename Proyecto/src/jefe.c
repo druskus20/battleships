@@ -113,7 +113,7 @@ void jefe_run_naves(tipo_jefe *jefe){
         pid = fork();
         if (pid == 0) {  // nave
             //free(jefe); // !!!!!!!
-            signal(SIGINT, SIG_DFL); // Momentaneamente desactivamos el manejador !!! 
+            signal(SIGINT, SIG_IGN); // Momentaneamente desactivamos el manejador !!! 
             nave_launch(jefe->equipo, i, jefe->pipes_naves[i]);
             break;
         }

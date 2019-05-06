@@ -187,7 +187,7 @@ void sim_run_jefes(tipo_sim *sim) {
         pid = fork();
         if (pid == 0) {  // jefe
             //free(sim);      
-            signal(SIGALRM, SIG_IGN);
+            signal(SIGALRM, SIG_DFL);
             signal(SIGINT, SIG_IGN); 
             sem_close(sim->sem_sim);     //!!!!!!!!!!!! normalmente iria en destroy
             jefe_launch(i, sim->pipes_jefes[i]);
@@ -267,7 +267,6 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
         exit(EXIT_FAILURE); 
     }
     
-    strcpy(msg_buffer, "ATACAR AA");
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_simOK(fpo, out_buff);
 
