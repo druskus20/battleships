@@ -202,7 +202,7 @@ void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
     fd = sim->pipes_jefes[equipo];
     // cierra el descriptor de entrada en el jefe
    
-     close(fd[0]); //   !!!1 Falla
+     close(fd[0]); //   !!! Falla, ya no, era sigpipe
     // int len = sprintf(msg_buffer, "HOLA %s\0", tag);
   
     write(fd[1], msg, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
