@@ -69,6 +69,9 @@ FIN DE EJECUCION: 1) "FIN" 2) "CTRL+C"
 
  // Solo esperar jefes, no mandar "FIN" !!!!!!!!!!!!!!!!!!!
 
+
+ * NECESITO AVISAR AL SIMULADOR CUANDO LAS NAVES ESTAN READY?
+
 ## Planning: 
 martes 30:
 miercoles 1: 

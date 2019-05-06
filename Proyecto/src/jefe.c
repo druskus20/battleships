@@ -85,8 +85,6 @@ void jefe_run(tipo_jefe *jefe){
         char main_buff[BUFF_MAX] = "";
         msg_recibido = jefe_recibir_msg_sim(jefe);
         dividir_msg(msg_recibido, main_buff, extra_buff);
-        printf("MSG_RECIBIDO: %s\n", msg_recibido);
-        printf("MAIN_BUFFER: %s-\n", main_buff);
         action_code = parse_accion(main_buff);
      
         fin = jefe_actua(jefe, action_code, extra_buff);
@@ -199,14 +197,17 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
-    printf("ACCION JEFE %d\n", accion_jefe);
+    
     
     switch (accion_jefe){   
         case DESTRUIR:
         break;
 
         case TURNO: 
-        break;
+            for (int i = 0; i < jefe->naves_res; i++) {
+                jefe_mandar_msg_nave(jefe, i);
+            }
+            break;
         
         case FIN:
         default:

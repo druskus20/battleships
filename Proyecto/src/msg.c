@@ -108,8 +108,7 @@ void dividir_msg(char * msg, char * msg_1, char * msg_2) {
             break;
         }
     }
-    printf("MSG_1: %s\n", msg_1);
-    printf("MSG_2: %s\n", msg_2);
+    
     // si es un mensaje de accion, tiene 3 partes
     if (strcmp(msg_1, "ACCION") == 0) {
         strcpy (msg_temp, msg_2);

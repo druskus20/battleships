@@ -31,7 +31,7 @@ void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]);
 char * sim_recibir_msg_nave(tipo_sim * sim);
 void sim_init_cola_nave(tipo_sim * sim);
 bool sim_evaluar_fin(tipo_sim * sim);
-void sim_inicializar_signal_handlers();
+void sim_init_signal_handlers();
 int sim_actua(tipo_sim * sim, int accion_sim, char * extra);
 
 int parse_accion(char * accion);

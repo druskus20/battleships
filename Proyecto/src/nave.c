@@ -81,7 +81,7 @@ void nave_run(tipo_nave *nave){
     char * msg_recibido;
 
     msg_naveOK(fpo, nave, "Comenzando");
-    sleep(1);
+    
     while (!fin) {
         int action_code = -1;
         char extra_buff[BUFF_MAX] = "";
@@ -91,7 +91,6 @@ void nave_run(tipo_nave *nave){
         action_code = parse_accion(main_buff);
         fin = nave_actua(nave, action_code, extra_buff);
         free(msg_recibido);
-
     }
 }
 
@@ -227,15 +226,17 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
-        char msg_buffer[MSG_MAX] = "";
+        char msg_buffer[MSG_MAX] = "";   // !!! puede fallar al concatenar la tag dentro        
 
-        sprintf(msg_buffer, "MENSAJE DE %s", nave->tag);
+        
 
         load_sim_tag(sim_tag);
-
+        sprintf(msg_buffer, "%s %s", msg, nave->tag);
         sprintf(out_buff, "Mandando mensaje a %s", sim_tag);
         msg_naveOK(fpo, nave, out_buff);
-        if(mq_send(nave->cola_sim, (char *)&msg_buffer, sizeof(msg_buffer), 1) == -1) {
+
+
+        if(mq_send(nave->cola_sim, (char *)&msg_buffer, MSG_MAX, 1) == -1) {
             msg_naveERR(fpo, nave, "mq_send");
             exit(EXIT_FAILURE); 
         }
