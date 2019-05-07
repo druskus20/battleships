@@ -17,10 +17,10 @@ clean:
 launcher:
 	@echo "Building launcher"
 	@mkdir -p $(TARGET)
-	@$(CC) $(CFLAGS) launcher.c simulador.c nave.c jefe.c mapa.c msg.c -o $(TARGET)/launcher $(LDLIBS) -lm
+	@$(CC) $(CFLAGS) launcher.c simulador.c nave.c jefe.c info_nave.c mapa.c msg.c -o $(TARGET)/launcher $(LDLIBS) -lm
 	
 monitor:
 	@echo "Building monitor"
 	@mkdir -p $(TARGET)
-	@$(CC) $(CFLAGS) gamescreen.c  mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
+	@$(CC) $(CFLAGS) gamescreen.c info_nave.c   mapa.c monitor.c -o $(TARGET)/monitor $(LDLIBS) -lm
 		

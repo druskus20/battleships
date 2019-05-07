@@ -41,14 +41,6 @@
 #define SEMKEY_MUTEX 0xDEADBEEF
 #define SEMKEY_WRI   0xDEAFBABE
 
-/* The calling program must define union semun */
-union semun {
-  int              val;    /* Value for SETVAL */
-  struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
-  unsigned short  *array;  /* Array for GETALL, SETALL */
-  struct seminfo  *__buf;  /* Buffer for IPC_INFO
-			      (Linux-specific) */
-};
 
 /* some prototypes */
 void fatal(char*);
@@ -214,7 +206,7 @@ int main(int argc, char* argv[])
 {
   pid_t son[MAXPROCESSES], tmppid;
   int c, ret, id_shm;
-  union semun mysem;
+
   FILE *fin;
   unsigned long x;
 

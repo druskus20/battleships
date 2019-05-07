@@ -18,7 +18,18 @@
 
 // Semaforos
 #define SEM_SIMULADOR "/sem_simulador"
-#define SHM_MAP_NAME "/shm_naves"
+#define SEM_NAVES_READY "/sem_naves_ready"
+// Lectores - escritores
+#define MUTEX_LE1 "/mutex_le1"
+#define MUTEX_LE2 "/mutex_le2"
+#define MUTEX_LE3 "/mutex_le3"
+#define SEM_LECMAPA "/sem_lecmapa"
+#define SEM_ESCMAPA "/sem_escmapa"
+
+
+
+#define SHM_MAP_NAME "/shm_mapa"
+#define SHM_READERS_COUNT "/shm_mapa"
 
 // Colas
 #define COLA_SIM "/cola_sim"
@@ -35,10 +46,11 @@
 
 
 #define VIDA_MAX 50       // Vida inicial de una nave
+#define DMG 25
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque
 #define ATAQUE_DANO 10    // Daño de un ataque
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
-#define TURNO_SECS 6      // Segundos que dura un turno
+#define TURNO_SECS 5      // Segundos que dura un turno
 
 /*** MAPA ***/
 #define MAPA_MAXX 20         // Número de columnas del mapa
@@ -109,21 +121,57 @@ typedef struct {
 	int tag_offset;
 } tipo_estiloMSG;
 
+
+
+
+
+
+typedef struct {
+	int vida; 	   // Vida que le queda a la nave	
+	int posx; 	   // Columna en el mapa
+	int posy;  	   // Fila en el mapa	
+	int equipo;
+	int num;
+	int dmg;	   // El daño que inflinge
+
+	int alcance;
+} info_nave;
+
+/*** MAPA ***/
+// Información de una casilla en el mapa
+typedef struct {
+	char simbolo; // Símbolo que se mostrará en la pantalla para esta casilla
+	int equipo;   // Si está vacia = -1. Si no, número de equipo de la nave que está en la casilla
+	int num_nave; // Número de nave en el equipo de la nave que está en la casilla
+ } tipo_casilla;
+
+// Información del mapa
+typedef struct {
+	info_nave info_naves[N_EQUIPOS][N_NAVES];
+	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
+	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
+	sem_t *sem_mutex1;
+	sem_t *sem_mutex2;
+	sem_t *sem_escmapa;
+} tipo_mapa;
+
+
 /*** NAVE ***/
 // Información de nave
 typedef struct {
-	int num; 	   // Numero de la nave en el equipo (id)
-	int vida; 	   // Vida que le queda a la nave
-	int dmg;	   // El daño que inflinge
-	int alcance;
-	int posx; 	   // Columna en el mapa
-	int posy;  	   // Fila en el mapa
-	int equipo;    // Equipo de la nave
-	
+
+	int equipo;    // Equipo de la nave	
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
 	mqd_t cola_sim;
+	sem_t *sem_lecmapa;
+	sem_t *sem_mutex1;
+	sem_t *sem_mutex3;
+	tipo_mapa * mapa;
+	int * readers_count;
 } tipo_nave;
+
+
 
 
 /*** JEFE ***/
@@ -147,26 +195,13 @@ typedef struct {
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
 	int equipos_res;		// equipos (jefes) restantes
+	tipo_mapa *mapa;
 	mqd_t cola_msg_naves;
+	sem_t *sem_naves_ready;
 	sem_t *sem_sim;		// semaforo para avisar al monitor
+	int * readers_count;
+	
 } tipo_sim;
-
-/*** MAPA ***/
-// Información de una casilla en el mapa
-typedef struct {
-	char simbolo; // Símbolo que se mostrará en la pantalla para esta casilla
-	int equipo;   // Si está vacia = -1. Si no, número de equipo de la nave que está en la casilla
-	int num_nave; // Número de nave en el equipo de la nave que está en la casilla
- } tipo_casilla;
-
-// Información del mapa
-typedef struct {
-	tipo_nave info_naves[N_EQUIPOS][N_NAVES];
-	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
-	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
-} tipo_mapa;
-
-
 
 
 

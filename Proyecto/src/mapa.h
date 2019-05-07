@@ -5,6 +5,9 @@
 #include <stdbool.h>
 
 
+tipo_mapa * mapa_create();
+
+void mapa_destroy(tipo_mapa * mapa);
 
 // Pone una casilla del mapa a vacío
 void mapa_clean_casilla(tipo_mapa *mapa, int posy, int posx);
@@ -16,7 +19,7 @@ tipo_casilla mapa_get_casilla(tipo_mapa *mapa, int posy, int posx);
 int mapa_get_distancia(tipo_mapa *mapa, int oriy,int orix,int targety,int targetx);
 
 //Obtiene información sobre una nave a partir del equipo y el número de nave
-tipo_nave mapa_get_nave(tipo_mapa *mapa, int equipo, int num_nave);
+info_nave mapa_get_nave(tipo_mapa *mapa, int equipo, int num_nave);
 
 // Obtiene el número de naves vivas en un equipo
 int mapa_get_num_naves(tipo_mapa *mapa, int equipo);
@@ -37,7 +40,7 @@ void mapa_restore(tipo_mapa *mapa);
 void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int targetx);
 
 // Fija el contenido de "nave" en el mapa, en la posición nave.posy, nave.posx
-bool mapa_set_nave(tipo_mapa *mapa, tipo_nave nave);
+bool mapa_set_nave(tipo_mapa *mapa, info_nave nave);
 
 // Fija el número de naves 'numNaves' para el equipo
 void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves);

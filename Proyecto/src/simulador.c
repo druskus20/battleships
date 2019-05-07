@@ -16,6 +16,7 @@
 
 #include "jefe.h"
 #include "nave.h"
+#include "mapa.h"
 
 tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
           // semaforo monitor-simulador	
@@ -66,6 +67,7 @@ tipo_sim * sim_create() {
 
     new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
     new_sim->equipos_res = 0;
+    new_sim->mapa = mapa_create();
     load_sim_tag(new_sim->tag);
     
     sprintf(out_buff, "Creando %s", new_sim->tag);
@@ -77,17 +79,28 @@ void sim_init(tipo_sim * sim) {
 
     msg_simOK(fpo, "Inicializando");
 
+
+    sim_init_semaforos(sim);
+    sim_init_pipes_jefes(sim);
+    sim_init_cola_nave(sim);
+    sim_init_signal_handlers();
+
+
+}
+
+void sim_init_semaforos(tipo_sim * sim) {
     // Inicializacion de semaforo simulador
-    msg_simOK(fpo, "Inicializando semaforo simulador-monitor");
+    msg_simOK(fpo, "Inicializando semaforos");
     if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
-    
-  
-    sim_init_pipes_jefes(sim);
-    sim_init_cola_nave(sim);
-    sim_init_signal_handlers();
+
+    if((sim->sem_naves_ready = sem_open(SEM_NAVES_READY, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_naves_ready""");
+		exit(EXIT_FAILURE);
+	}  
+
 
 }
 
@@ -101,7 +114,8 @@ void sim_run(tipo_sim * sim) {
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
-    sleep(2);
+    
+    sim_esperar_naves_ready(sim);
   
     alarm(TURNO_SECS);
 
@@ -135,17 +149,25 @@ void sim_destroy(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
-
+    
     struct mq_attr atrr;
     mq_getattr(sim->cola_msg_naves, &atrr);
     long currmsg =  atrr.mq_curmsgs;
     sprintf(out_buff, "Mensajes restantes en ""cola_msg_naves"": %ld", currmsg);
     msg_simOK(fpo, out_buff);    
 
+    mapa_destroy(sim->mapa);
+
     mq_close(sim->cola_msg_naves);
+    sem_close(sim->sem_naves_ready);
     sem_close(sim->sem_sim);
+    sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     mq_unlink(COLA_SIM);
+    munmap(sim->mapa, sizeof(*sim->mapa));
+    shm_unlink(SHM_MAP_NAME);
+    munmap(sim->readers_count, sizeof(*sim->readers_count));
+    shm_unlink(SHM_READERS_COUNT);
     free(sim);
    
 }
@@ -161,6 +183,7 @@ void sim_destroy(tipo_sim * sim) {
 
 // Inicializa pipes a jefes
 void sim_init_pipes_jefes(tipo_sim * sim) { 
+    char out_buffer[BUFF_MAX];
     msg_simOK(fpo, "Inicializando pipes a jefes");
     int pipe_status;
     for (int i = 0; i < N_EQUIPOS; i++){
@@ -169,7 +192,9 @@ void sim_init_pipes_jefes(tipo_sim * sim) {
             msg_simERR(fpo, "sim_init_pipes_jefes");
 		    exit(EXIT_FAILURE);
         }
+
     }
+    
 }
 
 // Ejecuta los jefes
@@ -221,7 +246,7 @@ void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
     fd = sim->pipes_jefes[equipo];
 
     // cierra el descriptor de entrada en el jefe
-    close(fd[0]); 
+
     write(fd[1], msg, MSG_MAX); 
 }
 
@@ -255,6 +280,7 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     char * msg_buffer;  // !!! solucciona invalid read creo
     int err = 0;
+    
 
     msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
     strcpy(msg_buffer, "");
@@ -262,11 +288,11 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
 
     msg_simOK(fpo, "Esperando mensaje de nave");
     
-    do {
+    
+        errno = 0;
         err = mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL);
-        printf("ERRNO: %s\n", errno);
-    } while (errno == EAGAIN);
-
+        printf("ERRNO: %d\n", errno);
+    
     if (err == -1) {
         msg_simERR(fpo, "mq_receive");
         exit(EXIT_FAILURE);
@@ -307,7 +333,7 @@ void sim_init_signal_handlers() {
     // Inicializacion del manejador SIGALRM
     act_sigalrm.sa_handler = sim_manejador_SIGALRM;
     sigemptyset(&(act_sigalrm.sa_mask));
-    act_sigalrm.sa_flags = 0;
+    act_sigalrm.sa_flags = SA_RESTART;
     
     if (sigaction(SIGALRM, &act_sigalrm, NULL) < 0) {
         msg_simERR(fpo, "sigaction de SIGALRM: %s");
@@ -343,4 +369,78 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * extra) {    switch (accion_
             return 1;
     }
     return 0;
+}
+
+
+void sim_esperar_naves_ready(tipo_sim * sim) {
+    msg_simOK(fpo, "Esperando a naves");
+    for (int i = 0; i < N_NAVES * N_EQUIPOS; i++) {
+        sem_wait(sim->sem_naves_ready);
+    }
+}
+
+
+
+void sim_init_mapa_shm(tipo_sim * sim) {
+    
+    msg_simOK(fpo, "Inicializando mapa (shm)");
+    int fd_shm = shm_open(SHM_MAP_NAME,
+                            O_RDWR | O_CREAT | O_EXCL,
+                            S_IRUSR | S_IWUSR); 
+    if(fd_shm == -1) {
+        msg_simERR(fpo, """shm_open"" de ""sim_init_mapa_shm""");
+        exit( EXIT_FAILURE);
+    }
+
+
+    /* Resize the memory segment */
+    int error = ftruncate(fd_shm, sizeof(tipo_mapa)); // !???
+    if(error == -1) {
+        msg_simERR(fpo, """ftruncate"" de ""sim_init_mapa_shm""");
+        shm_unlink(SHM_MAP_NAME);
+        exit( EXIT_FAILURE);
+    }
+
+    sim->mapa = mmap(NULL, sizeof(*sim->mapa),
+                            PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
+    if(sim->mapa == MAP_FAILED)  {
+        msg_simERR(fpo, """mmap"" de ""sim_init_mapa_shm""");
+        shm_unlink(SHM_MAP_NAME);
+        exit( EXIT_FAILURE);
+    }
+
+    sim->mapa = mapa_create();
+}
+
+void sim_init_shm_readers_count(tipo_sim * sim) {
+    
+    msg_simOK(fpo, "Inicializando contador de lectores (shm)");
+    int fd_shm = shm_open(SHM_READERS_COUNT,
+                            O_RDWR | O_CREAT | O_EXCL,
+                            S_IRUSR | S_IWUSR); 
+    if(fd_shm == -1) {
+        msg_simERR(fpo, """shm_open"" de ""sim_init_readerscount_shm""");
+        exit( EXIT_FAILURE);
+    }
+
+
+    /* Resize the memory segment */
+    int error = ftruncate(fd_shm, sizeof(*sim->readers_count)); // !???
+    if(error == -1) {
+        msg_simERR(fpo, """ftruncate"" de ""sim_init_readerscount_shm""");
+        shm_unlink(SHM_MAP_NAME);
+        exit( EXIT_FAILURE);
+    }
+
+    sim->readers_count = mmap(NULL, sizeof(*sim->readers_count),
+                            PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
+    if(sim->readers_count == MAP_FAILED)  {
+        msg_simERR(fpo, """mmap"" de ""sim_init_readerscount_shm""");
+        shm_unlink(SHM_MAP_NAME);
+        exit( EXIT_FAILURE);
+    }
+
+// !!!!!!!!!!!!!!!!!!!!!!!
+    sim->readers_count = 0;
+
 }

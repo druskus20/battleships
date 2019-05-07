@@ -7,7 +7,7 @@ LDLIBS = -lrt -lncurses
 BOLD=\e[1m
 NC=\e[0m
 
-all: style_test sem_test
+all: style_test 
 
 style_test:
 	@echo "Building style_test"
