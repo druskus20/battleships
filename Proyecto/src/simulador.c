@@ -32,6 +32,7 @@ void sim_manejador_SIGINT(int sig) {
         sim_mandar_msg_jefe(sim_global, i, M_FIN);
 
     sim_esperar_jefes();
+    sim_free_resources(sim_global);
     sim_destroy(sim_global);
     
     exit(EXIT_SUCCESS);
@@ -174,13 +175,6 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
     
-    struct mq_attr atrr;
-    mq_getattr(sim->cola_msg_naves, &atrr);
-    long currmsg =  atrr.mq_curmsgs;
-    sprintf(out_buff, "Mensajes restantes en ""cola_msg_naves"": %ld", currmsg);
-    msg_simOK(fpo, out_buff);    
-
-    
 
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
@@ -211,12 +205,6 @@ void sim_free_resources(tipo_sim * sim) {
     
     //mapa_destroy(sim->mapa); // !!!!!!!!!!! No se
 }
-
-
-
-
-
-
 
 
 
@@ -483,4 +471,23 @@ void sim_init_shm_readers_count(tipo_sim * sim) {
 // !!!!!!!!!!!!!!!!!!!!!!!
     sim->readers_count = 0;
 
+}
+
+
+void sim_down_mapa(tipo_sim * sim) {
+    do {
+        sem_wait(sim->sem_lecmapa);
+        printf("ERRNO_SEM5: %d", errno);
+    } while (errno == EINTR);
+
+    do {
+        sem_wait(sim->sem_escmapa);
+        printf("ERRNO_SEM6: %d", errno);
+    } while (errno == EINTR);
+}
+
+
+void sim_up_mapa(tipo_sim * sim) {
+    sem_post(sim->sem_escmapa);
+    sem_post(sim->sem_lecmapa);
 }

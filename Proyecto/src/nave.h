@@ -31,6 +31,8 @@ void nave_actualizar_info(tipo_nave * tipo_nave, info_nave * info_nave);
 
 
 
+void nave_down_mapa(tipo_nave * nave);
+void nave_up_mapa(tipo_nave * nave);
 
 int nave_get_equipo(tipo_nave *nave);
 void nave_set_equipo(tipo_nave *nave, int equipo);
