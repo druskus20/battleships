@@ -264,7 +264,7 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
     
     do {
         err = mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL);
-        printf("ERRNO: %s\n", strerror(errno));
+        printf("ERRNO: %s\n", errno);
     } while (errno == EAGAIN);
 
     if (err == -1) {
