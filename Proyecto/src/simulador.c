@@ -83,11 +83,18 @@ void sim_init(tipo_sim * sim) {
         msg_simERR(fpo, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
+
+    msg_simOK(fpo, "Inicializando semaforo naves-ready");
+    if((sim->sem_naves_ready = sem_open(SEM_NAVES_READY, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_naves_ready""");
+		exit(EXIT_FAILURE);
+	}  
     
   
     sim_init_pipes_jefes(sim);
     sim_init_cola_nave(sim);
     sim_init_signal_handlers();
+
 
 }
 
@@ -101,7 +108,8 @@ void sim_run(tipo_sim * sim) {
     // Comienzo simulador
     msg_simOK(fpo, "Comenzando");
     sim_run_jefes(sim);
-    sleep(2);
+    
+    sim_esperar_naves_ready(sim);
   
     alarm(TURNO_SECS);
 
@@ -143,7 +151,9 @@ void sim_destroy(tipo_sim * sim) {
     msg_simOK(fpo, out_buff);    
 
     mq_close(sim->cola_msg_naves);
+    sem_close(sim->sem_naves_ready);
     sem_close(sim->sem_sim);
+    sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     mq_unlink(COLA_SIM);
     free(sim);
@@ -161,6 +171,7 @@ void sim_destroy(tipo_sim * sim) {
 
 // Inicializa pipes a jefes
 void sim_init_pipes_jefes(tipo_sim * sim) { 
+    char out_buffer[BUFF_MAX];
     msg_simOK(fpo, "Inicializando pipes a jefes");
     int pipe_status;
     for (int i = 0; i < N_EQUIPOS; i++){
@@ -169,7 +180,9 @@ void sim_init_pipes_jefes(tipo_sim * sim) {
             msg_simERR(fpo, "sim_init_pipes_jefes");
 		    exit(EXIT_FAILURE);
         }
+
     }
+    
 }
 
 // Ejecuta los jefes
@@ -221,7 +234,7 @@ void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
     fd = sim->pipes_jefes[equipo];
 
     // cierra el descriptor de entrada en el jefe
-    close(fd[0]); 
+
     write(fd[1], msg, MSG_MAX); 
 }
 
@@ -255,6 +268,7 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     char * msg_buffer;  // !!! solucciona invalid read creo
     int err = 0;
+    
 
     msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
     strcpy(msg_buffer, "");
@@ -262,11 +276,11 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
 
     msg_simOK(fpo, "Esperando mensaje de nave");
     
-    do {
+    
+        errno = 0;
         err = mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL);
-        printf("ERRNO: %s\n", strerror(errno));
-    } while (errno == EAGAIN);
-
+        printf("ERRNO: %d\n", errno);
+    
     if (err == -1) {
         msg_simERR(fpo, "mq_receive");
         exit(EXIT_FAILURE);
@@ -307,7 +321,7 @@ void sim_init_signal_handlers() {
     // Inicializacion del manejador SIGALRM
     act_sigalrm.sa_handler = sim_manejador_SIGALRM;
     sigemptyset(&(act_sigalrm.sa_mask));
-    act_sigalrm.sa_flags = 0;
+    act_sigalrm.sa_flags = SA_RESTART;
     
     if (sigaction(SIGALRM, &act_sigalrm, NULL) < 0) {
         msg_simERR(fpo, "sigaction de SIGALRM: %s");
@@ -343,4 +357,12 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * extra) {    switch (accion_
             return 1;
     }
     return 0;
+}
+
+
+void sim_esperar_naves_ready(tipo_sim * sim) {
+    msg_simOK(fpo, "Esperando a naves");
+    for (int i = 0; i < N_NAVES * N_EQUIPOS; i++) {
+        sem_wait(sim->sem_naves_ready);
+    }
 }

@@ -8,6 +8,7 @@
 #include <mqueue.h>
 #include <sys/stat.h>
 #include <math.h>
+#include <errno.h>
 
 #include "mapa.h"
 #include "msg.h"
@@ -73,6 +74,7 @@ void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
     nave_init_cola_sim(nave);
     nave_init_signal_handlers(nave);
+    nave_ready(nave);
 }
 
 void nave_run(tipo_nave *nave){
@@ -184,8 +186,7 @@ char * nave_recibir_msg_jefe(tipo_nave *nave) {
     sprintf(out_buff, "Esperando mensaje de %s", tag);
     msg_naveOK(fpo, nave, out_buff);
     fd = nave->pipe_jefe;
-    // cierra el descriptor de salida en el sim
-    close(fd[1]); 
+    
     read(fd[0], msg_buffer, MSG_MAX);
     sprintf(out_buff, "Recibido mensaje: %s", msg_buffer);
     msg_naveOK(fpo, nave, out_buff);
@@ -243,15 +244,15 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
         char msg_buffer[MSG_MAX] = "";   // !!! puede fallar al concatenar la tag dentro        
-
         
+     
 
         load_sim_tag(sim_tag);
         sprintf(msg_buffer, "%s %s", msg, nave->tag);
         sprintf(out_buff, "Mandando mensaje a %s", sim_tag);
         msg_naveOK(fpo, nave, out_buff);
 
-
+        
         if(mq_send(nave->cola_sim, (char *)&msg_buffer, MSG_MAX, 1) == -1) {
             msg_naveERR(fpo, nave, "mq_send");
             exit(EXIT_FAILURE); 
@@ -282,3 +283,15 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
 }
 
 
+// Avisa al simulador de que la nave esta preparada
+void nave_ready(tipo_nave * nave) {
+    sem_t * sem_naves_ready;
+    msg_naveOK(fpo, nave, "Nave preparada");
+    if((sem_naves_ready = sem_open(SEM_NAVES_READY, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_naveERR(fpo, nave, "sem_open de ""sem_naves_ready""");
+		exit(EXIT_FAILURE);
+	}  
+    sem_post(sem_naves_ready);
+
+    sem_close(sem_naves_ready);
+}

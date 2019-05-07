@@ -18,6 +18,8 @@
 
 // Semaforos
 #define SEM_SIMULADOR "/sem_simulador"
+#define SEM_NAVES_READY "/sem_naves_ready"
+
 #define SHM_MAP_NAME "/shm_naves"
 
 // Colas
@@ -38,7 +40,7 @@
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque
 #define ATAQUE_DANO 10    // Daño de un ataque
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
-#define TURNO_SECS 6      // Segundos que dura un turno
+#define TURNO_SECS 5      // Segundos que dura un turno
 
 /*** MAPA ***/
 #define MAPA_MAXX 20         // Número de columnas del mapa
@@ -148,6 +150,7 @@ typedef struct {
 	char tag[TAG_MAX];
 	int equipos_res;		// equipos (jefes) restantes
 	mqd_t cola_msg_naves;
+	sem_t *sem_naves_ready;
 	sem_t *sem_sim;		// semaforo para avisar al monitor
 } tipo_sim;
 
@@ -165,9 +168,6 @@ typedef struct {
 	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
 	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
 } tipo_mapa;
-
-
-
 
 
 

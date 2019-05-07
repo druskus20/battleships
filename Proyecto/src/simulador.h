@@ -35,5 +35,6 @@ void sim_init_signal_handlers();
 int sim_actua(tipo_sim * sim, int accion_sim, char * extra);
 
 int parse_accion(char * accion);
+void sim_esperar_naves_ready(tipo_sim * sim);
 
 #endif 
