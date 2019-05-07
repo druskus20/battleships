@@ -54,4 +54,6 @@ int nave_get_dmg(tipo_nave *nave);
 void nave_set_dmg(tipo_nave *nave, int dmg); 
 
 void nave_ready(tipo_nave * nave);
+void nave_init_semaforos(tipo_nave * nave);
+
 #endif

@@ -202,11 +202,13 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
-    
+    int equipo;
     
     switch (accion_jefe){   
         case DESTRUIR:
-        break;
+            extractv_jefe_tag(extra, &equipo);
+            
+            break;
 
         case TURNO: 
             for (int i = 0; i < N_NAVES; i++) {

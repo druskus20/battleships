@@ -5,6 +5,19 @@
 
 char symbol_equipos[N_EQUIPOS] = {'A','B','C','D'};
 
+tipo_mapa * mapa_create() {
+	tipo_mapa  * new_mapa;
+
+	new_mapa = (tipo_mapa *)malloc(sizeof(tipo_mapa));
+
+	return new_mapa;
+}
+
+void mapa_destroy(tipo_mapa * mapa) {
+	free(mapa);
+}
+
+
 void mapa_clean_casilla(tipo_mapa *mapa, int posy, int posx) {
 	mapa->casillas[posy][posx].equipo=-1;
 	mapa->casillas[posy][posx].num_nave=-1;
@@ -23,7 +36,7 @@ int mapa_get_distancia(tipo_mapa *mapa, int oriy,int orix,int targety,int target
 	return (distx > disty)? distx:disty;
 }
 
-tipo_nave mapa_get_nave(tipo_mapa *mapa, int equipo, int num_nave) {
+info_nave mapa_get_nave(tipo_mapa *mapa, int equipo, int num_nave) {
 	return mapa->info_naves[equipo][num_nave];
 }
 
@@ -60,7 +73,7 @@ void mapa_set_symbol(tipo_mapa *mapa, int posy, int posx, char symbol) {
 }
 
 
-bool mapa_set_nave(tipo_mapa *mapa, tipo_nave nave) {
+bool mapa_set_nave(tipo_mapa *mapa, info_nave nave) {
 	if (nave.equipo >= N_EQUIPOS) return false;
 	if (nave.num >= N_NAVES) return false;
 	mapa->info_naves[nave.equipo][nave.num]=nave;

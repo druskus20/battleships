@@ -16,6 +16,7 @@
 
 #include "jefe.h"
 #include "nave.h"
+#include "mapa.h"
 
 tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
           // semaforo monitor-simulador	
@@ -66,6 +67,7 @@ tipo_sim * sim_create() {
 
     new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
     new_sim->equipos_res = 0;
+    new_sim->mapa = mapa_create();
     load_sim_tag(new_sim->tag);
     
     sprintf(out_buff, "Creando %s", new_sim->tag);
@@ -77,23 +79,27 @@ void sim_init(tipo_sim * sim) {
 
     msg_simOK(fpo, "Inicializando");
 
+
+    sim_init_semaforos(sim);
+    sim_init_pipes_jefes(sim);
+    sim_init_cola_nave(sim);
+    sim_init_signal_handlers();
+
+
+}
+
+void sim_init_semaforos(tipo_sim * sim) {
     // Inicializacion de semaforo simulador
-    msg_simOK(fpo, "Inicializando semaforo simulador-monitor");
+    msg_simOK(fpo, "Inicializando semaforos");
     if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, "sem_open de ""sem_sim""");
 		exit(EXIT_FAILURE);
 	}  
 
-    msg_simOK(fpo, "Inicializando semaforo naves-ready");
     if((sim->sem_naves_ready = sem_open(SEM_NAVES_READY, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, "sem_open de ""sem_naves_ready""");
 		exit(EXIT_FAILURE);
 	}  
-    
-  
-    sim_init_pipes_jefes(sim);
-    sim_init_cola_nave(sim);
-    sim_init_signal_handlers();
 
 
 }
@@ -143,12 +149,14 @@ void sim_destroy(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
-
+    
     struct mq_attr atrr;
     mq_getattr(sim->cola_msg_naves, &atrr);
     long currmsg =  atrr.mq_curmsgs;
     sprintf(out_buff, "Mensajes restantes en ""cola_msg_naves"": %ld", currmsg);
     msg_simOK(fpo, out_buff);    
+
+    mapa_destroy(sim->mapa);
 
     mq_close(sim->cola_msg_naves);
     sem_close(sim->sem_naves_ready);
@@ -156,6 +164,7 @@ void sim_destroy(tipo_sim * sim) {
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     mq_unlink(COLA_SIM);
+    
     free(sim);
    
 }
@@ -365,4 +374,10 @@ void sim_esperar_naves_ready(tipo_sim * sim) {
     for (int i = 0; i < N_NAVES * N_EQUIPOS; i++) {
         sem_wait(sim->sem_naves_ready);
     }
+}
+
+
+
+void sim_escribe_mapa() {
+    
 }

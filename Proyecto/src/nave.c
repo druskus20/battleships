@@ -72,6 +72,7 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 }
 void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
+    nave_init_semaforos(nave);
     nave_init_cola_sim(nave);
     nave_init_signal_handlers(nave);
     nave_ready(nave);
@@ -104,6 +105,9 @@ void nave_destroy(tipo_nave *nave){
     sprintf(out_buff, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buff);
     mq_close(nave->cola_sim);
+    sem_close(nave->sem_lecmapa);
+    sem_close(nave->sem_mutex1);
+    sem_close(nave->sem_mutex3);
     free(nave);
 }
 
@@ -275,6 +279,8 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
             nave_mandar_msg_sim(nave, "ATACAR");  // !!!  que reciba un argumento mas
             break;
 
+        case DESTRUIR:
+        
         default:
             return 1; 
             
@@ -294,4 +300,23 @@ void nave_ready(tipo_nave * nave) {
     sem_post(sem_naves_ready);
 
     sem_close(sem_naves_ready);
+}
+
+void nave_init_semaforos(tipo_nave * nave) {
+    msg_naveOK(fpo, nave, "Inicializando semaforos");
+    if((nave->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_lecmapa""");
+		exit(EXIT_FAILURE);
+	}  
+
+    if((nave->sem_mutex1 = sem_open(MUTEX_LE1, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_mutex1""");
+		exit(EXIT_FAILURE);
+	}  
+
+    if((nave->sem_mutex3 = sem_open(MUTEX_LE3, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_mutex3""");
+		exit(EXIT_FAILURE);
+	}  
+
 }
