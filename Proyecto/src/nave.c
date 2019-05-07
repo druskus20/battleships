@@ -93,20 +93,25 @@ void nave_run(tipo_nave *nave){
 
 void nave_end(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Finalizando");
+    nave_free_resources(nave);
+}
+void nave_free_resources(tipo_nave * nave) {
+    mq_close(nave->cola_sim);
+    sem_close(nave->sem_lecmapa);
+    sem_close(nave->sem_escmapa);
+    sem_close(nave->sem_mutex1);
+    sem_close(nave->sem_mutex3);
+    munmap(nave->mapa, sizeof(*nave->mapa));
+    munmap(nave->readers_count, sizeof(*nave->readers_count));
 }
 
 void nave_destroy(tipo_nave *nave){
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buff);
-    mq_close(nave->cola_sim);
-    sem_close(nave->sem_lecmapa);
-    sem_close(nave->sem_escmapa);
-    sem_close(nave->sem_mutex1);
-    sem_close(nave->sem_mutex3);
+
     sem_unlink(MUTEX_LE3);
-    munmap(nave->mapa, sizeof(*nave->mapa));
-    munmap(nave->readers_count, sizeof(*nave->readers_count));
+
     free(nave);
 }
 

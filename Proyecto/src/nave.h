@@ -15,6 +15,7 @@ void nave_run(tipo_nave *nave);
 void nave_end(tipo_nave * nave);
 void nave_destroy(tipo_nave *nave);
 
+void nave_free_resources(tipo_nave * nave) ;
 void nave_init_signal_handlers(tipo_nave * nave);
 void nave_init_cola_sim(tipo_nave * nave);
 void nave_mandar_msg_sim(tipo_nave * nave, char * msg);

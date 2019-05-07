@@ -164,6 +164,8 @@ void sim_end(tipo_sim *sim) {
         sim_mandar_msg_jefe(sim_global, i, M_FIN);
     
     sim_esperar_jefes();
+
+    sim_free_resources(sim);
 }
 
 
@@ -178,7 +180,7 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Mensajes restantes en ""cola_msg_naves"": %ld", currmsg);
     msg_simOK(fpo, out_buff);    
 
-    sim_free_resources(sim);
+    
 
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
@@ -205,7 +207,9 @@ void sim_free_resources(tipo_sim * sim) {
     sem_close(sim->sem_mutex2);
     munmap(sim->mapa, sizeof(*sim->mapa));
     munmap(sim->readers_count, sizeof(*sim->readers_count));
-    mapa_destroy(sim->mapa);
+    
+    
+    //mapa_destroy(sim->mapa); // !!!!!!!!!!! No se
 }
 
 

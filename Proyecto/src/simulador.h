@@ -23,7 +23,8 @@ void sim_run(tipo_sim * sim);
 void sim_end(tipo_sim * sim); 
 void sim_destroy(tipo_sim * sim); 
 
-
+// Libera los recursos de tipo cola, memoria compartida etc
+void sim_free_resources(tipo_sim * sim);
 void sim_run_jefes(tipo_sim *sim);
 void sim_esperar_jefes();
 void sim_init_pipes_jefes(tipo_sim *sim);
