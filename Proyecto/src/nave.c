@@ -101,8 +101,10 @@ void nave_destroy(tipo_nave *nave){
     msg_naveOK(fpo, nave, out_buff);
     mq_close(nave->cola_sim);
     sem_close(nave->sem_lecmapa);
+    sem_close(nave->sem_escmapa);
     sem_close(nave->sem_mutex1);
     sem_close(nave->sem_mutex3);
+    sem_unlink(MUTEX_LE3);
     munmap(nave->mapa, sizeof(*nave->mapa));
     munmap(nave->readers_count, sizeof(*nave->readers_count));
     free(nave);
@@ -270,6 +272,11 @@ void nave_init_semaforos(tipo_nave * nave) {
 		exit(EXIT_FAILURE);
 	}  
 
+    if((nave->sem_escmapa = sem_open(SEM_ESCMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_naveERR(fpo, nave, "sem_open de ""sem_escmapa""");
+		exit(EXIT_FAILURE);
+	}  
+
     if((nave->sem_mutex1 = sem_open(MUTEX_LE1, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_naveERR(fpo, nave, "sem_open de ""sem_mutex1""");
 		exit(EXIT_FAILURE);
@@ -317,3 +324,50 @@ void nave_init_shm_readers_count(tipo_nave * nave)  {
 }
 
 
+
+
+
+void nave_down_mapa(tipo_nave * nave) {
+    
+    do {
+        sem_wait(nave->sem_mutex3);
+        printf("ERRNO_SEM1: %d", errno);
+    } while (errno == EINTR);
+    do {
+        sem_wait(nave->sem_lecmapa);
+        printf("ERRNO_SEM2: %d", errno);
+    } while (errno == EINTR);
+    do {
+        sem_wait(nave->sem_mutex1);
+        printf("ERRNO_SEM3: %d", errno);
+    } while (errno == EINTR);
+
+    nave->readers_count++;
+    if (*nave->readers_count == 1){
+        do {
+            sem_wait(nave->sem_escmapa);
+            printf("ERRNO_SEM4: %d", errno);
+        } while (errno == EINTR);
+    }
+    sem_post(nave->sem_mutex1);
+    sem_post(nave->sem_lecmapa);
+    sem_post(nave->sem_mutex3);
+
+}
+
+
+void nave_up_mapa(tipo_nave * nave) {
+
+    do {
+        sem_wait(nave->sem_mutex1);
+        printf("ERRNO_SEM3: %d", errno);
+    } while (errno == EINTR);
+    nave->readers_count--;
+    
+    
+    if (*nave->readers_count == 0)
+        sem_post(nave->sem_escmapa);
+    
+    sem_post(nave->sem_mutex1);
+
+}

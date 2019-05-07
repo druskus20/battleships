@@ -103,6 +103,25 @@ void sim_init_semaforos(tipo_sim * sim) {
 		exit(EXIT_FAILURE);
 	}  
 
+    if((sim->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_lecmapa""");
+		exit(EXIT_FAILURE);
+	}  
+
+    if((sim->sem_escmapa = sem_open(SEM_ESCMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_escmapa""");
+		exit(EXIT_FAILURE);
+	}  
+
+    if((sim->sem_mutex1 = sem_open(MUTEX_LE1, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_mutex1""");
+		exit(EXIT_FAILURE);
+	}  
+
+    if((sim->sem_mutex2 = sem_open(MUTEX_LE2, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
+        msg_simERR(fpo, "sem_open de ""sem_mutex3""");
+		exit(EXIT_FAILURE);
+	}  
 
 }
 
@@ -147,6 +166,7 @@ void sim_end(tipo_sim *sim) {
     sim_esperar_jefes();
 }
 
+
 void sim_destroy(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", sim->tag);
@@ -158,20 +178,34 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Mensajes restantes en ""cola_msg_naves"": %ld", currmsg);
     msg_simOK(fpo, out_buff);    
 
-    mapa_destroy(sim->mapa);
+    sim_free_resources(sim);
 
-    mq_close(sim->cola_msg_naves);
-    sem_close(sim->sem_naves_ready);
-    sem_close(sim->sem_sim);
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
+    sem_unlink(SEM_ESCMAPA); 
+    sem_unlink(SEM_LECMAPA); 
+    sem_unlink(MUTEX_LE1); 
+    sem_unlink(MUTEX_LE2); 
     mq_unlink(COLA_SIM);
-    munmap(sim->mapa, sizeof(*sim->mapa));
     shm_unlink(SHM_MAP_NAME);
-    munmap(sim->readers_count, sizeof(*sim->readers_count));
     shm_unlink(SHM_READERS_COUNT);
     free(sim);
    
+}
+
+void sim_free_resources(tipo_sim * sim) {
+
+    // MAPA? !!!
+    mq_close(sim->cola_msg_naves);
+    sem_close(sim->sem_naves_ready);
+    sem_close(sim->sem_sim);
+    sem_close(sim->sem_escmapa);
+    sem_close(sim->sem_lecmapa);
+    sem_close(sim->sem_mutex1);
+    sem_close(sim->sem_mutex2);
+    munmap(sim->mapa, sizeof(*sim->mapa));
+    munmap(sim->readers_count, sizeof(*sim->readers_count));
+    mapa_destroy(sim->mapa);
 }
 
 
@@ -185,7 +219,6 @@ void sim_destroy(tipo_sim * sim) {
 
 // Inicializa pipes a jefes
 void sim_init_pipes_jefes(tipo_sim * sim) { 
-    char out_buffer[BUFF_MAX];
     msg_simOK(fpo, "Inicializando pipes a jefes");
     int pipe_status;
     for (int i = 0; i < N_EQUIPOS; i++){
@@ -215,6 +248,7 @@ void sim_run_jefes(tipo_sim *sim) {
             int fd[2];
             fd[0] = sim->pipes_jefes[i][0];
             fd[1] = sim->pipes_jefes[i][1];
+            sim_free_resources(sim);
             free(sim);
             jefe_launch(i, fd);
             
