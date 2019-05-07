@@ -50,7 +50,8 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 
     new_nave = (tipo_nave *)malloc(sizeof(new_nave[0]));
    
-   
+    new_nave->equipo = equipo;
+    new_nave->num = num;
 
 
     new_nave->pipe_jefe = pipe_jefe;

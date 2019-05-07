@@ -28,16 +28,16 @@
 
 
 
-#define SHM_MAP_NAME "/shm_mapa"
-#define SHM_READERS_COUNT "/shm_mapa"
+#define SHM_MAP_NAME "/shm_mapa_1"
+#define SHM_READERS_COUNT "/shm_readers_count_1"
 
 // Colas
 #define COLA_SIM "/cola_sim"
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 1 	  // Número de equipos
-#define N_NAVES 1   	  // Número de naves por equipo
+#define N_EQUIPOS 4 	  // Número de equipos
+#define N_NAVES 4   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
@@ -161,6 +161,7 @@ typedef struct {
 typedef struct {
 
 	int equipo;    // Equipo de la nave	
+	int num;
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
 	mqd_t cola_sim;
