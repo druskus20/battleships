@@ -64,15 +64,15 @@ void msg_simERR(FILE * fpo, char * msg);
 void load_jefe_tag(int equipo, char tag[TAG_MAX]);
 // equipo es parametro de salida
 void extractv_jefe_tag(char tag[TAG_MAX], int * equipo);
-void msg_jefeOK(FILE * fpo, tipo_jefe * jefe, char * msg);
-void msg_jefeERR(FILE * fpo, tipo_jefe * jefe, char * msg);
+void msg_jefeOK(FILE * fpo, proc_jefe * jefe, char * msg);
+void msg_jefeERR(FILE * fpo, proc_jefe * jefe, char * msg);
 
 // tag es parametro de salida
 void load_nave_tag(int equipo, int numero, char tag[TAG_MAX]);
 // equipo y numero_nave son parametros de salida
 void extractv_nave_tag(char tag[TAG_MAX], int * equipo, int * num_nave);
-void msg_naveOK(FILE * fpo, tipo_nave * nave, char * msg);
-void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
+void msg_naveOK(FILE * fpo, proc_nave * nave, char * msg);
+void msg_naveERR(FILE * fpo, proc_nave * nave, char * msg);
 
 void estiloMSG_set_default();
 void estiloMSG_set_colorful();

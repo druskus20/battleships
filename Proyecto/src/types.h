@@ -131,7 +131,7 @@ typedef struct {
 	int posx; 	   // Columna en el mapa
 	int posy;  	   // Fila en el mapa	
 	int equipo;
-	int num;
+	int num; 
 	int dmg;	   // El daño que inflinge
 
 	int alcance;
@@ -171,7 +171,7 @@ typedef struct {
 	sem_t *sem_mutex3;
 	tipo_mapa * mapa;
 	int * readers_count;
-} tipo_nave;
+} proc_nave;
 
 
 
@@ -187,7 +187,7 @@ typedef struct {
 	int pid_naves[N_NAVES];
 	int naves_res;	// naves restantes
 	bool naves_vivas[N_NAVES];
-} tipo_jefe;
+} proc_jefe;
 
 /*** SIM ***/
 typedef struct {
@@ -211,7 +211,7 @@ typedef struct {
 	sem_t *sem_sim;		// semaforo para avisar al monitor
 	int * readers_count;
 	
-} tipo_sim;
+} proc_sim;
 
 
 

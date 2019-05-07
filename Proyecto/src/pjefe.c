@@ -1,4 +1,4 @@
-#include "jefe.h"
+#include "pjefe.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include "nave.h"
+#include "pnave.h"
 #include "msg.h" 
 
 
@@ -27,7 +27,7 @@ void jefe_manejador_SIGINT(int sig) {
 */
 
 void jefe_launch(int equipo, int *pipe_sim) {     
-        tipo_jefe * jefe;
+        proc_jefe * jefe;
         jefe = jefe_create(equipo, pipe_sim);
         jefe_init(jefe);
         jefe_run(jefe);
@@ -42,11 +42,11 @@ void jefe_launch(int equipo, int *pipe_sim) {
 }
 
 
-tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
+proc_jefe * jefe_create(int equipo, int *pipe_sim) {
     
-    tipo_jefe *new_jefe;
+    proc_jefe *new_jefe;
 
-    new_jefe = (tipo_jefe *)malloc(sizeof(new_jefe[0]));
+    new_jefe = (proc_jefe *)malloc(sizeof(new_jefe[0]));
 
     new_jefe->equipo = equipo;
     new_jefe->naves_res = 0;    // !!!
@@ -68,12 +68,12 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     return new_jefe;
 }
 
-void jefe_init(tipo_jefe *jefe) {
+void jefe_init(proc_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Inicializando");
     jefe_init_pipes_naves(jefe);
 }
 
-void jefe_run(tipo_jefe *jefe){
+void jefe_run(proc_jefe *jefe){
 
 
     bool fin = false;
@@ -94,20 +94,20 @@ void jefe_run(tipo_jefe *jefe){
     }   
 } 
 
-void jefe_end(tipo_jefe *jefe) {
+void jefe_end(proc_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Finalizando");
     jefe_esperar_naves(jefe);
     
     
 }
-void jefe_destroy(tipo_jefe *jefe){
+void jefe_destroy(proc_jefe *jefe){
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", jefe->tag);
     msg_jefeOK(fpo, jefe, out_buff);
     free(jefe);
 }
 
-void jefe_run_naves(tipo_jefe *jefe){
+void jefe_run_naves(proc_jefe *jefe){
     int pid = -1;
     int equipo = jefe->equipo;
     msg_jefeOK(fpo, jefe, "Ejecutando naves");
@@ -136,13 +136,13 @@ void jefe_run_naves(tipo_jefe *jefe){
     }
 }
 
-void jefe_esperar_naves(tipo_jefe *jefe) {
+void jefe_esperar_naves(proc_jefe *jefe) {
     msg_jefeOK(fpo, jefe, "Esperando naves");
     for (int i = 0; i < N_NAVES; i++)
         wait(NULL);
 }
 
-void jefe_init_pipes_naves(tipo_jefe * jefe) { 
+void jefe_init_pipes_naves(proc_jefe * jefe) { 
     msg_jefeOK(fpo, jefe,"Inicializando pipes a naves");
     int pipe_status;
     for (int i = 0; i < N_NAVES; i++){
@@ -155,7 +155,7 @@ void jefe_init_pipes_naves(tipo_jefe * jefe) {
 }
 
 
-char * jefe_recibir_msg_sim(tipo_jefe *jefe) {
+char * jefe_recibir_msg_sim(proc_jefe *jefe) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
     char * msg_buffer;
@@ -178,7 +178,7 @@ char * jefe_recibir_msg_sim(tipo_jefe *jefe) {
 
 }
 
-void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
+void jefe_mandar_msg_nave(proc_jefe *jefe, int num_nave) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
     char msg_buffer[MSG_MAX] = "";
@@ -195,7 +195,7 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
     write(fd[1], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }
 
-bool jefe_evaluar_fin(tipo_jefe * jefe) {
+bool jefe_evaluar_fin(proc_jefe * jefe) {
     if (jefe->naves_res == 0)
         return true;
     return false;
@@ -204,7 +204,7 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 
 
-int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
+int jefe_actua (proc_jefe * jefe, int accion_jefe, char * extra) {
     int num_nave, equipo;
     
     switch (accion_jefe){   

@@ -1,4 +1,4 @@
-#include "nave.h"
+#include "pnave.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +18,7 @@
 
 
 extern FILE * fpo;
-tipo_nave * nave_global;
+proc_nave * nave_global;
 
 
 
@@ -43,12 +43,12 @@ void nave_launch(int equipo, int num, int *pipe_jefe) {
     nave_destroy(nave_global);
     exit(EXIT_SUCCESS);
 }
-tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
+proc_nave * nave_create(int equipo, int num, int *pipe_jefe) {
     
-    tipo_nave *new_nave;
+    proc_nave *new_nave;
     char out_buff[BUFF_MAX];
 
-    new_nave = (tipo_nave *)malloc(sizeof(new_nave[0]));
+    new_nave = (proc_nave *)malloc(sizeof(new_nave[0]));
    
     new_nave->equipo = equipo;
     new_nave->num = num;
@@ -63,7 +63,7 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
     return new_nave;
 }
 
-void nave_init(tipo_nave * nave){
+void nave_init(proc_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
     nave_init_semaforos(nave);
     nave_init_cola_sim(nave);
@@ -73,7 +73,7 @@ void nave_init(tipo_nave * nave){
     nave_ready(nave);
 }
 
-void nave_run(tipo_nave *nave){
+void nave_run(proc_nave *nave){
     bool fin = false;
     char * msg_recibido;
 
@@ -91,11 +91,11 @@ void nave_run(tipo_nave *nave){
     }
 }
 
-void nave_end(tipo_nave * nave){
+void nave_end(proc_nave * nave){
     msg_naveOK(fpo, nave, "Finalizando");
     nave_free_resources(nave);
 }
-void nave_free_resources(tipo_nave * nave) {
+void nave_free_resources(proc_nave * nave) {
     mq_close(nave->cola_sim);
     sem_close(nave->sem_lecmapa);
     sem_close(nave->sem_escmapa);
@@ -105,7 +105,7 @@ void nave_free_resources(tipo_nave * nave) {
     munmap(nave->readers_count, sizeof(*nave->readers_count));
 }
 
-void nave_destroy(tipo_nave *nave){
+void nave_destroy(proc_nave *nave){
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buff);
@@ -116,11 +116,11 @@ void nave_destroy(tipo_nave *nave){
 }
 
 
-char * nave_get_tag(tipo_nave *nave) {
+char * nave_get_tag(proc_nave *nave) {
     return nave->tag;
 }
 
-void nave_set_tag(tipo_nave *nave, char *tag) {
+void nave_set_tag(proc_nave *nave, char *tag) {
     strcpy(nave->tag, tag);
 }
 
@@ -128,24 +128,24 @@ void nave_set_tag(tipo_nave *nave, char *tag) {
 
 
 /*
-int nave_get_vida(tipo_nave *nave) {
+int nave_get_vida(proc_nave *nave) {
     return nave->vida;
 }
-void nave_set_vida(tipo_nave *nave, int vida) {
+void nave_set_vida(proc_nave *nave, int vida) {
     nave->vida = vida;
 }*/
 
 
-int nave_get_equipo(tipo_nave *nave) {
+int nave_get_equipo(proc_nave *nave) {
     return nave->equipo;
 }
-void nave_set_equipo(tipo_nave *nave, int equipo) {
+void nave_set_equipo(proc_nave *nave, int equipo) {
     nave->equipo = equipo;
 }
 
 
 
-char * nave_recibir_msg_jefe(tipo_nave *nave) {
+char * nave_recibir_msg_jefe(proc_nave *nave) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
     char * msg_buffer;
@@ -169,7 +169,7 @@ char * nave_recibir_msg_jefe(tipo_nave *nave) {
 
 
 
-void nave_init_cola_sim(tipo_nave * nave) {
+void nave_init_cola_sim(proc_nave * nave) {
     
     struct mq_attr attributes;
      msg_naveOK(fpo, nave,"Inicializando cola de mensajes a simulador");
@@ -192,7 +192,7 @@ void nave_init_cola_sim(tipo_nave * nave) {
 }
 
 
-void nave_init_signal_handlers (tipo_nave * nave) {
+void nave_init_signal_handlers (proc_nave * nave) {
     struct sigaction act_sigterm;
 
     msg_naveOK(fpo, nave, "Inicializando manejadores de señal");
@@ -205,13 +205,13 @@ void nave_init_signal_handlers (tipo_nave * nave) {
     sigaddset(&act_sigterm.sa_mask, SIGPIPE);
     act_sigterm.sa_flags = 0;
 
-    if (sigaction(SIGINT, &act_sigterm, NULL) < 0) {
+    if (sigaction(SIGTERM, &act_sigterm, NULL) < 0) {
         msg_naveERR(fpo, nave, "sigaction de SIGTERM");
         exit(EXIT_FAILURE);
     }
 }
 
-void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
+void nave_mandar_msg_sim(proc_nave * nave, char * msg) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
@@ -237,7 +237,7 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
 
 
 // retorna bool "fin"
-int nave_actua (tipo_nave * nave, int action_code, char * extra) {
+int nave_actua (proc_nave * nave, int action_code, char * extra) {
     switch (action_code){
         case MOVER_ALEATORIO:
             nave_mandar_msg_sim(nave, "MOVER");  // !!!  que reciba un argumento mas
@@ -258,7 +258,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
 
 
 // Avisa al simulador de que la nave esta preparada
-void nave_ready(tipo_nave * nave) {
+void nave_ready(proc_nave * nave) {
     sem_t * sem_naves_ready;
     msg_naveOK(fpo, nave, "Nave preparada");
     if((sem_naves_ready = sem_open(SEM_NAVES_READY, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
@@ -270,7 +270,7 @@ void nave_ready(tipo_nave * nave) {
     sem_close(sem_naves_ready);
 }
 
-void nave_init_semaforos(tipo_nave * nave) {
+void nave_init_semaforos(proc_nave * nave) {
     msg_naveOK(fpo, nave, "Inicializando semaforos");
     if((nave->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_naveERR(fpo, nave, "sem_open de ""sem_lecmapa""");
@@ -294,7 +294,7 @@ void nave_init_semaforos(tipo_nave * nave) {
 
 }
 
-void nave_init_shm_mapa(tipo_nave * nave)  {
+void nave_init_shm_mapa(proc_nave * nave)  {
     msg_naveOK(fpo, nave, "Inicializando mapa (shm)");
     int fd_shm = shm_open(SHM_MAP_NAME,
                           O_RDONLY, 0);
@@ -311,7 +311,7 @@ void nave_init_shm_mapa(tipo_nave * nave)  {
     }
     
 }
-void nave_init_shm_readers_count(tipo_nave * nave)  {
+void nave_init_shm_readers_count(proc_nave * nave)  {
     msg_naveOK(fpo, nave, "Inicializando contador de lectores (shm)");
     int fd_shm = shm_open(SHM_MAP_NAME,
                           O_RDONLY, 0);
@@ -332,7 +332,7 @@ void nave_init_shm_readers_count(tipo_nave * nave)  {
 
 
 
-void nave_down_mapa(tipo_nave * nave) {
+void nave_down_mapa(proc_nave * nave) {
     
     do {
         sem_wait(nave->sem_mutex3);
@@ -361,7 +361,7 @@ void nave_down_mapa(tipo_nave * nave) {
 }
 
 
-void nave_up_mapa(tipo_nave * nave) {
+void nave_up_mapa(proc_nave * nave) {
 
     do {
         sem_wait(nave->sem_mutex1);

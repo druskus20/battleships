@@ -13,7 +13,7 @@
 #include <getopt.h>
 #include <semaphore.h>
 
-#include <simulador.h>
+#include <psim.h>
 #include <gamescreen.h>
 #include <mapa.h>
 
