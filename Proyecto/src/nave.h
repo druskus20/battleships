@@ -1,7 +1,7 @@
 #ifndef SRC_NAVE_H_
 #define SRC_NAVE_H_
 
-#include <simulador.h>
+#include "simulador.h"
 #include <stdbool.h>
 
 

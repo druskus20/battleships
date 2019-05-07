@@ -28,8 +28,8 @@
 
 
 
-#define SHM_MAP_NAME "/shm_mapa_1"
-#define SHM_READERS_COUNT "/shm_readers_count_1"
+#define SHM_MAP_NAME "/shm_mapa_2"
+#define SHM_READERS_COUNT "/shm_readers_count_2"
 
 // Colas
 #define COLA_SIM "/cola_sim"
@@ -153,6 +153,7 @@ typedef struct {
 	sem_t *sem_mutex1;
 	sem_t *sem_mutex2;
 	sem_t *sem_escmapa;
+	char PRUEBA[MSG_MAX];
 } tipo_mapa;
 
 

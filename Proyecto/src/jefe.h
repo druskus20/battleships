@@ -1,7 +1,7 @@
 #ifndef SRC_JEFE_H_
 #define SRC_JEFE_H_
 
-#include <simulador.h>
+#include "simulador.h"
 #include <stdbool.h>
 
 

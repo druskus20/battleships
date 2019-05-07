@@ -25,6 +25,7 @@ tipo_nave * nave_global;
 // Manejador de la señal (SIGTERM)
 void nave_manejador_SIGTERM(int sig) {    
     //nave_end(nave_global);
+    nave_free_resources(nave_global);
     nave_destroy(nave_global);
     
     exit(EXIT_SUCCESS);
@@ -205,7 +206,7 @@ void nave_init_signal_handlers (tipo_nave * nave) {
     sigaddset(&act_sigterm.sa_mask, SIGPIPE);
     act_sigterm.sa_flags = 0;
 
-    if (sigaction(SIGINT, &act_sigterm, NULL) < 0) {
+    if (sigaction(SIGTERM, &act_sigterm, NULL) < 0) {
         msg_naveERR(fpo, nave, "sigaction de SIGTERM");
         exit(EXIT_FAILURE);
     }
@@ -245,6 +246,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
 
         case ATACAR: 
             nave_mandar_msg_sim(nave, "ATACAR");  // !!!  que reciba un argumento mas
+            printf("nave_mapa_cosa %s -\n", nave->mapa->PRUEBA);
             break;
 
         case DESTRUIR:
@@ -309,6 +311,7 @@ void nave_init_shm_mapa(tipo_nave * nave)  {
         msg_naveERR(fpo, nave, "mmap de ""nave_init_shm_mapa""");
          exit(EXIT_FAILURE);
     }
+    printf("NAVE_MAPA_COSA: %s\n", nave->mapa->PRUEBA);
     
 }
 void nave_init_shm_readers_count(tipo_nave * nave)  {

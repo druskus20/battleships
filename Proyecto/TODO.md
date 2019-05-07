@@ -79,6 +79,8 @@ Jueves 9 de mayo
 SECUENCIA DE TURNO: 
 Hablar de acciones / typedefs enum, cadenas de opcion
 
+* COMPROBACION DE ERROR EN WAITS, SA_REPEAT, SA_REPEAT NO FUNCIONA CON WAIT1
+
 *Simulador*
 while(true) {
 	leer_mensaje_nave() // cola

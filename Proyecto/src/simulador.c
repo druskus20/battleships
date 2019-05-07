@@ -68,7 +68,7 @@ tipo_sim * sim_create() {
 
     new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
     new_sim->equipos_res = 0;
-    new_sim->mapa = mapa_create();
+    // new_sim->mapa = mapa_create();
     load_sim_tag(new_sim->tag);
     
     sprintf(out_buff, "Creando %s", new_sim->tag);
@@ -84,8 +84,9 @@ void sim_init(tipo_sim * sim) {
     sim_init_semaforos(sim);
     sim_init_pipes_jefes(sim);
     sim_init_cola_nave(sim);
-    sim_init_signal_handlers();
     sim_init_mapa_shm(sim) ;
+    sim_init_signal_handlers();
+    
 
 
     sim_init_shm_readers_count(sim);
@@ -138,7 +139,8 @@ void sim_run(tipo_sim * sim) {
     sim_run_jefes(sim);
     
     sim_esperar_naves_ready(sim);
-  
+    strcpy(sim->mapa->PRUEBA, "asdsaoidiojsaodhpsadh"); ////!! !
+    printf("sim_mapa_cosa %s\n", sim->mapa->PRUEBA);
     alarm(TURNO_SECS);
 
     while(!fin) {        
@@ -175,7 +177,7 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
     
-
+    mapa_destroy(sim->mapa);
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     sem_unlink(SEM_ESCMAPA); 
@@ -241,6 +243,7 @@ void sim_run_jefes(tipo_sim *sim) {
             fd[0] = sim->pipes_jefes[i][0];
             fd[1] = sim->pipes_jefes[i][1];
             sim_free_resources(sim);
+            mapa_destroy(sim->mapa);
             free(sim);
             jefe_launch(i, fd);
             

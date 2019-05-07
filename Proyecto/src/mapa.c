@@ -2,12 +2,22 @@
 #include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
+#include "info_nave.h"
 char symbol_equipos[N_EQUIPOS] = {'A','B','C','D'};
 
 tipo_mapa * mapa_create() {
 	tipo_mapa  * new_mapa;
 	new_mapa = (tipo_mapa *)malloc(sizeof(tipo_mapa));
+	strcpy(new_mapa->PRUEBA, "AAAAAAAAAA");
+	for (int i = 0; i < N_EQUIPOS; i++){
+		for (int j = 0; j < N_NAVES; j++) {
+			info_nave * info = info_nave_create(i, j);
+			new_mapa->info_naves[i][j] = *info;
+			info_nave_destroy(info);
+		}
+	}
 	return new_mapa;
 }
 
