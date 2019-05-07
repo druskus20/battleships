@@ -85,7 +85,10 @@ void sim_init(tipo_sim * sim) {
     sim_init_cola_nave(sim);
     sim_init_signal_handlers();
 
+    sim_init_mapa_shm(sim) ;
 
+
+    sim_init_shm_readers_count(sim);
 }
 
 void sim_init_semaforos(tipo_sim * sim) {
