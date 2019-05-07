@@ -316,15 +316,16 @@ void nave_init_shm_mapa(tipo_nave * nave)  {
 }
 void nave_init_shm_readers_count(tipo_nave * nave)  {
     msg_naveOK(fpo, nave, "Inicializando contador de lectores (shm)");
-    int fd_shm = shm_open(SHM_MAP_NAME,
-                          O_RDONLY, 0);
+    int fd_shm = shm_open(SHM_READERS_COUNT,
+                            O_RDWR,
+                            S_IRUSR | S_IWUSR); 
     if(fd_shm == -1) {
         msg_naveERR(fpo, nave, "shm_open de ""nave_init_shm_readers_count""");
         exit(EXIT_FAILURE);
     }
     
     nave->readers_count  = mmap(NULL, sizeof(*nave->readers_count),
-                                PROT_READ, MAP_SHARED, fd_shm, 0);
+                                PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
     if(nave->readers_count == MAP_FAILED){
         msg_naveERR(fpo, nave, "mmap de ""nave_init_shm_readers_count""");
         exit(EXIT_FAILURE);
