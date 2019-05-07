@@ -185,6 +185,7 @@ typedef struct {
 	char tag[TAG_MAX]; 	
 	int pid_naves[N_NAVES];
 	int naves_res;	// naves restantes
+	bool naves_vivas[N_NAVES];
 } tipo_jefe;
 
 /*** SIM ***/
@@ -197,7 +198,7 @@ typedef struct {
 	char tag[TAG_MAX];
 	int equipos_res;		// equipos (jefes) restantes
 	tipo_mapa *mapa;
-	bool naves_vivas[N_EQUIPOS][N_NAVES];
+
 	mqd_t cola_msg_naves;
 	sem_t *sem_naves_ready;
 	sem_t *sem_sim;		// semaforo para avisar al monitor

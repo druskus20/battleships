@@ -52,8 +52,11 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     new_jefe->naves_res = 0;    // !!!
     new_jefe->pipe_sim = pipe_sim;
     
-    for (int i = 0; i < N_NAVES; i++)
+    for (int i = 0; i < N_NAVES; i++){ 
         new_jefe->pid_naves[i] = -1;
+        new_jefe->naves_vivas[i] = true;
+    }
+   
 
     load_jefe_tag(equipo, new_jefe->tag);
 
@@ -202,12 +205,15 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
-    int equipo;
+    int num_nave, equipo;
     
     switch (accion_jefe){   
         case DESTRUIR:
-            extractv_jefe_tag(extra, &equipo);
-            
+            extractv_nave_tag(extra, &equipo, &num_nave);
+            kill(jefe->pid_naves[num_nave],SIGTERM);
+            jefe->naves_res--;
+            jefe->naves_vivas[equipo] = false;
+
             break;
 
         case TURNO: 
@@ -219,7 +225,7 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
         case FIN:
         default:
             for (int i = 0; i < N_NAVES; i++) {
-                if (jefe->pid_naves[i] > 0)
+                if (jefe->naves_vivas[i] == true) 
                     kill(jefe->pid_naves[i],SIGTERM);
             }
             
