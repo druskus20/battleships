@@ -69,6 +69,10 @@ tipo_sim * sim_create() {
     new_sim->equipos_res = 0;
     new_sim->mapa = mapa_create();
     load_sim_tag(new_sim->tag);
+
+    for (int i = 0; i < N_EQUIPOS; i++)
+        for (int j = 0; j < N_NAVES; i++)
+            new_sim->naves_vivas[i][j] = true;
     
     sprintf(out_buff, "Creando %s", new_sim->tag);
     msg_simOK(fpo, out_buff);
@@ -84,7 +88,6 @@ void sim_init(tipo_sim * sim) {
     sim_init_pipes_jefes(sim);
     sim_init_cola_nave(sim);
     sim_init_signal_handlers();
-
     sim_init_mapa_shm(sim) ;
 
 
