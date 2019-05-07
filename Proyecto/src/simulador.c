@@ -1,4 +1,4 @@
-#include "psim.h"
+#include "simulador.h"
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -14,11 +14,11 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "pjefe.h"
-#include "pnave.h"
+#include "jefe.h"
+#include "nave.h"
 #include "mapa.h"
 
-proc_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
+tipo_sim  * sim_global;  // Creada de forma global para usarla en los manejadores de señal
           // semaforo monitor-simulador	
 
 // Manejador de la señal Ctrl+C (SIGINT)
@@ -34,7 +34,7 @@ void sim_manejador_SIGINT(int sig) {
     sim_esperar_jefes();
     sim_free_resources(sim_global);
     sim_destroy(sim_global);
-    msg_OK(fpo, "Finalizando simulacion");
+    
     exit(EXIT_SUCCESS);
 }
 
@@ -62,13 +62,13 @@ void sim_launch() {
     sim_destroy(sim_global);
 }
 
-proc_sim * sim_create() {
-    proc_sim * new_sim;
+tipo_sim * sim_create() {
+    tipo_sim * new_sim;
     char out_buff[BUFF_MAX];
 
-    new_sim = (proc_sim *)malloc(sizeof(new_sim[0]));
+    new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
     new_sim->equipos_res = 0;
-    // new_sim->mapa = mapa_create();
+    new_sim->mapa = mapa_create();
     load_sim_tag(new_sim->tag);
     
     sprintf(out_buff, "Creando %s", new_sim->tag);
@@ -76,7 +76,7 @@ proc_sim * sim_create() {
     return new_sim;
 }
 
-void sim_init(proc_sim * sim) {
+void sim_init(tipo_sim * sim) {
 
     msg_simOK(fpo, "Inicializando");
 
@@ -91,7 +91,7 @@ void sim_init(proc_sim * sim) {
     sim_init_shm_readers_count(sim);
 }
 
-void sim_init_semaforos(proc_sim * sim) {
+void sim_init_semaforos(tipo_sim * sim) {
     // Inicializacion de semaforo simulador
     msg_simOK(fpo, "Inicializando semaforos");
     if((sim->sem_sim = sem_open(SEM_SIMULADOR, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
@@ -126,7 +126,7 @@ void sim_init_semaforos(proc_sim * sim) {
 
 }
 
-void sim_run(proc_sim * sim) {
+void sim_run(tipo_sim * sim) {
 
     bool fin = false;
     char * msg_recibido;
@@ -157,7 +157,7 @@ void sim_run(proc_sim * sim) {
 }
 
 
-void sim_end(proc_sim *sim) {
+void sim_end(tipo_sim *sim) {
     msg_simOK(fpo, "Finalizando");
     signal(SIGINT, SIG_DFL); 
     
@@ -170,7 +170,7 @@ void sim_end(proc_sim *sim) {
 }
 
 
-void sim_destroy(proc_sim * sim) {
+void sim_destroy(tipo_sim * sim) {
     char out_buff[BUFF_MAX];
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
@@ -189,7 +189,7 @@ void sim_destroy(proc_sim * sim) {
    
 }
 
-void sim_free_resources(proc_sim * sim) {
+void sim_free_resources(tipo_sim * sim) {
 
     // MAPA? !!!
     mq_close(sim->cola_msg_naves);
@@ -210,7 +210,7 @@ void sim_free_resources(proc_sim * sim) {
 
 
 // Inicializa pipes a jefes
-void sim_init_pipes_jefes(proc_sim * sim) { 
+void sim_init_pipes_jefes(tipo_sim * sim) { 
     msg_simOK(fpo, "Inicializando pipes a jefes");
     int pipe_status;
     for (int i = 0; i < N_EQUIPOS; i++){
@@ -225,7 +225,7 @@ void sim_init_pipes_jefes(proc_sim * sim) {
 }
 
 // Ejecuta los jefes
-void sim_run_jefes(proc_sim *sim) {      
+void sim_run_jefes(tipo_sim *sim) {      
     int pid = -1;
     int i;
     msg_simOK(fpo, "Ejecutando jefes");
@@ -263,7 +263,7 @@ void sim_esperar_jefes() {
 }
 
 
-void sim_mandar_msg_jefe(proc_sim *sim, int equipo, char msg[MSG_MAX]) {
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
     int * fd; // pipe
@@ -280,7 +280,7 @@ void sim_mandar_msg_jefe(proc_sim *sim, int equipo, char msg[MSG_MAX]) {
 
 
 
-void sim_init_cola_nave(proc_sim * sim) {
+void sim_init_cola_nave(tipo_sim * sim) {
     
     struct mq_attr attributes;
      msg_simOK(fpo, "Inicializando cola de mensajes a simulador");
@@ -302,7 +302,7 @@ void sim_init_cola_nave(proc_sim * sim) {
 
 }
 
-char * sim_recibir_msg_nave(proc_sim * sim) {
+char * sim_recibir_msg_nave(tipo_sim * sim) {
     
     //char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
@@ -335,7 +335,7 @@ char * sim_recibir_msg_nave(proc_sim * sim) {
 }
 
 
-bool sim_evaluar_fin(proc_sim * sim) {
+bool sim_evaluar_fin(tipo_sim * sim) {
     if (sim->equipos_res <= 1)      // !!! Puede darse el caso de que ningun equipo gane?
         return true;
     return false;
@@ -386,7 +386,7 @@ int parse_accion(char * accion) {
     return -1;
 }
 
-int sim_actua(proc_sim * sim, int accion_sim, char * extra) {    switch (accion_sim){   
+int sim_actua(tipo_sim * sim, int accion_sim, char * extra) {    switch (accion_sim){   
         case ATACAR:
         break;
 
@@ -400,7 +400,7 @@ int sim_actua(proc_sim * sim, int accion_sim, char * extra) {    switch (accion_
 }
 
 
-void sim_esperar_naves_ready(proc_sim * sim) {
+void sim_esperar_naves_ready(tipo_sim * sim) {
     msg_simOK(fpo, "Esperando a naves");
     for (int i = 0; i < N_NAVES * N_EQUIPOS; i++) {
         sem_wait(sim->sem_naves_ready);
@@ -409,7 +409,7 @@ void sim_esperar_naves_ready(proc_sim * sim) {
 
 
 
-void sim_init_mapa_shm(proc_sim * sim) {
+void sim_init_mapa_shm(tipo_sim * sim) {
     
     msg_simOK(fpo, "Inicializando mapa (shm)");
     int fd_shm = shm_open(SHM_MAP_NAME,
@@ -440,7 +440,7 @@ void sim_init_mapa_shm(proc_sim * sim) {
     sim->mapa = mapa_create();
 }
 
-void sim_init_shm_readers_count(proc_sim * sim) {
+void sim_init_shm_readers_count(tipo_sim * sim) {
     
     msg_simOK(fpo, "Inicializando contador de lectores (shm)");
     int fd_shm = shm_open(SHM_READERS_COUNT,
@@ -474,7 +474,7 @@ void sim_init_shm_readers_count(proc_sim * sim) {
 }
 
 
-void sim_down_mapa(proc_sim * sim) {
+void sim_down_mapa(tipo_sim * sim) {
     do {
         sem_wait(sim->sem_lecmapa);
         printf("ERRNO_SEM5: %d", errno);
@@ -487,7 +487,7 @@ void sim_down_mapa(proc_sim * sim) {
 }
 
 
-void sim_up_mapa(proc_sim * sim) {
+void sim_up_mapa(tipo_sim * sim) {
     sem_post(sim->sem_escmapa);
     sem_post(sim->sem_lecmapa);
 }

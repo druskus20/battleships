@@ -17,7 +17,7 @@ clean:
 launcher:
 	@echo "Building launcher"
 	@mkdir -p $(TARGET)
-	@$(CC) $(CFLAGS) launcher.c psim.c pnave.c pjefe.c info_nave.c mapa.c msg.c -o $(TARGET)/launcher $(LDLIBS) -lm
+	@$(CC) $(CFLAGS) launcher.c simulador.c nave.c jefe.c info_nave.c mapa.c msg.c -o $(TARGET)/launcher $(LDLIBS) -lm
 	
 monitor:
 	@echo "Building monitor"

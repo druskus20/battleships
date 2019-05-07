@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
-#include "../src/psim.h"
+#include "../src/simulador.h"
 
 int main(int argc, char *argv[]) {
     

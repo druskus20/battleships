@@ -1,7 +1,7 @@
 #ifndef SRC_MAPA_H_
 #define SRC_MAPA_H_
 
-#include "psim.h"
+#include <simulador.h>
 #include <stdbool.h>
 
 

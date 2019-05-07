@@ -10,7 +10,7 @@
 #include <getopt.h>
 
 // !!! no estoy muy seguro de esto
-#include "psim.h"
+#include "simulador.h"
 #include "mapa.h"
 
 

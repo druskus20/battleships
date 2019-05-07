@@ -67,12 +67,12 @@ void extractv_jefe_tag(char tag[TAG_MAX], int * equipo) {
     // como es un "char", basta con restar el offset numeracion en ascii ('0')
 }
 
-void msg_jefeOK(FILE * fpo, proc_jefe * jefe, char * msg){
+void msg_jefeOK(FILE * fpo, tipo_jefe * jefe, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.ok_status, jefe->tag, msg);
     fflush(fpo);
 }
 
-void msg_jefeERR(FILE * fpo, proc_jefe * jefe, char * msg){
+void msg_jefeERR(FILE * fpo, tipo_jefe * jefe, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.err_status, jefe->tag, msg);
     fflush(fpo);
 }
@@ -89,12 +89,12 @@ void extractv_nave_tag(char tag[TAG_MAX], int * equipo, int * num_nave) {
     *num_nave = tag[11 + estiloMSG.tag_offset] - '0';
 }
 
-void msg_naveOK(FILE * fpo, proc_nave * nave, char * msg){
+void msg_naveOK(FILE * fpo, tipo_nave * nave, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.ok_status, nave->tag, msg);
     fflush(fpo);
 }
 
-void msg_naveERR(FILE * fpo, proc_nave * nave, char * msg){
+void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg){
     fprintf(fpo, estiloMSG.std_msg, estiloMSG.err_status, nave->tag, msg);
     fflush(fpo);
 }
