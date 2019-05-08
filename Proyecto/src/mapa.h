@@ -51,5 +51,6 @@ void mapa_set_symbol(tipo_mapa *mapa, int posy, int posx, char symbol);
 
 // HABLAR EN LA MEMORIA !!!
 int mapa_generate_pos_nave( int equipo, int num_nave, int pos[2]);
-void mapa_get_pos_nave_cercana (tipo_mapa * mapa, int origenx, int origeny, int *posx, int *posy) ;
+int mapa_get_pos_nave_enemiga_cercana (tipo_mapa * mapa, int equipo, int origenx, int origeny, int *posx, int *posy) ;
+
 #endif 

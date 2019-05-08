@@ -76,7 +76,7 @@
 // !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
-#define COORDENADA "X:%d/Y:%d2"
+#define COORDENADA "X:%d/Y:%d"
 #define NORTE	   "NORTE"
 #define SUR		   "SUR"
 #define ESTE	   "ESTE"

@@ -247,16 +247,60 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
 // retorna bool "fin"
 int nave_actua (tipo_nave * nave, int action_code, char * extra) {
     char msg_buffer[MSG_MAX] = "";
+    char dir_string[20] = "";
+    char coord_string[20] = "";
+    int dir;
+    int target[2];
+
+    info_nave info = mapa_get_nave(nave->mapa, nave->equipo, nave->num);
     switch (action_code){
         case MOVER_ALEATORIO:
-            // Comprobar bordes
-            
-            nave_mandar_msg_sim(nave, "MOVER");  // !!!  que reciba un argumento mas
+            dir = rand() % 4;
+            switch (dir) {
+                case 0:
+                    if (info.posy == MAPA_MAXX){
+                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde NORTE del tablero");
+                        return 0;
+                    }
+                    strcpy(dir_string, NORTE);
+                    break;
+                case 1:
+                    strcpy(dir_string, SUR);
+                    if (info.posy == 0){
+                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde SUR del tablero");
+                        return 0;
+                    }
+                    strcpy(dir_string, NORTE);
+                    break;
+                case 2:
+                    if (info.posy == MAPA_MAXY){
+                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde ESTE del tablero");
+                        return 0;
+                    }
+                    strcpy(dir_string, ESTE);
+                    break;
+                case 3:
+                    if (info.posy == 0){
+                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde OESTE del tablero");
+                        return 0;
+                    }
+                    strcpy(dir_string, OESTE);
+                    break;
+                default:
+                    return 1;
+            }
+
+            sprintf(msg_buffer, "%s %s %s", M_ACCION, M_MOVER, dir_string);
+            nave_mandar_msg_sim(nave, msg_buffer); 
             break;
 
         case ATACAR: 
-            nave_mandar_msg_sim(nave, "ATACAR");  // !!!  que reciba un argumento mas
-            printf("nave_mapa_cosa %s -\n", nave->mapa->PRUEBA);
+            if (mapa_get_pos_nave_enemiga_cercana(nave->mapa, nave->equipo, info.posx, info.posy,  &target[0], &target[1]) == -1)
+                return 0;
+
+            sprintf(coord_string, COORDENADA, target[0], target[1]);
+            sprintf(msg_buffer, "%s %s %s", M_ACCION, M_ATACAR, coord_string);
+            nave_mandar_msg_sim(nave, msg_buffer);
             break;
 
         case DESTRUIR:

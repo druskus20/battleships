@@ -182,8 +182,13 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg) {
     char out_buff[BUFF_MAX];
     //char msg_buffer[MSG_MAX] = "";
     int * fd; 
-
     load_nave_tag(jefe->equipo, num_nave, tag);
+    if (jefe->naves_vivas[num_nave] == false) {
+        sprintf(out_buff, "La nave %s ha sido destruida, no se envia mensaje", tag);
+        msg_jefeOK(fpo, jefe, out_buff);
+    }
+
+   
     sprintf(out_buff, "Mandando mensaje a %s", tag);
     msg_jefeOK(fpo, jefe, out_buff);
     fd = jefe->pipes_naves[num_nave];

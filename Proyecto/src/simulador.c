@@ -395,6 +395,10 @@ int parse_accion(char * accion) {
 
 int sim_actua(tipo_sim * sim, int accion_sim, char * extra) { 
     int x, y;  
+
+
+
+
     switch (accion_sim){   
         case ATACAR:
             extractv_coordenadas(extra, &x, &y);
@@ -452,7 +456,7 @@ void sim_init_mapa_shm(tipo_sim * sim) {
     *sim->mapa = *mapa;
     free(mapa);
 
-    printf("MAPA_CREATE %s\n", sim->mapa->PRUEBA);
+
 }
 /*
 void sim_init_shm_readers_count(tipo_sim * sim) {

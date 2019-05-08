@@ -18,6 +18,12 @@ tipo_mapa * mapa_create() {
 			info_nave_destroy(info);
 		}
 	}
+
+	for (int i = 0; i < MAPA_MAXX; i++) {
+		for (int j = 0; j < MAPA_MAXY; j++) {
+			mapa_clean_casilla(new_mapa, j, i);
+		}
+	}
 	return new_mapa;
 }
 
@@ -217,18 +223,21 @@ int mapa_generate_pos_nave(int equipo, int num_nave, int pos[2]) {
 
 
 
-void mapa_get_pos_nave_cercana (tipo_mapa * mapa, int origenx, int origeny, int *posx, int *posy) {
+int mapa_get_pos_nave_enemiga_cercana (tipo_mapa * mapa, int equipo, int origenx, int origeny, int *posx, int *posy) {
 	int curr_dist = -1;
 	for (int i = 0; i < N_EQUIPOS; i++) {
 		for (int j = 0; j < N_NAVES; j++) {
-			int daux = mapa_get_distancia(mapa, origeny, origenx, mapa->info_naves[i][j].posy, mapa->info_naves[i][j].posx);
-			if (curr_dist == -1 || curr_dist > daux) {
-				curr_dist = daux;
-				*posx = mapa->info_naves[i][j].posx;
-				*posy = mapa->info_naves[i][j].posy;
+			if (mapa->info_naves[i][j].vida > 0 && mapa->info_naves[i][j].equipo != equipo) {
+				int daux = mapa_get_distancia(mapa, origeny, origenx, mapa->info_naves[i][j].posy, mapa->info_naves[i][j].posx);
+				if (curr_dist == -1 || curr_dist > daux) {
+					curr_dist = daux;
+					*posx = mapa->info_naves[i][j].posx;
+					*posy = mapa->info_naves[i][j].posy;
+				}
 			}
 
 		}
 	}
+	return curr_dist; 
 
 }
