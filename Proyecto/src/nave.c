@@ -224,7 +224,7 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
      
 
         load_sim_tag(sim_tag);
-        sprintf(msg_buffer, "%s %s", M_ACCION, msg);
+        strcpy(msg_buffer, msg);
         sprintf(out_buff, "Mandando mensaje a %s", sim_tag);
         msg_naveOK(fpo, nave, out_buff);
 
@@ -254,39 +254,22 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
             dir = rand() % 4;
             switch (dir) {
                 case 0:
-                    if (info.posy == MAPA_MAXX){
-                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde NORTE del tablero");
-                        return 0;
-                    }
                     strcpy(dir_string, NORTE);
                     break;
                 case 1:
                     strcpy(dir_string, SUR);
-                    if (info.posy == 0){
-                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde SUR del tablero");
-                        return 0;
-                    }
-                    strcpy(dir_string, NORTE);
                     break;
                 case 2:
-                    if (info.posy == MAPA_MAXY){
-                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde ESTE del tablero");
-                        return 0;
-                    }
                     strcpy(dir_string, ESTE);
                     break;
                 case 3:
-                    if (info.posy == 0){
-                        msg_naveOK(fpo, nave, "No se va a mover, esta en el borde OESTE del tablero");
-                        return 0;
-                    }
                     strcpy(dir_string, OESTE);
                     break;
                 default:
                     return 1;
             }
 
-            sprintf(msg_buffer, "%s %s", M_MOVER, dir_string);
+            sprintf(msg_buffer, "%s %s %s", M_MOVER, nave->tag, dir_string);
             nave_mandar_msg_sim(nave, msg_buffer); 
             break;
 
@@ -295,7 +278,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
                 return 0;
 
             sprintf(coord_string, COORDENADA, target[0], target[1]);
-            sprintf(msg_buffer, "%s %s", M_ATACAR, coord_string);
+            sprintf(msg_buffer, "%s %s %s", M_ATACAR, nave->tag, coord_string);
             nave_mandar_msg_sim(nave, msg_buffer);
             break;
 

@@ -86,6 +86,7 @@ void load_nave_tag(int equipo, int numero, char tag[TAG_MAX]) {
 }
 
 void extractv_nave_tag(char tag[TAG_MAX], int * equipo, int * num_nave) { 
+    
     *equipo = tag[7 + estiloMSG.tag_offset] - '0';  // NAVE E:%d/N:%d
     *num_nave = tag[11 + estiloMSG.tag_offset] - '0';
 }
@@ -104,12 +105,12 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg){
 // divide el mensaje "msg" en msg_1 y msg_2 por el token ' '
 // msg_1 y msg_2 son buffers vacios, argumentos de salida
 void dividir_msg(char * msg, char * msg_1, char * msg_2) { 
-    int i = 0;
+    
     char msg_temp[strlen(msg)];  // para evitar erroes en declaraciones implicitas !!!
     strcpy (msg_temp, msg);
     strcpy (msg_1, msg_temp);
     int len  = strlen(msg_temp);
-    for (i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
         if (msg_temp[i] == ' '){
             msg_temp[i] = '\0';
             strcpy(msg_1, msg_temp);
@@ -117,18 +118,40 @@ void dividir_msg(char * msg, char * msg_1, char * msg_2) {
             break;
         }
     }
+
+}
+
+// divide una accion en varias sub_cadenas
+void dividir_accion(char * msg, char * msg_1, char * msg_2, char * msg_3)  {
+    char msg_temp[strlen(msg)];  // para evitar erroes en declaraciones implicitas !!!
+    strcpy (msg_temp, msg);
+    strcpy (msg_1, msg_temp);
     
-    // si es un mensaje de accion, tiene 3 partes
-    if (strcmp(msg_1, "ACCION") == 0) {
-        strcpy (msg_temp, msg_2);
-        int len  = strlen(msg_temp);
-        for (i = 0; i < len; i++) {
-            if (msg_temp[i] == ' '){
-                msg_temp[i] = '\0';
-                strcpy(msg_1, msg_temp);
-                strcpy(msg_2, &(msg_temp[i+1])); 
-                break;
-            }
+    int len  = strlen(msg_temp);
+    for (int i = 0; i < len; i++) {
+        if (msg_temp[i] == ' '){
+            msg_temp[i] = '\0';
+            strcpy(msg_1, msg_temp);
+            strcpy(msg_2, &(msg_temp[i+1])); 
+            break;
+        }
+    }
+
+    
+    int i = 0;
+    len = strlen(msg_2);
+    // salta el espacio en la tag
+    for (; i < len; i++) {
+        if (msg_2[i] == ' ')
+            break;
+    }
+
+    for (i+=1; i < len; i++) {
+        if (msg_2[i] == ' '){
+            msg_2[i] = '\0';
+            //strcpy(msg_, msg_temp);
+            strcpy(msg_3, &(msg_2[i+1])); 
+            break;
         }
     }
 
@@ -148,6 +171,7 @@ void extractv_coordenadas(char * coord, int * x, int * y){
     *x = atoi(cx);
     *y = atoi(cy);
     
+
 
     
 

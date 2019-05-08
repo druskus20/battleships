@@ -10,13 +10,20 @@ char symbol_equipos[N_EQUIPOS] = {'A','B','C','D'};
 tipo_mapa * mapa_create() {
 	tipo_mapa  * new_mapa;
 	new_mapa = (tipo_mapa *)malloc(sizeof(tipo_mapa));
-	strcpy(new_mapa->PRUEBA, "AAAAAAAAAA");
+
+	// inicializa info_naves
 	for (int i = 0; i < N_EQUIPOS; i++){
 		for (int j = 0; j < N_NAVES; j++) {
 			info_nave * info = info_nave_create(i, j);
 			new_mapa->info_naves[i][j] = *info;
 			info_nave_destroy(info);
 		}
+	}
+
+
+	
+	for (int i = 0; i < N_EQUIPOS; i++) {
+		new_mapa->num_naves[i] = N_NAVES;
 	}
 
 	for (int i = 0; i < MAPA_MAXX; i++) {

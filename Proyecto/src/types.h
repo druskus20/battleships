@@ -39,8 +39,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 2 	  // Número de equipos
-#define N_NAVES 1   	  // Número de naves por equipo
+#define N_EQUIPOS 3 	  // Número de equipos
+#define N_NAVES 2   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
@@ -72,7 +72,7 @@
 #define M_ATACAR       	  	  "ATACAR"		 // nave
 #define M_DESTRUIR 	 	  	  "DESTRUIR"     // jefe y sim
 #define M_TURNO     	  	  "TURNO"  		 // sim y jefe
-#define M_ACCION		 	  "ACCION"
+
 // !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
@@ -81,6 +81,7 @@
 #define SUR		   "SUR"
 #define ESTE	   "ESTE"
 #define OESTE	   "OESTE"
+
 
 
 
@@ -153,10 +154,7 @@ typedef struct {
 	info_nave info_naves[N_EQUIPOS][N_NAVES];
 	tipo_casilla casillas[MAPA_MAXY][MAPA_MAXX];
 	int num_naves[N_EQUIPOS]; 					  // Número de naves vivas en un equipo
-	sem_t *sem_mutex1;
-	sem_t *sem_mutex2;
-	sem_t *sem_escmapa;
-	char PRUEBA[MSG_MAX];
+
 } tipo_mapa;
 
 
@@ -201,7 +199,6 @@ typedef struct {
 	// !!! array de pipes a jefes
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
-	int equipos_res;
 	bool equipos_vivos[N_EQUIPOS];
 	tipo_mapa *mapa;
 

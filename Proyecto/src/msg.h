@@ -23,7 +23,7 @@
 #define COLOR_RESET "\x1b[0;00m" // !!!
 
 #define NO_TAG_L 0
-#define COLOR_TAG_L 10  // longitud de la tag de color
+#define COLOR_TAG_L 7  // longitud de la tag de color
 
 // Espaciados y lineas           
 #define ESP                     "         "
@@ -76,7 +76,9 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 
 void estiloMSG_set_default();
 void estiloMSG_set_colorful();
+
 void dividir_msg(char * msg,  char * msg_1, char * msg_2);
+void dividir_accion(char * msg, char * msg_1, char * msg_2, char * msg_3);
 
 void extractv_coordenadas(char * coord, int * x, int * y);
 

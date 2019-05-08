@@ -229,7 +229,7 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
         case TURNO: 
                 for (int i = 0; i < N_NAVES; i++) {
                     for (int j = 0; j < N_ACCIONES_TURNO; j++) {
-                        if (rand() % 2) 
+                        if (rand() % 2 && jefe->naves_vivas[i] == true) 
                             jefe_mandar_msg_nave(jefe, i, M_MOVER_ALEATORIO);
                         else 
                             jefe_mandar_msg_nave(jefe, i, M_ATACAR);

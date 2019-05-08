@@ -33,12 +33,13 @@ char * sim_recibir_msg_nave(tipo_sim * sim);
 void sim_init_cola_nave(tipo_sim * sim);
 bool sim_evaluar_fin(tipo_sim * sim);
 void sim_init_signal_handlers();
-int sim_actua(tipo_sim * sim, int accion_sim, char * extra);
+int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir);
 void sim_init_semaforos(tipo_sim * sim);
 int parse_accion(char * accion);
 void sim_esperar_naves_ready(tipo_sim * sim);
 void sim_free_resources(tipo_sim * sim);
 void sim_init_mapa_shm(tipo_sim * sim);
+void sim_destruir_nave(tipo_sim *sim, int equipo, int num_nave);
 //void sim_init_shm_readers_count(tipo_sim * sim) ;
 
 /*
