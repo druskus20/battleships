@@ -81,6 +81,11 @@ Hablar de acciones / typedefs enum, cadenas de opcion
 
 * COMPROBACION DE ERROR EN WAITS, SA_REPEAT, SA_REPEAT NO FUNCIONA CON WAIT1
 
+* hablar del ultimo mensaje no liberado en ctrl c
+* hablar de probar con una nave, DOS (?) equipos
+* hablar de LOG, grep 
+* hablar de opciones de ejecucion
+
 *Simulador*
 while(true) {
 	leer_mensaje_nave() // cola

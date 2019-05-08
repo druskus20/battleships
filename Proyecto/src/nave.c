@@ -89,6 +89,13 @@ void nave_run(tipo_nave *nave){
         action_code = parse_accion(main_buff);
         fin = nave_actua(nave, action_code, extra_buff);
         free(msg_recibido);
+
+        // !!!!
+        printf("NAVE PIDE MAPA\n");
+       // nave_up_mapa(nave);
+        printf("MAPA: %s\n", nave->mapa->PRUEBA);
+     //   nave_down_mapa(nave);
+        printf("NAVE DEJA MAPA\n");
     }
 }
 
@@ -311,7 +318,7 @@ void nave_init_shm_mapa(tipo_nave * nave)  {
         msg_naveERR(fpo, nave, "mmap de ""nave_init_shm_mapa""");
          exit(EXIT_FAILURE);
     }
-    printf("NAVE_MAPA_COSA: %s\n", nave->mapa->PRUEBA);
+    
     
 }
 void nave_init_shm_readers_count(tipo_nave * nave)  {
@@ -334,7 +341,7 @@ void nave_init_shm_readers_count(tipo_nave * nave)  {
 
 
 
-
+/*
 
 void nave_down_mapa(tipo_nave * nave) {
     
@@ -379,4 +386,4 @@ void nave_up_mapa(tipo_nave * nave) {
     
     sem_post(nave->sem_mutex1);
 
-}
+}*/

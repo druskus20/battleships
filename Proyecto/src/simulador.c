@@ -143,6 +143,7 @@ void sim_run(tipo_sim * sim) {
     printf("sim_mapa_cosa %s\n", sim->mapa->PRUEBA);
     alarm(TURNO_SECS);
 
+    int count = 0;
     while(!fin) {        
         int action_code = -1;
         char extra_buff[BUFF_MAX] = "";
@@ -153,6 +154,18 @@ void sim_run(tipo_sim * sim) {
         action_code = parse_accion(main_buff);
         fin = sim_actua(sim, action_code, extra_buff);
         free(msg_recibido);
+
+        // !!!!!!!
+        printf("SIM PIDE MAPA\n");
+      //  sim_up_mapa(sim);
+        printf("MAPA antes: %s\n", sim->mapa->PRUEBA);
+        char cadena[20] = "";
+        sprintf(cadena, "HOLA %d", count);
+        strcpy(sim->mapa->PRUEBA, cadena);
+        printf("MAPA despues: %s\n", sim->mapa->PRUEBA);
+       // sim_down_mapa(sim);
+        printf("SIM DEJA MAPA\n");
+        count++;
     }   
 
     signal(SIGALRM, SIG_DFL);  
@@ -177,7 +190,7 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
     
-    mapa_destroy(sim->mapa);
+    //mapa_destroy(sim->mapa);
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
     sem_unlink(SEM_ESCMAPA); 
@@ -243,7 +256,7 @@ void sim_run_jefes(tipo_sim *sim) {
             fd[0] = sim->pipes_jefes[i][0];
             fd[1] = sim->pipes_jefes[i][1];
             sim_free_resources(sim);
-            mapa_destroy(sim->mapa);
+            //mapa_destroy(sim->mapa);
             free(sim);
             jefe_launch(i, fd);
             
@@ -435,12 +448,16 @@ void sim_init_mapa_shm(tipo_sim * sim) {
     sim->mapa = mmap(NULL, sizeof(*sim->mapa),
                             PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
     if(sim->mapa == MAP_FAILED)  {
-        msg_simERR(fpo, """mmap"" de ""sim_init_mapa_shm""");
+        msg_simERR(fpo, """mmap"" de ""sim_init_mapa_s1hm""");
         shm_unlink(SHM_MAP_NAME);
         exit( EXIT_FAILURE);
     }
 
-    sim->mapa = mapa_create();
+    tipo_mapa * mapa = mapa_create();
+    *sim->mapa = *mapa;
+    free(mapa);
+
+    printf("MAPA_CREATE %s\n", sim->mapa->PRUEBA);
 }
 
 void sim_init_shm_readers_count(tipo_sim * sim) {
@@ -476,7 +493,7 @@ void sim_init_shm_readers_count(tipo_sim * sim) {
 
 }
 
-
+/*
 void sim_down_mapa(tipo_sim * sim) {
     do {
         sem_wait(sim->sem_lecmapa);
@@ -494,3 +511,5 @@ void sim_up_mapa(tipo_sim * sim) {
     sem_post(sim->sem_escmapa);
     sem_post(sim->sem_lecmapa);
 }
+
+*/

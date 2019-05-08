@@ -19,12 +19,15 @@
 // Semaforos
 #define SEM_SIMULADOR "/sem_simulador"
 #define SEM_NAVES_READY "/sem_naves_ready"
+
 // Lectores - escritores
+// !!!!!!!
+/*
 #define MUTEX_LE1 "/mutex_le1"
 #define MUTEX_LE2 "/mutex_le2"
 #define MUTEX_LE3 "/mutex_le3"
 #define SEM_LECMAPA "/sem_lecmapa"
-#define SEM_ESCMAPA "/sem_escmapa"
+#define SEM_ESCMAPA "/sem_escmapa" */
 
 
 
@@ -36,8 +39,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 1 	  // Número de equipos
-#define N_NAVES 1   	  // Número de naves por equipo
+#define N_EQUIPOS 4 	  // Número de equipos
+#define N_NAVES 4   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
