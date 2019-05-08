@@ -16,13 +16,13 @@ void jefe_init(tipo_jefe *jefe);
 void jefe_run(tipo_jefe *jefe);
 void jefe_end(tipo_jefe *jefe);
 void jefe_destroy(tipo_jefe *jefe);
-
+bool jefe_evaluar_fin(tipo_jefe * jefe);
 void jefe_init_pipes_naves(tipo_jefe * jefe);
 void jefe_run_naves(tipo_jefe *jefe);
 void jefe_esperar_naves();
 char * jefe_recibir_msg_sim(tipo_jefe *jefe);
 void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg);
-bool jefe_evaluar_fin(tipo_jefe * jefe);
+
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra);
 
 #endif

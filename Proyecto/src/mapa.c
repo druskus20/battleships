@@ -214,3 +214,21 @@ int mapa_generate_pos_nave(int equipo, int num_nave, int pos[2]) {
 
 	return 0;
 }
+
+
+
+void mapa_get_pos_nave_cercana (tipo_mapa * mapa, int origenx, int origeny, int *posx, int *posy) {
+	int curr_dist = -1;
+	for (int i = 0; i < N_EQUIPOS; i++) {
+		for (int j = 0; j < N_NAVES; j++) {
+			int daux = mapa_get_distancia(mapa, origeny, origenx, mapa->info_naves[i][j].posy, mapa->info_naves[i][j].posx);
+			if (curr_dist == -1 || curr_dist > daux) {
+				curr_dist = daux;
+				*posx = mapa->info_naves[i][j].posx;
+				*posy = mapa->info_naves[i][j].posy;
+			}
+
+		}
+	}
+
+}

@@ -49,7 +49,7 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     new_jefe = (tipo_jefe *)malloc(sizeof(new_jefe[0]));
 
     new_jefe->equipo = equipo;
-    new_jefe->naves_res = 0;    // !!!
+    new_jefe->naves_res = N_NAVES;    // !!!
     new_jefe->pipe_sim = pipe_sim;
     
     for (int i = 0; i < N_NAVES; i++){ 
@@ -126,7 +126,6 @@ void jefe_run_naves(tipo_jefe *jefe){
             break;
         }
         else if (pid > 0) { // jefe
-            jefe->naves_res++;
             jefe->pid_naves[i] = pid;
         }
         else  {
@@ -212,21 +211,22 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
     switch (accion_jefe){   
         case DESTRUIR:
             extractv_nave_tag(extra, &equipo, &num_nave);
-            kill(jefe->pid_naves[num_nave],SIGTERM);
+            jefe_mandar_msg_nave(jefe, num_nave, M_DESTRUIR);
             jefe->naves_res--;
             jefe->naves_vivas[equipo] = false;
-
+            if (jefe->naves_res == 0) 
+                return 1;
             break;
 
         case TURNO: 
-            
-            for (int i = 0; i < N_NAVES; i++) {
-                jefe_mandar_msg_nave(jefe, i, M_MOVER);
-            }
-            
-            for (int i = 0; i < N_NAVES; i++) {
-                jefe_mandar_msg_nave(jefe, i, M_ATACAR);
-            }
+                for (int i = 0; i < N_NAVES; i++) {
+                    for (int j = 0; j < N_ACCIONES_TURNO; j++) {
+                        if (rand() % 2) 
+                            jefe_mandar_msg_nave(jefe, i, M_MOVER);
+                        else 
+                            jefe_mandar_msg_nave(jefe, i, M_ATACAR);
+                    }
+                }
             break;
         
         case FIN:

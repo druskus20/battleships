@@ -67,7 +67,11 @@ tipo_sim * sim_create() {
     char out_buff[BUFF_MAX];
 
     new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
-    new_sim->equipos_res = 0;
+    new_sim->equipos_res = N_EQUIPOS;
+    for (int i = 0; i < N_EQUIPOS; i++ )
+        new_sim->equipos_vivos[N_EQUIPOS] = true;
+
+    
     // new_sim->mapa = mapa_create();
     load_sim_tag(new_sim->tag);
     
@@ -143,7 +147,7 @@ void sim_run(tipo_sim * sim) {
     printf("sim_mapa_cosa %s\n", sim->mapa->PRUEBA);
     alarm(TURNO_SECS);
 
-    int count = 0;
+
     while(!fin) {        
         int action_code = -1;
         char extra_buff[BUFF_MAX] = "";
@@ -154,18 +158,6 @@ void sim_run(tipo_sim * sim) {
         action_code = parse_accion(main_buff);
         fin = sim_actua(sim, action_code, extra_buff);
         free(msg_recibido);
-
-        // !!!!!!!
-        printf("SIM PIDE MAPA\n");
-      //  sim_up_mapa(sim);
-        printf("MAPA antes: %s\n", sim->mapa->PRUEBA);
-        char cadena[20] = "";
-        sprintf(cadena, "HOLA %d", count);
-        strcpy(sim->mapa->PRUEBA, cadena);
-        printf("MAPA despues: %s\n", sim->mapa->PRUEBA);
-       // sim_down_mapa(sim);
-        printf("SIM DEJA MAPA\n");
-        count++;
     }   
 
     signal(SIGALRM, SIG_DFL);  
@@ -262,9 +254,6 @@ void sim_run_jefes(tipo_sim *sim) {
             
             break;  
         }
-        else if (pid > 0) { // sim
-            sim->equipos_res++;
-        }
         else {
             msg_simERR(fpo, "sim_run_jefes");
             exit(EXIT_FAILURE);
@@ -351,8 +340,8 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
 }
 
 
-bool sim_evaluar_fin(tipo_sim * sim) {
-    if (sim->equipos_res <= 1)      // !!! Puede darse el caso de que ningun equipo gane?
+bool sim_evaluar_fin(tipo_sim * sim) {  
+    if (sim->equipos_res <= 1) 
         return true;
     return false;
 }
@@ -404,11 +393,15 @@ int parse_accion(char * accion) {
     return -1;
 }
 
-int sim_actua(tipo_sim * sim, int accion_sim, char * extra) {    switch (accion_sim){   
+int sim_actua(tipo_sim * sim, int accion_sim, char * extra) { 
+    int x, y;  
+    switch (accion_sim){   
         case ATACAR:
+            extractv_coordenadas(extra, &x, &y);
         break;
 
         case MOVER: 
+            extractv_coordenadas(extra, &x, &y);
         break;
         
         default:

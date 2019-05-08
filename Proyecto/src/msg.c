@@ -132,3 +132,9 @@ void dividir_msg(char * msg, char * msg_1, char * msg_2) {
     }
 
 }
+
+void extractv_coordenadas(char * coord, int * x, int * y){
+    *x = coord[2]  - '0';
+    *y = coord[6]  - '0'; 
+    printf("Coordenadas extraidas: %d %d \n", *x, *y);
+}

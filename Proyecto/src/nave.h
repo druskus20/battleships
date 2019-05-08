@@ -19,7 +19,7 @@ void nave_free_resources(tipo_nave * nave) ;
 void nave_init_signal_handlers(tipo_nave * nave);
 void nave_init_cola_sim(tipo_nave * nave);
 void nave_mandar_msg_sim(tipo_nave * nave, char * msg);
-bool nave_evaluar_fin(tipo_nave * nave);
+
 int nave_actua (tipo_nave * nave, int accion_nave, char * extra);
 char * nave_recibir_msg_jefe(tipo_nave *nave);
 void nave_run_naves(tipo_nave *nave);

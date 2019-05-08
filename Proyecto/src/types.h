@@ -47,9 +47,8 @@
 
 #define MAX_QUEUE_MSGS 10  			 // Maximo numero de mensajes en la cola
 
-
+#define N_ACCIONES_TURNO 2	  // Numero de acciones por turno
 #define VIDA_MAX 50       // Vida inicial de una nave
-#define DMG 25
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque
 #define ATAQUE_DANO 10    // Daño de un ataque
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
@@ -77,7 +76,7 @@
 // !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
-#define COORDENADA "X:%d/Y:%d"
+#define COORDENADA "X:%d/Y:%d2"
 #define NORTE	   "NORTE"
 #define SUR		   "SUR"
 #define ESTE	   "ESTE"
@@ -202,7 +201,8 @@ typedef struct {
 	// !!! array de pipes a jefes
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
-	int equipos_res;		// equipos (jefes) restantes
+	int equipos_res;
+	bool equipos_vivos[N_EQUIPOS];
 	tipo_mapa *mapa;
 
 	// Semaforos shm

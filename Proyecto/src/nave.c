@@ -246,8 +246,11 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
 
 // retorna bool "fin"
 int nave_actua (tipo_nave * nave, int action_code, char * extra) {
+    char msg_buffer[MSG_MAX] = "";
     switch (action_code){
         case MOVER_ALEATORIO:
+            // Comprobar bordes
+            
             nave_mandar_msg_sim(nave, "MOVER");  // !!!  que reciba un argumento mas
             break;
 
@@ -257,7 +260,6 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
             break;
 
         case DESTRUIR:
-        
         default:
             return 1; 
             

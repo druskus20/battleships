@@ -11,7 +11,7 @@ info_nave * info_nave_create(int equipo, int num) {
     new_info->num = num;
     new_info->vida = VIDA_MAX;
     new_info->alcance = ATAQUE_ALCANCE;
-    new_info->dmg = 25;
+    new_info->dmg = ATAQUE_DANO;
 
     int pos[2];
     if (mapa_generate_pos_nave(equipo, num, pos) == -1) {
