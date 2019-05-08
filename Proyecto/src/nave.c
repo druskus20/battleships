@@ -91,12 +91,7 @@ void nave_run(tipo_nave *nave){
         fin = nave_actua(nave, action_code, extra_buff);
         free(msg_recibido);
 
-        // !!!!
-        printf("NAVE PIDE MAPA\n");
-       // nave_up_mapa(nave);
-        printf("MAPA: %s\n", nave->mapa->PRUEBA);
-     //   nave_down_mapa(nave);
-        printf("NAVE DEJA MAPA\n");
+        printf("POS: %d %d", mapa_get_nave(nave->mapa, nave->equipo, nave->num).posx, mapa_get_nave(nave->mapa, nave->equipo, nave->num).posy);
     }
 }
 

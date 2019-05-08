@@ -134,6 +134,7 @@ void dividir_msg(char * msg, char * msg_1, char * msg_2) {
 
 }
 
+// Extrae el valor de unas coordenadas de la forma X:__/Y:__
 void extractv_coordenadas(char * coord, int * x, int * y){
     char cx[3], cy[3];
 
@@ -148,7 +149,7 @@ void extractv_coordenadas(char * coord, int * x, int * y){
     *y = atoi(cy);
     
 
-    // X:00/Y:00
-    printf("Coordenadas extraidas: %d %d \n", *x, *y);
+    
+
 }
 
