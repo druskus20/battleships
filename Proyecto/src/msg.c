@@ -1,6 +1,7 @@
 #include "msg.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -134,7 +135,20 @@ void dividir_msg(char * msg, char * msg_1, char * msg_2) {
 }
 
 void extractv_coordenadas(char * coord, int * x, int * y){
-    *x = coord[2]  - '0';
-    *y = coord[6]  - '0'; 
+    char cx[3], cy[3];
+
+    cx[0] = coord[2];
+    cx[1] = coord[3];
+    cx[2] = '\0';
+    cy[0] = coord[7];
+    cy[1] = coord[8];
+    cy[2] = '\0';
+
+    *x = atoi(cx);
+    *y = atoi(cy);
+    
+
+    // X:00/Y:00
     printf("Coordenadas extraidas: %d %d \n", *x, *y);
 }
+

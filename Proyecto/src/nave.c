@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include "mapa.h"
 #include "msg.h"
@@ -32,7 +33,7 @@ void nave_manejador_SIGTERM(int sig) {
 } 
 
 void nave_launch(int equipo, int num, int *pipe_jefe) {
-    
+    srand(getpid());
     nave_global = nave_create(equipo, num, pipe_jefe);
     nave_init(nave_global);
     nave_run(nave_global);
@@ -290,7 +291,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
                     return 1;
             }
 
-            sprintf(msg_buffer, "%s %s %s", M_ACCION, M_MOVER, dir_string);
+            sprintf(msg_buffer, "%s %s", M_MOVER, dir_string);
             nave_mandar_msg_sim(nave, msg_buffer); 
             break;
 
@@ -299,7 +300,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
                 return 0;
 
             sprintf(coord_string, COORDENADA, target[0], target[1]);
-            sprintf(msg_buffer, "%s %s %s", M_ACCION, M_ATACAR, coord_string);
+            sprintf(msg_buffer, "%s %s", M_ATACAR, coord_string);
             nave_mandar_msg_sim(nave, msg_buffer);
             break;
 

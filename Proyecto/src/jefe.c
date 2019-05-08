@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <time.h>
+
 #include "nave.h"
 #include "msg.h" 
 
@@ -28,6 +30,7 @@ void jefe_manejador_SIGINT(int sig) {
 
 void jefe_launch(int equipo, int *pipe_sim) {     
         tipo_jefe * jefe;
+        srand(getpid());
         jefe = jefe_create(equipo, pipe_sim);
         jefe_init(jefe);
         jefe_run(jefe);
@@ -227,7 +230,7 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
                 for (int i = 0; i < N_NAVES; i++) {
                     for (int j = 0; j < N_ACCIONES_TURNO; j++) {
                         if (rand() % 2) 
-                            jefe_mandar_msg_nave(jefe, i, M_MOVER);
+                            jefe_mandar_msg_nave(jefe, i, M_MOVER_ALEATORIO);
                         else 
                             jefe_mandar_msg_nave(jefe, i, M_ATACAR);
                     }

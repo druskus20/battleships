@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     if (args.F_fichero_out) 
         abrir_log();
 
-    srand(time(NULL));
+  
 
     msg_OK(fpo, "Lanzando simulacion");
     sim_launch();

@@ -39,8 +39,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 4 	  // Número de equipos
-#define N_NAVES 4   	  // Número de naves por equipo
+#define N_EQUIPOS 2 	  // Número de equipos
+#define N_NAVES 1   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
@@ -76,7 +76,7 @@
 // !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
-#define COORDENADA "X:%d/Y:%d"
+#define COORDENADA "X:%02d/Y:%02d"
 #define NORTE	   "NORTE"
 #define SUR		   "SUR"
 #define ESTE	   "ESTE"

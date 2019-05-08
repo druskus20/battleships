@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <semaphore.h>
 #include <errno.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "jefe.h"
@@ -53,6 +54,7 @@ void sim_manejador_SIGALRM(int sig) {
 
 
 void sim_launch() {
+    srand(getpid());
     sim_global = sim_create();
     sim_init(sim_global);
     sim_run(sim_global);
@@ -254,7 +256,7 @@ void sim_run_jefes(tipo_sim *sim) {
             
             break;  
         }
-        else {
+        else if (pid < 0){
             msg_simERR(fpo, "sim_run_jefes");
             exit(EXIT_FAILURE);
         }   
@@ -322,10 +324,10 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
     msg_simOK(fpo, "Esperando mensaje de nave");
     
     
-        errno = 0;
-        err = mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL);
-        printf("ERRNO: %d\n", errno);
-    
+    errno = 0;
+    err = mq_receive(sim->cola_msg_naves, msg_buffer, sizeof(char)*MSG_MAX, NULL);
+    printf("ERRNO: %d\n", errno);
+
     if (err == -1) {
         msg_simERR(fpo, "mq_receive");
         exit(EXIT_FAILURE);
@@ -398,7 +400,7 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * extra) {
 
 
 
-
+    
     switch (accion_sim){   
         case ATACAR:
             extractv_coordenadas(extra, &x, &y);
