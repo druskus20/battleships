@@ -89,7 +89,7 @@ void sim_init(tipo_sim * sim) {
     
 
 
-    sim_init_shm_readers_count(sim);
+//    sim_init_shm_readers_count(sim);
 }
 
 void sim_init_semaforos(tipo_sim * sim) {
@@ -199,7 +199,7 @@ void sim_destroy(tipo_sim * sim) {
     sem_unlink(MUTEX_LE2); */ 
     mq_unlink(COLA_SIM);
     shm_unlink(SHM_MAP_NAME);
-    shm_unlink(SHM_READERS_COUNT);
+   // shm_unlink(SHM_READERS_COUNT);
     free(sim);
    
 }
@@ -210,12 +210,12 @@ void sim_free_resources(tipo_sim * sim) {
     mq_close(sim->cola_msg_naves);
     sem_close(sim->sem_naves_ready);
     sem_close(sim->sem_sim);
-    sem_close(sim->sem_escmapa);
-    sem_close(sim->sem_lecmapa);
-    sem_close(sim->sem_mutex1);
-    sem_close(sim->sem_mutex2);
+   // sem_close(sim->sem_escmapa);
+    //sem_close(sim->sem_lecmapa);
+    //sem_close(sim->sem_mutex1);
+    //sem_close(sim->sem_mutex2);
     munmap(sim->mapa, sizeof(*sim->mapa));
-    munmap(sim->readers_count, sizeof(*sim->readers_count));
+    //munmap(sim->readers_count, sizeof(*sim->readers_count));
     
     
     //mapa_destroy(sim->mapa); // !!!!!!!!!!! No se
@@ -391,14 +391,16 @@ int parse_accion(char * accion) {
         return FIN;
     else if (strcmp(accion, M_MOVER) == 0) 
         return MOVER;
+    else if (strcmp(accion, M_MOVER_ALEATORIO) == 0) 
+        return MOVER_ALEATORIO;
     else if (strcmp(accion, M_ATACAR) == 0) 
         return ATACAR;
     else if (strcmp(accion, M_DESTRUIR) == 0) 
         return DESTRUIR;
     else if (strcmp(accion, M_TURNO) == 0) 
         return TURNO;
-    else if (strcmp(accion, M_ACCION) == 0) 
-        return TURNO;
+   // else if (strcmp(accion, M_ACCION) == 0) 
+    //    return TURNO;
     return -1;
 }
 
@@ -459,7 +461,7 @@ void sim_init_mapa_shm(tipo_sim * sim) {
 
     printf("MAPA_CREATE %s\n", sim->mapa->PRUEBA);
 }
-
+/*
 void sim_init_shm_readers_count(tipo_sim * sim) {
     
     msg_simOK(fpo, "Inicializando contador de lectores (shm)");
@@ -472,12 +474,12 @@ void sim_init_shm_readers_count(tipo_sim * sim) {
     }
 
 
-    /* Resize the memory segment */
+    
     int error = ftruncate(fd_shm, sizeof(*sim->readers_count)); // !???
     if(error == -1) {
         msg_simERR(fpo, """ftruncate"" de ""sim_init_readerscount_shm""");
         shm_unlink(SHM_MAP_NAME);
-        exit( EXIT_FAILURE);
+        exit( EXIT_FAILURreaders_countE);
     }
 
     sim->readers_count = mmap(NULL, sizeof(*sim->readers_count),
@@ -492,7 +494,7 @@ void sim_init_shm_readers_count(tipo_sim * sim) {
     sim->readers_count = 0;
 
 }
-
+*/
 /*
 void sim_down_mapa(tipo_sim * sim) {
     do {

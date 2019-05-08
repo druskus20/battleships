@@ -39,7 +39,7 @@ int parse_accion(char * accion);
 void sim_esperar_naves_ready(tipo_sim * sim);
 void sim_free_resources(tipo_sim * sim);
 void sim_init_mapa_shm(tipo_sim * sim);
-void sim_init_shm_readers_count(tipo_sim * sim) ;
+//void sim_init_shm_readers_count(tipo_sim * sim) ;
 
 /*
 void sim_down_mapa(tipo_sim * sim);

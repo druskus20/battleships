@@ -68,6 +68,7 @@
 
 // Cadenas de opcion
 #define M_FIN 		  		  "FIN"		     // sim y jefe
+#define M_MOVER_ALEATORIO 	  "MOVER_ALEATORIO"
 #define M_MOVER  			  "MOVER"
 #define M_ATACAR       	  	  "ATACAR"		 // nave
 #define M_DESTRUIR 	 	  	  "DESTRUIR"     // jefe y sim
@@ -169,12 +170,12 @@ typedef struct {
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
 	mqd_t cola_sim;
-	sem_t *sem_lecmapa;
-	sem_t *sem_escmapa;
-	sem_t *sem_mutex1;
-	sem_t *sem_mutex3;
+	//sem_t *sem_lecmapa;
+	//sem_t *sem_escmapa;
+	//sem_t *sem_mutex1;
+	//sem_t *sem_mutex3;
 	tipo_mapa * mapa;
-	int * readers_count;
+	//int * readers_count;
 } tipo_nave;
 
 
@@ -205,15 +206,15 @@ typedef struct {
 	tipo_mapa *mapa;
 
 	// Semaforos shm
-	sem_t *sem_lecmapa;
-	sem_t *sem_escmapa;
-	sem_t *sem_mutex1;
-	sem_t *sem_mutex2;
+	//sem_t *sem_lecmapa;
+	//sem_t *sem_escmapa;
+	//sem_t *sem_mutex1;
+	//sem_t *sem_mutex2;
 	
 	mqd_t cola_msg_naves;
 	sem_t *sem_naves_ready;
 	sem_t *sem_sim;		// semaforo para avisar al monitor
-	int * readers_count;
+	//int * readers_count;
 	
 } tipo_sim;
 

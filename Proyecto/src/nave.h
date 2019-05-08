@@ -26,7 +26,7 @@ void nave_run_naves(tipo_nave *nave);
 void nave_ready(tipo_nave * nave);
 //void nave_init_semaforos(tipo_nave * nave);
 void nave_init_shm_mapa(tipo_nave * nave);
-void nave_init_shm_readers_count(tipo_nave * nave);
+//void nave_init_shm_readers_count(tipo_nave * nave);
 void nave_actualizar_info(tipo_nave * tipo_nave, info_nave * info_nave);
 
 /*

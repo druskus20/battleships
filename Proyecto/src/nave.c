@@ -70,7 +70,7 @@ void nave_init(tipo_nave * nave){
     nave_init_cola_sim(nave);
     nave_init_signal_handlers(nave);
     nave_init_shm_mapa(nave);
-    nave_init_shm_readers_count(nave);
+   // nave_init_shm_readers_count(nave);
     nave_ready(nave);
 }
 
@@ -105,12 +105,12 @@ void nave_end(tipo_nave * nave){
 }
 void nave_free_resources(tipo_nave * nave) {
     mq_close(nave->cola_sim);
-    sem_close(nave->sem_lecmapa);
-    sem_close(nave->sem_escmapa);
-    sem_close(nave->sem_mutex1);
-    sem_close(nave->sem_mutex3);
+    //sem_close(nave->sem_lecmapa);
+    //sem_close(nave->sem_escmapa);
+    //sem_close(nave->sem_mutex1);
+    //sem_close(nave->sem_mutex3);
     munmap(nave->mapa, sizeof(*nave->mapa));
-    munmap(nave->readers_count, sizeof(*nave->readers_count));
+  //  munmap(nave->readers_count, sizeof(*nave->readers_count));
 }
 
 void nave_destroy(tipo_nave *nave){
@@ -228,7 +228,7 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
      
 
         load_sim_tag(sim_tag);
-        sprintf(msg_buffer, "%s %s", msg);
+        sprintf(msg_buffer, "%s %s", M_ACCION, msg);
         sprintf(out_buff, "Mandando mensaje a %s", sim_tag);
         msg_naveOK(fpo, nave, out_buff);
 
@@ -322,6 +322,8 @@ void nave_init_shm_mapa(tipo_nave * nave)  {
     
     
 }
+
+/*
 void nave_init_shm_readers_count(tipo_nave * nave)  {
     msg_naveOK(fpo, nave, "Inicializando contador de lectores (shm)");
     int fd_shm = shm_open(SHM_READERS_COUNT,
@@ -339,7 +341,7 @@ void nave_init_shm_readers_count(tipo_nave * nave)  {
         exit(EXIT_FAILURE);
     }
 }
-
+*/
 
 
 /*

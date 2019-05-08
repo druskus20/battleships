@@ -207,7 +207,8 @@ bool jefe_evaluar_fin(tipo_jefe * jefe) {
 
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
     int num_nave, equipo;
-    
+ //   char msg_buffer[MSG_MAX] = "";
+
     switch (accion_jefe){   
         case DESTRUIR:
             extractv_nave_tag(extra, &equipo, &num_nave);
@@ -218,8 +219,13 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
             break;
 
         case TURNO: 
+            
             for (int i = 0; i < N_NAVES; i++) {
-                jefe_mandar_msg_nave(jefe, i);
+                jefe_mandar_msg_nave(jefe, i, M_MOVER);
+            }
+            
+            for (int i = 0; i < N_NAVES; i++) {
+                jefe_mandar_msg_nave(jefe, i, M_ATACAR);
             }
             break;
         
