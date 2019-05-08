@@ -24,16 +24,16 @@ int nave_actua (tipo_nave * nave, int accion_nave, char * extra);
 char * nave_recibir_msg_jefe(tipo_nave *nave);
 void nave_run_naves(tipo_nave *nave);
 void nave_ready(tipo_nave * nave);
-void nave_init_semaforos(tipo_nave * nave);
+//void nave_init_semaforos(tipo_nave * nave);
 void nave_init_shm_mapa(tipo_nave * nave);
 void nave_init_shm_readers_count(tipo_nave * nave);
 void nave_actualizar_info(tipo_nave * tipo_nave, info_nave * info_nave);
 
-
+/*
 
 void nave_down_mapa(tipo_nave * nave);
 void nave_up_mapa(tipo_nave * nave);
-
+*/
 int nave_get_equipo(tipo_nave *nave);
 void nave_set_equipo(tipo_nave *nave, int equipo);
 

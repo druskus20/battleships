@@ -66,7 +66,7 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
 
 void nave_init(tipo_nave * nave){
     msg_naveOK(fpo, nave, "Inicializando");
-    nave_init_semaforos(nave);
+    //nave_init_semaforos(nave);
     nave_init_cola_sim(nave);
     nave_init_signal_handlers(nave);
     nave_init_shm_mapa(nave);
@@ -118,7 +118,7 @@ void nave_destroy(tipo_nave *nave){
     sprintf(out_buff, "Destruyendo %s", nave->tag);
     msg_naveOK(fpo, nave, out_buff);
 
-    sem_unlink(MUTEX_LE3);
+    //sem_unlink(MUTEX_LE3);
 
     free(nave);
 }
@@ -228,7 +228,7 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
      
 
         load_sim_tag(sim_tag);
-        sprintf(msg_buffer, "%s %s", msg, nave->tag);
+        sprintf(msg_buffer, "%s %s", msg);
         sprintf(out_buff, "Mandando mensaje a %s", sim_tag);
         msg_naveOK(fpo, nave, out_buff);
 
@@ -279,6 +279,7 @@ void nave_ready(tipo_nave * nave) {
     sem_close(sem_naves_ready);
 }
 
+/*
 void nave_init_semaforos(tipo_nave * nave) {
     msg_naveOK(fpo, nave, "Inicializando semaforos");
     if((nave->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
@@ -301,7 +302,7 @@ void nave_init_semaforos(tipo_nave * nave) {
 		exit(EXIT_FAILURE);
 	}  
 
-}
+}*/
 
 void nave_init_shm_mapa(tipo_nave * nave)  {
     msg_naveOK(fpo, nave, "Inicializando mapa (shm)");

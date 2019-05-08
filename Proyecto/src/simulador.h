@@ -28,7 +28,7 @@ void sim_free_resources(tipo_sim * sim);
 void sim_run_jefes(tipo_sim *sim);
 void sim_esperar_jefes();
 void sim_init_pipes_jefes(tipo_sim *sim);
-void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]);
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char * msg);
 char * sim_recibir_msg_nave(tipo_sim * sim);
 void sim_init_cola_nave(tipo_sim * sim);
 bool sim_evaluar_fin(tipo_sim * sim);
@@ -41,7 +41,8 @@ void sim_free_resources(tipo_sim * sim);
 void sim_init_mapa_shm(tipo_sim * sim);
 void sim_init_shm_readers_count(tipo_sim * sim) ;
 
+/*
 void sim_down_mapa(tipo_sim * sim);
-void sim_up_mapa(tipo_sim * sim);
+void sim_up_mapa(tipo_sim * sim); */
 
 #endif 

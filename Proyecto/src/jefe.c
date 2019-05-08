@@ -178,10 +178,10 @@ char * jefe_recibir_msg_sim(tipo_jefe *jefe) {
 
 }
 
-void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
+void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char msg_buffer[MSG_MAX] = "";
+    //char msg_buffer[MSG_MAX] = "";
     int * fd; 
 
     load_nave_tag(jefe->equipo, num_nave, tag);
@@ -191,8 +191,9 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave) {
 
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
-    sprintf(msg_buffer, "ACCION ATACAR COSA EXTRA");
-    write(fd[1], msg_buffer, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+    //sprintf(msg_buffer, "ACCION ATACAR COSA EXTRA");
+    //strcpy(msg_buffer, msg);
+    write(fd[1], msg, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }
 
 bool jefe_evaluar_fin(tipo_jefe * jefe) {

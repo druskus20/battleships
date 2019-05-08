@@ -104,7 +104,7 @@ void sim_init_semaforos(tipo_sim * sim) {
         msg_simERR(fpo, "sem_open de ""sem_naves_ready""");
 		exit(EXIT_FAILURE);
 	}  
-
+/*
     if((sim->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
         msg_simERR(fpo, "sem_open de ""sem_lecmapa""");
 		exit(EXIT_FAILURE);
@@ -124,7 +124,7 @@ void sim_init_semaforos(tipo_sim * sim) {
         msg_simERR(fpo, "sem_open de ""sem_mutex3""");
 		exit(EXIT_FAILURE);
 	}  
-
+*/
 }
 
 void sim_run(tipo_sim * sim) {
@@ -193,10 +193,10 @@ void sim_destroy(tipo_sim * sim) {
     //mapa_destroy(sim->mapa);
     sem_unlink(SEM_NAVES_READY);
     sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
-    sem_unlink(SEM_ESCMAPA); 
+    /*sem_unlink(SEM_ESCMAPA); 
     sem_unlink(SEM_LECMAPA); 
     sem_unlink(MUTEX_LE1); 
-    sem_unlink(MUTEX_LE2); 
+    sem_unlink(MUTEX_LE2); */ 
     mq_unlink(COLA_SIM);
     shm_unlink(SHM_MAP_NAME);
     shm_unlink(SHM_READERS_COUNT);
@@ -279,7 +279,7 @@ void sim_esperar_jefes() {
 }
 
 
-void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char msg[MSG_MAX]) {
+void sim_mandar_msg_jefe(tipo_sim *sim, int equipo, char * msg) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
     int * fd; // pipe
