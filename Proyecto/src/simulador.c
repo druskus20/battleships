@@ -174,7 +174,7 @@ void sim_run(tipo_sim * sim) {
           
         fin = sim_actua(sim, action_code, nave_buff, coord_dir_buff);
         free(msg_recibido);
-        usleep(100000);
+        usleep(300000);
     }   
 
 
@@ -419,22 +419,18 @@ int parse_accion(char * accion) {
 int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir) { 
     int target_x, target_y;  
     int equipo, num_nave;
-    info_nave info_nave;
+    info_nave info_nave, target_info;
     char out_buffer[BUFF_MAX] = "";
     char msg_buffer[MSG_MAX] ="";
 
     // !!!!!!!!!!!!!!!!!! NO VA
     extractv_nave_tag(nave_tag, &equipo, &num_nave);
 
-    
-    printf("PRE_ANTES: equipo %d, numn_nave %d\n", equipo, num_nave);
     info_nave  = mapa_get_nave(sim->mapa, equipo, num_nave);
-    printf("ANTES: info_nave eq%d, num%d: %d\n", info_nave.equipo, info_nave.num, info_nave.vida);
     if (info_nave.vida <= 0) {
-        msg_simOK(fpo, "No se realiza la accion, la nave ya ha sido destruida");
         return 0;
     }
-    printf("SIGUE\n") ;         
+   
 
     switch (accion_sim){   
         case ATACAR:
@@ -445,23 +441,29 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
             sprintf(out_buffer, "ACCION: ATACAR %s %s ", nave_tag, coord_dir);
             msg_simOK(fpo, out_buffer);
 
-            info_nave.vida -= ATAQUE_DANO;
-            mapa_set_nave(sim->mapa, info_nave);
+            target_info.vida -= ATAQUE_DANO;
+            mapa_set_nave(sim->mapa, target_info);
 
+            
+            if (mapa_is_casilla_vacia(sim->mapa, target_y, target_x) == true) {
+                return 0;
+            }
 
-            sprintf(msg_buffer, "DESTRUIR %s", nave_tag);
+            tipo_casilla cas = mapa_get_casilla(sim->mapa, target_y, target_x);
+            target_info = mapa_get_nave(sim->mapa, cas.equipo, cas.num_nave);
 
-            if (info_nave.vida <= 0) {
-                int n_naves = mapa_get_num_naves(sim->mapa, equipo) -1;
-                mapa_set_num_naves(sim->mapa, equipo, n_naves); 
+            if (target_info.vida <= 0) {
+                int n_naves = mapa_get_num_naves(sim->mapa, cas.equipo) -1;
+                mapa_set_num_naves(sim->mapa, cas.equipo, n_naves); 
                 if ( n_naves <= 0)  
-                    sim->equipos_vivos[equipo] = false; 
-                sim_mandar_msg_jefe(sim, equipo, msg_buffer);
+                    sim->equipos_vivos[cas.equipo] = false; 
+                    
+                sprintf(msg_buffer, "DESTRUIR %s", nave_tag);
+                sim_mandar_msg_jefe(sim, cas.equipo, msg_buffer);
                 
             }
 
-            //sim_destruir_nave(sim, equipo, num_nave);
-            //sim_evaluar_fin(sim);
+
             return sim_evaluar_fin(sim);
             
             break;
