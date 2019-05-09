@@ -158,7 +158,7 @@ void sim_run(tipo_sim * sim) {
     alarm(TURNO_SECS);
 
 
-    while(!fin && sim->equipos_res > 1) {        
+    while(!fin) {        
         int action_code = -1;
      
         char orden_buff[MSG_MAX] = "";         // orden
@@ -178,7 +178,8 @@ void sim_run(tipo_sim * sim) {
     }   
 
 
-    signal(SIGALRM, SIG_DFL);  
+    printf("SIGNAL\n");
+    signal(SIGALRM, SIG_IGN);  
 }
 
 
@@ -363,8 +364,9 @@ bool sim_evaluar_fin(tipo_sim * sim) {
         if (mapa_get_num_naves(sim->mapa, i) > 0) 
             eq_res++;
     }
-    if (eq_res <= 1) 
+    if (eq_res <= 1) {
         return true;
+    }
     return false;
 }
 
@@ -422,23 +424,40 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
     char out_buffer[BUFF_MAX] = "";
     char msg_buffer[MSG_MAX] ="";
 
+    // !!!!!!!!!!!!!!!!!! NO VA
     extractv_nave_tag(nave_tag, &equipo, &num_nave);
+
+    
     info_nave = sim->mapa->info_naves[equipo][num_nave];
     if (info_nave.vida <= 0) {
+        msg_simOK(fpo, "No se realiza la accion, la nave ya ha sido destruida");
         return 0;
     }
-              
+       
 
     switch (accion_sim){   
         case ATACAR:
             
             extractv_coordenadas(coord_dir, &target_x, &target_y);
            
-
             sprintf(out_buffer, "ACCION: ATACAR %s %s ", nave_tag, coord_dir);
             msg_simOK(fpo, out_buffer);
 
+            
+            info_nave.vida -= ATAQUE_DANO;
             sprintf(msg_buffer, "DESTRUIR %s", nave_tag);
+
+            int n_naves = mapa_get_num_naves(sim->mapa, equipo) -1;
+            mapa_set_num_naves(sim->mapa, equipo, n_naves);
+           
+            if ( n_naves <= 0)  {
+                printf("ENTRA\n");
+                sim->equipos_vivos[equipo] = false;
+
+            }
+
+            
+            mapa_set_nave(sim->mapa, info_nave);
             sim_mandar_msg_jefe(sim, equipo, msg_buffer);
             
             //sim_destruir_nave(sim, equipo, num_nave);
@@ -446,6 +465,8 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
             return sim_evaluar_fin(sim);
             
             break;
+
+
         case MOVER: 
 
             //info_nave = mapa_get_nave(sim->mapa, equipo, num_nave);

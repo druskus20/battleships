@@ -279,8 +279,10 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
 
         case ATACAR: 
             if (mapa_get_pos_nave_enemiga_cercana(nave->mapa, nave->equipo, info.posx, info.posy,  &target[0], &target[1]) == -1)
+            {
+                msg_naveERR(fpo, nave, "No quedan naves enemigas");
                 return 0;
-
+            }
             sprintf(coord_string, COORDENADA, target[0], target[1]);
             sprintf(msg_buffer, "%s %s %s", M_ATACAR, nave->tag, coord_string);
             

@@ -85,7 +85,7 @@ void jefe_run(tipo_jefe *jefe){
     msg_jefeOK(fpo, jefe, "Comenzando");
     jefe_run_naves(jefe); 
 
-    while(!fin && jefe->naves_res > 0) {
+    while(!fin  /*&& jefe->naves_res > 0*/) {
         int action_code = -1;
         char extra_buff[BUFF_MAX] = "";
         char main_buff[BUFF_MAX] = "";
@@ -188,7 +188,8 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg) {
     char out_buff[BUFF_MAX];
     //char msg_buffer[MSG_MAX] = "";
     int * fd; 
-    load_nave_tag(jefe->equipo, num_nave, tag);
+    load_nave_tag(jefe->equipo, num_nave, tag); 
+    printf("NUM NAVE %d \n", num_nave); 
     if (jefe->naves_vivas[num_nave] == false) {
         sprintf(out_buff, "La nave %s ha sido destruida, no se envia mensaje", tag);
         msg_jefeOK(fpo, jefe, out_buff);
@@ -224,10 +225,10 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
             extractv_nave_tag(extra, &equipo, &num_nave);
             jefe_mandar_msg_nave(jefe, num_nave, M_DESTRUIR);
             jefe->naves_res--;
-            jefe->naves_vivas[equipo] = false;
-             printf("RESTANTES %d\n", jefe->naves_res);
-            if (jefe->naves_res == 0)  {
-               
+            printf("NUM_NAVE DESTRUCCION: %d", num_nave);
+            jefe->naves_vivas[num_nave] = false;
+            printf("RESTANTES %d\n", jefe->naves_res);
+            if (jefe->naves_res <= 0)  {
                 return 1;
             }
             break;
@@ -235,7 +236,7 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
         case TURNO: 
                 for (int i = 0; i < N_NAVES; i++) {
                     for (int j = 0; j < N_ACCIONES_TURNO; j++) {
-                        if (rand() % 2 && jefe->naves_vivas[i] == true) 
+                        if ((rand() % 2) != 1 && jefe->naves_vivas[i] == true) 
                             jefe_mandar_msg_nave(jefe, i, M_MOVER_ALEATORIO);
                         else 
                             jefe_mandar_msg_nave(jefe, i, M_ATACAR);

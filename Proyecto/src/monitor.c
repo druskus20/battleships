@@ -63,10 +63,10 @@ int main(int argc, char *argv[]) {
 
 
 	
-	while(true){ // !!!!! mapa->fin :)
+	while(true){ 
 		mapa_print(mapa);
 		sleep(SCREEN_REFRESH);
-		
+			
 	}
 	screen_end();
 	munmap(mapa, sizeof(*mapa));

@@ -1,0 +1,340 @@
+[OK ] ------------ > Lanzando simulacion
+[OK ] SIM          > Creando SIM         
+[OK ] SIM          > Inicializando
+[OK ] SIM          > Inicializando semaforos
+[OK ] SIM          > Inicializando pipes a jefes
+[OK ] SIM          > Inicializando cola de mensajes a simulador
+[OK ] SIM          > Inicializando mapa (shm)
+[OK ] SIM          > Inicializando manejadores de señal
+[OK ] SIM          > Avisando al proceso monitor
+[OK ] SIM          > Comenzando
+[OK ] SIM          > Ejecutando jefes
+[OK ] SIM          > Esperando a naves
+[OK ] JEFE E:0     > Creando JEFE E:0    
+[OK ] JEFE E:0     > Inicializando
+[OK ] JEFE E:0     > Inicializando pipes a naves
+[OK ] JEFE E:1     > Creando JEFE E:1    
+[OK ] JEFE E:0     > Comenzando
+[OK ] JEFE E:1     > Inicializando
+[OK ] JEFE E:0     > Ejecutando naves
+[OK ] JEFE E:1     > Inicializando pipes a naves
+[OK ] JEFE E:1     > Comenzando
+[OK ] JEFE E:1     > Ejecutando naves
+[OK ] NAVE E:0/N:0 > Creando NAVE E:0/N:0
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:0/N:0 > Inicializando
+[OK ] NAVE E:0/N:0 > Inicializando cola de mensajes a simulador
+[OK ] JEFE E:0     > Esperando mensaje de SIM         
+[OK ] NAVE E:0/N:0 > Inicializando manejadores de señal
+[OK ] NAVE E:0/N:0 > Inicializando mapa (shm)
+[OK ] NAVE E:0/N:0 > Nave preparada
+[OK ] NAVE E:0/N:0 > Comenzando
+[OK ] NAVE E:0/N:0 > Esperando mensaje de JEFE E:0    
+[OK ] NAVE E:1/N:1 > Creando NAVE E:1/N:1
+[OK ] NAVE E:1/N:1 > Inicializando
+[OK ] NAVE E:1/N:1 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:0/N:1 > Creando NAVE E:0/N:1
+[OK ] NAVE E:1/N:1 > Inicializando manejadores de señal
+[OK ] NAVE E:0/N:1 > Inicializando
+[OK ] NAVE E:1/N:1 > Inicializando mapa (shm)
+[OK ] NAVE E:0/N:1 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:0/N:1 > Inicializando manejadores de señal
+[OK ] NAVE E:1/N:1 > Nave preparada
+[OK ] NAVE E:0/N:1 > Inicializando mapa (shm)
+[OK ] NAVE E:0/N:1 > Nave preparada
+[OK ] NAVE E:1/N:1 > Comenzando
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:0 > Creando NAVE E:1/N:0
+[OK ] NAVE E:1/N:0 > Inicializando
+[OK ] NAVE E:1/N:0 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:1/N:0 > Inicializando manejadores de señal
+[OK ] NAVE E:0/N:1 > Comenzando
+[OK ] NAVE E:1/N:0 > Inicializando mapa (shm)
+[OK ] NAVE E:0/N:1 > Esperando mensaje de JEFE E:0    
+[OK ] NAVE E:1/N:0 > Nave preparada
+[OK ] NAVE E:1/N:0 > Comenzando
+[OK ] NAVE E:1/N:0 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:0    
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:0     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] NAVE E:0/N:0 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] NAVE E:1/N:0 > Recibido mensaje: ATACAR
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] NAVE E:0/N:0 > Mandando mensaje a SIM         
+[OK ] NAVE E:1/N:0 > Mandando mensaje a SIM         
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] NAVE E:0/N:0 > Esperando mensaje de JEFE E:0    
+[OK ] NAVE E:1/N:0 > Esperando mensaje de JEFE E:1    
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:0 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:0/N:0 ESTE
+[OK ] NAVE E:1/N:0 > Mandando mensaje a SIM         
+[OK ] NAVE E:1/N:1 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] NAVE E:1/N:0 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Mandando mensaje a SIM         
+[OK ] SIM          > ACCION: MOVER NAVE E:0/N:0 ESTE (X:03/Y:01)
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] NAVE E:1/N:1 > Mandando mensaje a SIM         
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:0
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:0/N:0 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] NAVE E:0/N:0 > Mandando mensaje a SIM         
+[OK ] NAVE E:0/N:0 > Esperando mensaje de JEFE E:0    
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:1
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:1
+[OK ] NAVE E:0/N:1 > Recibido mensaje: ATACAR
+[OK ] JEFE E:0     > Esperando mensaje de SIM         
+[OK ] NAVE E:0/N:1 > Mandando mensaje a SIM         
+[OK ] NAVE E:0/N:1 > Esperando mensaje de JEFE E:0    
+[OK ] NAVE E:0/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:0/N:1 > Mandando mensaje a SIM         
+[OK ] NAVE E:0/N:1 > Esperando mensaje de JEFE E:0    
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: ATACAR NAVE E:1/N:0 X:06/Y:05
+[OK ] SIM          > ACCION: ATACAR NAVE E:1/N:0 X:06/Y:05 
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:1     > Recibido mensaje: DESTRUIR NAVE E:1/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:0 > Recibido mensaje: DESTRUIR
+[OK ] NAVE E:1/N:0 > Finalizando
+[OK ] NAVE E:1/N:0 > Destruyendo NAVE E:1/N:0
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:1/N:0 OESTE
+[OK ] SIM          > No se realiza la accion, la nave ya ha sido destruida
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:1/N:1 ESTE
+[OK ] SIM          > ACCION: MOVER NAVE E:1/N:1 ESTE (X:16/Y:16)
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:1/N:1 ESTE
+[OK ] SIM          > ACCION: MOVER NAVE E:1/N:1 ESTE (X:17/Y:16)
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:0/N:0 SUR
+[OK ] SIM          > ACCION: MOVER NAVE E:0/N:0 SUR (X:03/Y:00)
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: ATACAR NAVE E:0/N:1 X:12/Y:10
+[OK ] SIM          > ACCION: ATACAR NAVE E:0/N:1 X:12/Y:10 
+[OK ] SIM          > Mandando mensaje a JEFE E:0    
+[OK ] JEFE E:0     > Recibido mensaje: DESTRUIR NAVE E:0/N:1
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:1
+[OK ] JEFE E:0     > Esperando mensaje de SIM         
+[OK ] NAVE E:0/N:1 > Recibido mensaje: DESTRUIR
+[OK ] NAVE E:0/N:1 > Finalizando
+[OK ] NAVE E:0/N:1 > Destruyendo NAVE E:0/N:1
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: ATACAR NAVE E:0/N:1 X:12/Y:10
+[OK ] SIM          > No se realiza la accion, la nave ya ha sido destruida
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:0    
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:0     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:0
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] NAVE E:0/N:0 > Recibido mensaje: ATACAR
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] NAVE E:0/N:0 > Mandando mensaje a SIM         
+[OK ] NAVE E:0/N:0 > Esperando mensaje de JEFE E:0    
+[OK ] SIM          > Recibido mensaje: ATACAR NAVE E:0/N:0 X:17/Y:16
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] SIM          > ACCION: ATACAR NAVE E:0/N:0 X:17/Y:16 
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] SIM          > Mandando mensaje a JEFE E:0    
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:0
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:0/N:0 > Recibido mensaje: ATACAR
+[OK ] NAVE E:0/N:0 > Mandando mensaje a SIM         
+[OK ] NAVE E:0/N:0 > Esperando mensaje de JEFE E:0    
+[OK ] JEFE E:0     > La nave NAVE E:0/N:1 ha sido destruida, no se envia mensaje
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:1
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] JEFE E:0     > La nave NAVE E:0/N:1 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:1
+[OK ] JEFE E:0     > Esperando mensaje de SIM         
+[OK ] JEFE E:0     > Recibido mensaje: DESTRUIR NAVE E:0/N:0
+[OK ] JEFE E:0     > Mandando mensaje a NAVE E:0/N:0
+[OK ] NAVE E:0/N:0 > Recibido mensaje: DESTRUIR
+[OK ] NAVE E:0/N:0 > Finalizando
+[OK ] NAVE E:0/N:0 > Destruyendo NAVE E:0/N:0
+[OK ] JEFE E:0     > Finalizando
+[OK ] JEFE E:0     > Esperando naves
+[OK ] JEFE E:0     > Destruyendo JEFE E:0    
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Recibido mensaje: ATACAR NAVE E:0/N:0 X:17/Y:16
+[OK ] SIM          > No se realiza la accion, la nave ya ha sido destruida
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] NAVE E:1/N:1 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] NAVE E:1/N:1 > Mandando mensaje a SIM         
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:1/N:1 SUR
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > ACCION: MOVER NAVE E:1/N:1 SUR (X:17/Y:15)
+[OK ] SIM          > Esperando mensaje de nave
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > Nuevo TURNO       
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] JEFE E:1     > Recibido mensaje: TURNO
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > La nave NAVE E:1/N:0 ha sido destruida, no se envia mensaje
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:0
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Mandando mensaje a NAVE E:1/N:1
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:1 > Recibido mensaje: ATACAR
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Recibido mensaje: MOVER_ALEATORIO
+[OK ] NAVE E:1/N:1 > Mandando mensaje a SIM         
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] SIM          > Recibido mensaje: MOVER NAVE E:1/N:1 SUR
+[OK ] SIM          > ACCION: MOVER NAVE E:1/N:1 SUR (X:17/Y:14)
+[OK ] SIM          > Esperando mensaje de nave
+
+[OK ] SIM          > Finalizando ejecucion...
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] SIM          > Esperando jefes
+[OK ] JEFE E:1     > Recibido mensaje: FIN
+[OK ] JEFE E:1     > Finalizando
+[OK ] JEFE E:1     > Esperando naves
+[OK ] NAVE E:1/N:1 > Destruyendo NAVE E:1/N:1
+[OK ] JEFE E:1     > Destruyendo JEFE E:1    
+[OK ] SIM          > Destruyendo SIM         
+[OK ] ------------ > Lanzando simulacion
+[OK ] SIM          > Creando SIM         
+[OK ] SIM          > Inicializando
+[OK ] SIM          > Inicializando semaforos
+[OK ] SIM          > Inicializando pipes a jefes
+[OK ] SIM          > Inicializando cola de mensajes a simulador
+[OK ] SIM          > Inicializando mapa (shm)
+[OK ] SIM          > Inicializando manejadores de señal
+[OK ] SIM          > Avisando al proceso monitor
+[OK ] SIM          > Comenzando
+[OK ] SIM          > Ejecutando jefes
+[OK ] SIM          > Esperando a naves
+[OK ] JEFE E:0     > Creando JEFE E:0    
+[OK ] JEFE E:0     > Inicializando
+[OK ] JEFE E:0     > Inicializando pipes a naves
+[OK ] JEFE E:1     > Creando JEFE E:1    
+[OK ] JEFE E:0     > Comenzando
+[OK ] JEFE E:1     > Inicializando
+[OK ] JEFE E:0     > Ejecutando naves
+[OK ] JEFE E:1     > Inicializando pipes a naves
+[OK ] JEFE E:1     > Comenzando
+[OK ] JEFE E:1     > Ejecutando naves
+[OK ] NAVE E:1/N:0 > Creando NAVE E:1/N:0
+[OK ] JEFE E:1     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:0 > Inicializando
+[OK ] NAVE E:1/N:0 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:1/N:0 > Inicializando manejadores de señal
+[OK ] NAVE E:1/N:0 > Inicializando mapa (shm)
+[OK ] JEFE E:0     > Esperando mensaje de SIM         
+[OK ] NAVE E:1/N:0 > Nave preparada
+[OK ] NAVE E:1/N:0 > Comenzando
+[OK ] NAVE E:1/N:0 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:1/N:1 > Creando NAVE E:1/N:1
+[OK ] NAVE E:1/N:1 > Inicializando
+[OK ] NAVE E:1/N:1 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:1/N:1 > Inicializando manejadores de señal
+[OK ] NAVE E:1/N:1 > Inicializando mapa (shm)
+[OK ] NAVE E:1/N:1 > Nave preparada
+[OK ] NAVE E:0/N:0 > Creando NAVE E:0/N:0
+[OK ] NAVE E:0/N:0 > Inicializando
+[OK ] NAVE E:1/N:1 > Comenzando
+[OK ] NAVE E:0/N:0 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:1/N:1 > Esperando mensaje de JEFE E:1    
+[OK ] NAVE E:0/N:0 > Inicializando manejadores de señal
+[OK ] NAVE E:0/N:0 > Inicializando mapa (shm)
+[OK ] NAVE E:0/N:0 > Nave preparada
+[OK ] NAVE E:0/N:0 > Comenzando
+[OK ] NAVE E:0/N:0 > Esperando mensaje de JEFE E:0    
+[OK ] NAVE E:0/N:1 > Creando NAVE E:0/N:1
+[OK ] NAVE E:0/N:1 > Inicializando
+[OK ] NAVE E:0/N:1 > Inicializando cola de mensajes a simulador
+[OK ] NAVE E:0/N:1 > Inicializando manejadores de señal
+[OK ] NAVE E:0/N:1 > Inicializando mapa (shm)
+[OK ] NAVE E:0/N:1 > Nave preparada
+[OK ] NAVE E:0/N:1 > Comenzando
+[OK ] NAVE E:0/N:1 > Esperando mensaje de JEFE E:0    
+
+[OK ] SIM          > Finalizando ejecucion...
+[OK ] SIM          > Mandando mensaje a JEFE E:0    
+[OK ] SIM          > Mandando mensaje a JEFE E:1    
+[OK ] SIM          > Esperando jefes
+[OK ] JEFE E:0     > Recibido mensaje: FIN
+[OK ] JEFE E:1     > Recibido mensaje: FIN
+[OK ] JEFE E:0     > Finalizando
+[OK ] JEFE E:1     > Finalizando
+[OK ] JEFE E:0     > Esperando naves
+[OK ] JEFE E:1     > Esperando naves
+[OK ] NAVE E:1/N:1 > Destruyendo NAVE E:1/N:1
+[OK ] NAVE E:0/N:0 > Destruyendo NAVE E:0/N:0
+[OK ] NAVE E:0/N:1 > Destruyendo NAVE E:0/N:1
+[OK ] NAVE E:1/N:0 > Destruyendo NAVE E:1/N:0
+[OK ] JEFE E:1     > Destruyendo JEFE E:1    
+[OK ] JEFE E:0     > Destruyendo JEFE E:0    
+[OK ] SIM          > Destruyendo SIM         

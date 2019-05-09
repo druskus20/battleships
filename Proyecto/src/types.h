@@ -40,7 +40,7 @@
 
 /*** SIMULACION ***/
 #define N_EQUIPOS 2 	  // Número de equipos
-#define N_NAVES 2   	  // Número de naves por equipo
+#define N_NAVES 4   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
@@ -61,6 +61,8 @@
 /*** SCREEN ***/
 #define SCREEN_REFRESH 1 // !!! TURNO_INTERVAL // Frequencia de refresco del mapa en el monitor
 #define SYMB_VACIO '.'       // Símbolo para casilla vacia
+
+
 #define SYMB_TOCADO '%'      // Símbolo para tocado
 #define SYMB_DESTRUIDO 'X'   // Símbolo para destruido
 #define SYMB_AGUA 'W'        // Símbolo para agua
