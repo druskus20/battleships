@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "info_nave.h"
-char symbol_equipos[N_EQUIPOS] = {'A','B','C','D'};
+char symbol_equipos[MAX_EQUIPOS] = {'A','B','C','D'};
 
 tipo_mapa * mapa_create() {
 	tipo_mapa  * new_mapa;
@@ -82,7 +82,6 @@ char mapa_get_symbol(tipo_mapa *mapa, int posy, int posx) {
 }
 
 bool mapa_is_casilla_vacia(tipo_mapa *mapa, int posy, int posx) {
-	printf("POSX %d, POSY %d\n", posx, posy);
 	return (mapa->casillas[posy][posx].equipo < 0);
 }
 

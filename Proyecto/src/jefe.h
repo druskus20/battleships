@@ -16,7 +16,7 @@ void jefe_init(tipo_jefe *jefe);
 void jefe_run(tipo_jefe *jefe);
 void jefe_end(tipo_jefe *jefe);
 void jefe_destroy(tipo_jefe *jefe);
-bool jefe_evaluar_fin(tipo_jefe * jefe);
+//bool jefe_evaluar_fin(tipo_jefe * jefe);
 void jefe_init_pipes_naves(tipo_jefe * jefe);
 void jefe_run_naves(tipo_jefe *jefe);
 void jefe_esperar_naves();

@@ -39,8 +39,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 4 	  // Número de equipos
-#define N_NAVES 4   	  // Número de naves por equipo
+#define N_EQUIPOS 2 	  // Número de equipos
+#define N_NAVES 2   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar

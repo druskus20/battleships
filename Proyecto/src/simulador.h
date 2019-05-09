@@ -12,7 +12,7 @@
 tipo_argumentos args;
 FILE * fpo;      
 extern tipo_estiloMSG estiloMSG;             // Ver msg.c            
-extern char symbol_equipos[N_EQUIPOS]; // Ver mapa.c
+extern char symbol_equipos[MAX_EQUIPOS]; // Ver mapa.c
 
 void sim_launch();
 

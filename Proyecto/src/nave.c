@@ -93,7 +93,6 @@ void nave_run(tipo_nave *nave){
         fin = nave_actua(nave, action_code, extra_buff);
         free(msg_recibido);
         msg_recibido = NULL;
-        printf("POS: %d %d", mapa_get_nave(nave->mapa, nave->equipo, nave->num).posx, mapa_get_nave(nave->mapa, nave->equipo, nave->num).posy);
     }
 
 }

@@ -38,7 +38,7 @@ void jefe_launch(int equipo, int *pipe_sim) {
         // Elimina el manejador sigint antes de liberar !!!
         // signal(SIGINT, SIG_DFL); // CAMBIAR !!!
 
-        jefe_end(jefe);
+        jefe_end(jefe); 
         //jefe_esperar_naves(jefe);
         jefe_destroy(jefe);
         exit(EXIT_SUCCESS);
@@ -85,17 +85,13 @@ void jefe_run(tipo_jefe *jefe){
     msg_jefeOK(fpo, jefe, "Comenzando");
     jefe_run_naves(jefe); 
 
-    while(!fin) {
+    while(!fin && jefe->naves_res > 0) {
         int action_code = -1;
         char extra_buff[BUFF_MAX] = "";
         char main_buff[BUFF_MAX] = "";
         msg_recibido = jefe_recibir_msg_sim(jefe);
         
-        printf("jefe naves_vivas: ");
-        for (int i = 0; i < N_NAVES; i++) {
-            printf("%d, ", jefe->naves_vivas[i]);
-        }
-        printf("\n");
+
 
         dividir_msg(msg_recibido, main_buff, extra_buff);
         action_code = parse_accion(main_buff);
@@ -209,13 +205,13 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg) {
     //strcpy(msg_buffer, msg);
     write(fd[1], msg, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
 }
-
+/*
 bool jefe_evaluar_fin(tipo_jefe * jefe) {
     if (jefe->naves_res == 0)
         return true;
     return false;
 }
-
+*/
 
 
 
@@ -229,8 +225,11 @@ int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
             jefe_mandar_msg_nave(jefe, num_nave, M_DESTRUIR);
             jefe->naves_res--;
             jefe->naves_vivas[equipo] = false;
-            if (jefe->naves_res == 0) 
+             printf("RESTANTES %d\n", jefe->naves_res);
+            if (jefe->naves_res == 0)  {
+               
                 return 1;
+            }
             break;
 
         case TURNO: 

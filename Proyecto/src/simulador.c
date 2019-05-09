@@ -46,12 +46,6 @@ void sim_manejador_SIGALRM(int sig) {
     char out_buff[BUFF_MAX];
 
 
-        printf("sim eq_vivos: ");
-        for (int i = 0; i < N_EQUIPOS; i++) {
-            printf("%d, ", sim_global->equipos_vivos[i]);
-        }
-        printf("\n");
-
 
     sprintf(out_buff, "Nuevo %s", estiloMSG.turno_tag);
     msg_simOK(fpo, out_buff);
@@ -160,13 +154,13 @@ void sim_run(tipo_sim * sim) {
     sim_run_jefes(sim);
     
     sim_esperar_naves_ready(sim);
-
+    sleep(1);
     alarm(TURNO_SECS);
 
 
     while(!fin && sim->equipos_res > 1) {        
         int action_code = -1;
-        char out_buff[BUFF_MAX*3] ="";
+     
         char orden_buff[MSG_MAX] = "";         // orden
         char nave_buff[MSG_MAX]= "";           // tag autor
         char coord_dir_buff[MSG_MAX] = "";     // coordenadas / direccion
@@ -180,7 +174,9 @@ void sim_run(tipo_sim * sim) {
           
         fin = sim_actua(sim, action_code, nave_buff, coord_dir_buff);
         free(msg_recibido);
+        usleep(100000);
     }   
+
 
     signal(SIGALRM, SIG_DFL);  
 }
@@ -424,17 +420,26 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
     int equipo, num_nave;
     info_nave info_nave;
     char out_buffer[BUFF_MAX] = "";
+    char msg_buffer[MSG_MAX] ="";
 
+    extractv_nave_tag(nave_tag, &equipo, &num_nave);
+    info_nave = sim->mapa->info_naves[equipo][num_nave];
+    if (info_nave.vida <= 0) {
+        return 0;
+    }
+              
 
     switch (accion_sim){   
         case ATACAR:
             
             extractv_coordenadas(coord_dir, &target_x, &target_y);
-            extractv_nave_tag(nave_tag, &equipo, &num_nave);
+           
 
             sprintf(out_buffer, "ACCION: ATACAR %s %s ", nave_tag, coord_dir);
             msg_simOK(fpo, out_buffer);
 
+            sprintf(msg_buffer, "DESTRUIR %s", nave_tag);
+            sim_mandar_msg_jefe(sim, equipo, msg_buffer);
             
             //sim_destruir_nave(sim, equipo, num_nave);
             //sim_evaluar_fin(sim);
@@ -442,14 +447,10 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
             
             break;
         case MOVER: 
-            extractv_nave_tag(nave_tag, &equipo, &num_nave);
+
             //info_nave = mapa_get_nave(sim->mapa, equipo, num_nave);
         
-            info_nave = sim->mapa->info_naves[equipo][num_nave];
-            if (info_nave.vida <= 0) {
-                return 0;
-            }
-                
+  
             target_x = info_nave.posx; 
             target_y = info_nave.posy;
           
@@ -474,7 +475,7 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
             mapa_clean_casilla(sim->mapa, info_nave.posy, info_nave.posx);
             info_nave.posx = target_x;
             info_nave.posy = target_y;
-            printf("POS2 %d %d\n", target_x, target_y);
+        
             sprintf(out_buffer, "ACCION: MOVER %s %s (X:%02d/Y:%02d)", nave_tag, coord_dir, target_x, target_y);
             msg_simOK(fpo, out_buffer);
             mapa_set_nave(sim->mapa, info_nave);
