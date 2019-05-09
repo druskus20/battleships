@@ -50,7 +50,7 @@
 #define N_ACCIONES_TURNO 2	  // Numero de acciones por turno
 #define VIDA_MAX 50       // Vida inicial de una nave
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque
-#define ATAQUE_DANO 10    // Daño de un ataque
+#define ATAQUE_DANO 50    // Daño de un ataque
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
 #define TURNO_SECS 5      // Segundos que dura un turno
 

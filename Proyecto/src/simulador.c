@@ -178,8 +178,7 @@ void sim_run(tipo_sim * sim) {
     }   
 
 
-    printf("SIGNAL\n");
-    signal(SIGALRM, SIG_IGN);  
+    signal(SIGALRM, SIG_DFL);  
 }
 
 
@@ -428,35 +427,39 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
     extractv_nave_tag(nave_tag, &equipo, &num_nave);
 
     
+    printf("PRE_ANTES: equipo %d, numn_nave %d\n", equipo, num_nave);
     info_nave = sim->mapa->info_naves[equipo][num_nave];
+    printf("ANTES: info_nave eq%d, num%d: %d\n", info_nave.equipo, info_nave.num, info_nave.vida);
     if (info_nave.vida <= 0) {
         msg_simOK(fpo, "No se realiza la accion, la nave ya ha sido destruida");
         return 0;
     }
-       
+    printf("SIGUE\n") ;         
 
     switch (accion_sim){   
         case ATACAR:
             
             extractv_coordenadas(coord_dir, &target_x, &target_y);
            
+
             sprintf(out_buffer, "ACCION: ATACAR %s %s ", nave_tag, coord_dir);
             msg_simOK(fpo, out_buffer);
 
-            
             info_nave.vida -= ATAQUE_DANO;
             sprintf(msg_buffer, "DESTRUIR %s", nave_tag);
-
+            printf("VIDA SUPONEMOS 0 %d \n", info_nave.vida);
+            printf("MAPA ANTES _ NUM_NAVES %d\n", mapa_get_num_naves(sim->mapa, equipo));
             int n_naves = mapa_get_num_naves(sim->mapa, equipo) -1;
             mapa_set_num_naves(sim->mapa, equipo, n_naves);
-           
+            printf("MAPA DESP _ NUM_NAVES %d\n", mapa_get_num_naves(sim->mapa, equipo));
+            
             if ( n_naves <= 0)  {
                 printf("ENTRA\n");
                 sim->equipos_vivos[equipo] = false;
 
             }
 
-            
+            printf("info_nave.vida %d", info_nave.vida);
             mapa_set_nave(sim->mapa, info_nave);
             sim_mandar_msg_jefe(sim, equipo, msg_buffer);
             
