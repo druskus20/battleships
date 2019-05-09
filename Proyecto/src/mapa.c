@@ -31,6 +31,18 @@ tipo_mapa * mapa_create() {
 			mapa_clean_casilla(new_mapa, j, i);
 		}
 	}
+
+	// Inicializa las casillas del mapa
+	for (int i = 0; i < N_EQUIPOS; i++) {
+		for (int j = 0; j < N_NAVES; j++) {
+			info_nave nave = new_mapa->info_naves[i][j];
+			new_mapa->casillas[nave.posy][nave.posx].equipo=nave.equipo;
+			new_mapa->casillas[nave.posy][nave.posx].num_nave=nave.num;
+			new_mapa->casillas[nave.posy][nave.posx].simbolo=symbol_equipos[nave.equipo];
+		}
+	}
+
+	
 	return new_mapa;
 }
 
@@ -70,6 +82,7 @@ char mapa_get_symbol(tipo_mapa *mapa, int posy, int posx) {
 }
 
 bool mapa_is_casilla_vacia(tipo_mapa *mapa, int posy, int posx) {
+	printf("POSX %d, POSY %d\n", posx, posy);
 	return (mapa->casillas[posy][posx].equipo < 0);
 }
 
@@ -98,7 +111,7 @@ bool mapa_set_nave(tipo_mapa *mapa, info_nave nave) {
 	if (nave.equipo >= N_EQUIPOS) return false;
 	if (nave.num >= N_NAVES) return false;
 	mapa->info_naves[nave.equipo][nave.num]=nave;
-	if (nave.vida <= 0) { // !!!!!!!!!!!!! cambiado, antes ponia if (nave.viva)
+	if (nave.vida >= 0) { // !!!!!!!!!!!!! cambiado, antes ponia if (nave.viva)
 		mapa->casillas[nave.posy][nave.posx].equipo=nave.equipo;
 		mapa->casillas[nave.posy][nave.posx].num_nave=nave.num;
 		mapa->casillas[nave.posy][nave.posx].simbolo=symbol_equipos[nave.equipo];

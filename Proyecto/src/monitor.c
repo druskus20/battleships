@@ -62,12 +62,14 @@ int main(int argc, char *argv[]) {
 	screen_init();
 
 
-	sleep(3);
-	while(true){
+	
+	while(true){ // !!!!! mapa->fin :)
 		mapa_print(mapa);
+		sleep(SCREEN_REFRESH);
+		
 	}
 	screen_end();
-
+	munmap(mapa, sizeof(*mapa));
 	sem_close(sem_sim);
 	
 	exit(EXIT_SUCCESS);

@@ -90,6 +90,13 @@ void jefe_run(tipo_jefe *jefe){
         char extra_buff[BUFF_MAX] = "";
         char main_buff[BUFF_MAX] = "";
         msg_recibido = jefe_recibir_msg_sim(jefe);
+        
+        printf("jefe naves_vivas: ");
+        for (int i = 0; i < N_NAVES; i++) {
+            printf("%d, ", jefe->naves_vivas[i]);
+        }
+        printf("\n");
+
         dividir_msg(msg_recibido, main_buff, extra_buff);
         action_code = parse_accion(main_buff);
         fin = jefe_actua(jefe, action_code, extra_buff);

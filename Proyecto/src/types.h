@@ -39,8 +39,8 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 3 	  // Número de equipos
-#define N_NAVES 2   	  // Número de naves por equipo
+#define N_EQUIPOS 4 	  // Número de equipos
+#define N_NAVES 4   	  // Número de naves por equipo
 #define TURNO_INTERVAL 1
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
@@ -55,11 +55,11 @@
 #define TURNO_SECS 5      // Segundos que dura un turno
 
 /*** MAPA ***/
-#define MAPA_MAXX 20         // Número de columnas del mapa
+#define MAPA_MAXX 20        // Número de columnas del mapa
 #define MAPA_MAXY 20         // Número de filas del mapa
 
 /*** SCREEN ***/
-#define SCREEN_REFRESH 10000 // !!! TURNO_INTERVAL // Frequencia de refresco del mapa en el monitor
+#define SCREEN_REFRESH 1 // !!! TURNO_INTERVAL // Frequencia de refresco del mapa en el monitor
 #define SYMB_VACIO '.'       // Símbolo para casilla vacia
 #define SYMB_TOCADO '%'      // Símbolo para tocado
 #define SYMB_DESTRUIDO 'X'   // Símbolo para destruido
@@ -200,6 +200,8 @@ typedef struct {
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
 	bool equipos_vivos[N_EQUIPOS];
+	int equipos_res;
+
 	tipo_mapa *mapa;
 
 	// Semaforos shm

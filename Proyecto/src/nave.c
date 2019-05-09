@@ -77,7 +77,7 @@ void nave_init(tipo_nave * nave){
 
 void nave_run(tipo_nave *nave){
     bool fin = false;
-    char * msg_recibido;
+    char * msg_recibido = NULL;
 
     msg_naveOK(fpo, nave, "Comenzando");
     
@@ -85,14 +85,17 @@ void nave_run(tipo_nave *nave){
         int action_code = -1;
         char extra_buff[BUFF_MAX] = "";
         char main_buff[BUFF_MAX] = "";
+        
         msg_recibido = nave_recibir_msg_jefe(nave);
+        
         dividir_msg(msg_recibido, main_buff, extra_buff);
         action_code = parse_accion(main_buff);
         fin = nave_actua(nave, action_code, extra_buff);
         free(msg_recibido);
-
+        msg_recibido = NULL;
         printf("POS: %d %d", mapa_get_nave(nave->mapa, nave->equipo, nave->num).posx, mapa_get_nave(nave->mapa, nave->equipo, nave->num).posy);
     }
+
 }
 
 void nave_end(tipo_nave * nave){
@@ -155,6 +158,7 @@ char * nave_recibir_msg_jefe(tipo_nave *nave) {
     char * msg_buffer;
     int * fd; // pipe
 
+    // Esto siempre va a dar un error de valgrind si se finaliza con sigterm
     msg_buffer = (char *)malloc(sizeof(char) * MSG_MAX);
     strcpy(msg_buffer, "");
 
@@ -270,6 +274,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
             }
 
             sprintf(msg_buffer, "%s %s %s", M_MOVER, nave->tag, dir_string);
+          
             nave_mandar_msg_sim(nave, msg_buffer); 
             break;
 
@@ -279,6 +284,7 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
 
             sprintf(coord_string, COORDENADA, target[0], target[1]);
             sprintf(msg_buffer, "%s %s %s", M_ATACAR, nave->tag, coord_string);
+            
             nave_mandar_msg_sim(nave, msg_buffer);
             break;
 

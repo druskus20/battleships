@@ -33,6 +33,7 @@ void sim_manejador_SIGINT(int sig) {
         if (sim_global->equipos_vivos[i] == true)
             sim_mandar_msg_jefe(sim_global, i, M_FIN);
 
+    
     sim_esperar_jefes();
     sim_free_resources(sim_global);
     sim_destroy(sim_global);
@@ -44,9 +45,18 @@ void sim_manejador_SIGINT(int sig) {
 void sim_manejador_SIGALRM(int sig) {
     char out_buff[BUFF_MAX];
 
+
+        printf("sim eq_vivos: ");
+        for (int i = 0; i < N_EQUIPOS; i++) {
+            printf("%d, ", sim_global->equipos_vivos[i]);
+        }
+        printf("\n");
+
+
     sprintf(out_buff, "Nuevo %s", estiloMSG.turno_tag);
     msg_simOK(fpo, out_buff);
-    
+    // !!!
+    mapa_restore(sim_global->mapa);
     for (int i = 0; i < N_EQUIPOS; i++)
         if (sim_global->equipos_vivos[i] == true)
             sim_mandar_msg_jefe(sim_global, i, M_TURNO);
@@ -58,7 +68,7 @@ void sim_manejador_SIGALRM(int sig) {
 void sim_launch() {
     srand(getpid());
     sim_global = sim_create();
-    sim_init(sim_global);
+    sim_init(sim_global);        
     sim_run(sim_global);
     // Elimina el manejador sigint antes de liberar
     
@@ -67,13 +77,16 @@ void sim_launch() {
 }
 
 tipo_sim * sim_create() {
+    
     tipo_sim * new_sim;
     char out_buff[BUFF_MAX];
 
     new_sim = (tipo_sim *)malloc(sizeof(new_sim[0]));
     
-    for (int i = 0; i < N_EQUIPOS; i++ )
-        new_sim->equipos_vivos[N_EQUIPOS] = true;
+    for (int i = 0; i < N_EQUIPOS; i++ ){
+        new_sim->equipos_vivos[i] = true;
+    }
+    new_sim->equipos_res = N_EQUIPOS;
 
     
     // new_sim->mapa = mapa_create();
@@ -151,17 +164,20 @@ void sim_run(tipo_sim * sim) {
     alarm(TURNO_SECS);
 
 
-    while(!fin) {        
+    while(!fin && sim->equipos_res > 1) {        
         int action_code = -1;
-        
-        char orden_buff[BUFF_MAX] = "";         // orden
-        char nave_buff[BUFF_MAX]= "";           // tag autor
-        char coord_dir_buff[BUFF_MAX] = "";     // coordenadas / direccion
+        char out_buff[BUFF_MAX*3] ="";
+        char orden_buff[MSG_MAX] = "";         // orden
+        char nave_buff[MSG_MAX]= "";           // tag autor
+        char coord_dir_buff[MSG_MAX] = "";     // coordenadas / direccion
         
         msg_recibido = sim_recibir_msg_nave(sim);
         // recibe: accion orden autor coordenada/direccion 
+       
         dividir_accion(msg_recibido, orden_buff, nave_buff, coord_dir_buff); // quita "accion"
+    
         action_code = parse_accion(orden_buff);
+          
         fin = sim_actua(sim, action_code, nave_buff, coord_dir_buff);
         free(msg_recibido);
     }   
@@ -175,7 +191,7 @@ void sim_end(tipo_sim *sim) {
     signal(SIGINT, SIG_DFL); 
     
     for (int i = 0; i < N_EQUIPOS; i++) 
-        if (sim_global->equipos_vivos[i] == true)
+        if (sim->equipos_vivos[i] == true)
             sim_mandar_msg_jefe(sim_global, i, M_FIN);
     
     sim_esperar_jefes();
@@ -233,7 +249,6 @@ void sim_init_pipes_jefes(tipo_sim * sim) {
             msg_simERR(fpo, "sim_init_pipes_jefes");
 		    exit(EXIT_FAILURE);
         }
-
     }
     
 }
@@ -413,17 +428,19 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
 
     switch (accion_sim){   
         case ATACAR:
+            
             extractv_coordenadas(coord_dir, &target_x, &target_y);
             extractv_nave_tag(nave_tag, &equipo, &num_nave);
 
             sprintf(out_buffer, "ACCION: ATACAR %s %s ", nave_tag, coord_dir);
             msg_simOK(fpo, out_buffer);
 
-            sim_destruir_nave(sim, equipo, num_nave);
-
+            
+            //sim_destruir_nave(sim, equipo, num_nave);
+            //sim_evaluar_fin(sim);
             return sim_evaluar_fin(sim);
             
-
+            break;
         case MOVER: 
             extractv_nave_tag(nave_tag, &equipo, &num_nave);
             //info_nave = mapa_get_nave(sim->mapa, equipo, num_nave);
@@ -435,31 +452,33 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
                 
             target_x = info_nave.posx; 
             target_y = info_nave.posy;
-            
-            
-            if (strcmp (coord_dir, NORTE) == 0 && info_nave.posy <= (MAPA_MAXY-MOVER_ALCANCE)) {
+          
+            if ((strcmp (coord_dir, NORTE) == 0) && ((info_nave.posy+MOVER_ALCANCE) <= MAPA_MAXY)) {
                 target_y += MOVER_ALCANCE;
             }
-            else if (strcmp (coord_dir, SUR) == 0 && info_nave.posy >= (0+MOVER_ALCANCE)) {
+            else if ((strcmp (coord_dir, SUR) == 0) && ((info_nave.posy-MOVER_ALCANCE) >= 0)) {
                 target_y -= MOVER_ALCANCE;
             }
-            else if (strcmp (coord_dir, ESTE) == 0 && info_nave.posx <= (MAPA_MAXX-MOVER_ALCANCE)) {
+            else if ((strcmp (coord_dir, ESTE) == 0) && ((info_nave.posx+MOVER_ALCANCE) <= MAPA_MAXX)) {
                 target_x += MOVER_ALCANCE;
             }
-            else if (strcmp (coord_dir, OESTE) == 0 && info_nave.posx >= (0+MOVER_ALCANCE)) {
-                 target_y -= MOVER_ALCANCE;
+            else if ((strcmp (coord_dir, OESTE) == 0) && ((info_nave.posx-MOVER_ALCANCE) >= 0)) {
+                 target_x -= MOVER_ALCANCE;
             }
             
-            if (mapa_is_casilla_vacia(sim->mapa, target_x, target_y) == false) {
-                
+            
+            if (mapa_is_casilla_vacia(sim->mapa, target_y, target_x) == false) {
                 return 0;
             } 
 
+            mapa_clean_casilla(sim->mapa, info_nave.posy, info_nave.posx);
             info_nave.posx = target_x;
             info_nave.posy = target_y;
+            printf("POS2 %d %d\n", target_x, target_y);
             sprintf(out_buffer, "ACCION: MOVER %s %s (X:%02d/Y:%02d)", nave_tag, coord_dir, target_x, target_y);
             msg_simOK(fpo, out_buffer);
             mapa_set_nave(sim->mapa, info_nave);
+            
             break;
         
         default:
@@ -519,10 +538,10 @@ void sim_init_mapa_shm(tipo_sim * sim) {
 
 void sim_destruir_nave(tipo_sim *sim, int equipo, int num_nave){
     char msg_buff[BUFF_MAX], tag[TAG_MAX];
-    load_nave_tag(tag, equipo, num_nave);
-    sprintf(msg_buff, "%s, %s", M_DESTRUIR, tag);
+    load_nave_tag(equipo, num_nave, tag);
+    sprintf(msg_buff, "%s %s", M_DESTRUIR, tag);
     sim_mandar_msg_jefe(sim, equipo, msg_buff);
-    
+
     if (mapa_get_num_naves(sim->mapa, equipo) <= 0)
         sim->equipos_vivos[equipo] = false;
 }
