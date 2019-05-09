@@ -1,7 +1,14 @@
 # Proyecto de Sistemas Operativos
 
+## Compilacion
+Compilar mediante `make`, `make -B` o `make all`.
+
 ## Ejecución:
 ### style_test 
 Ejectutar mediante el comando: `$ ./bin/style_test`. 
 
-En caso de desear redireccionar la salida a un fichero, se recomienda filtrar los codigos de color mediante `$ ./bin/style_test | sed -E 's/\x1B\[[0-9][^m]*?m//g' > a.txt` 
+### launcher (simulador) 
+Ejecutar mediante el comando `$ ./bin/launcher -c -f <fichero>`. Las flags son opcionales. Para ayuda de ejecución, emplear `-h`.
+
+### monitor 
+Ejecutar mediante el comando `$ ./bin/monitor`

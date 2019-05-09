@@ -22,6 +22,7 @@ info_nave * info_nave_create(int equipo, int num) {
     new_info->posy = pos[1];
 
 
+
     return new_info;
 }
 

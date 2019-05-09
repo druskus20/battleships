@@ -16,30 +16,15 @@
 extern FILE * fpo;
 
 
-/*
-// Manejador de la señal Ctrl+C (SIGINT)
-void jefe_manejador_SIGINT(int sig) {
-    // msg_OK(stdout, "SIGINT SIM"); da error por variables globales
-    msg_jefeOK(stdout, jefe_global, "Finalizando ejecucion...");
-    jefe_end(jefe_global);
-    jefe_destroy(jefe_global);
-    fflush(fpo);
-    exit(EXIT_SUCCESS);
-}
-*/
-
 void jefe_launch(int equipo, int *pipe_sim) {     
         tipo_jefe * jefe;
         srand(getpid());
         jefe = jefe_create(equipo, pipe_sim);
         jefe_init(jefe);
         jefe_run(jefe);
- 
-        // Elimina el manejador sigint antes de liberar !!!
-        // signal(SIGINT, SIG_DFL); // CAMBIAR !!!
 
         jefe_end(jefe); 
-        //jefe_esperar_naves(jefe);
+
         jefe_destroy(jefe);
         exit(EXIT_SUCCESS);
 }
@@ -52,7 +37,7 @@ tipo_jefe * jefe_create(int equipo, int *pipe_sim) {
     new_jefe = (tipo_jefe *)malloc(sizeof(new_jefe[0]));
 
     new_jefe->equipo = equipo;
-    new_jefe->naves_res = N_NAVES;    // !!!
+    new_jefe->naves_res = N_NAVES;    
     new_jefe->pipe_sim = pipe_sim;
     
     for (int i = 0; i < N_NAVES; i++){ 
@@ -120,9 +105,9 @@ void jefe_run_naves(tipo_jefe *jefe){
     // creacion de naves
     for (int i = 0; i < N_NAVES; i++) {
         pid = fork();
-        if (pid == 0) {  // nave
-            //free(jefe); // !!!!!!!
-            signal(SIGINT, SIG_IGN); // Momentaneamente desactivamos el manejador !!! 
+        if (pid == 0) { 
+            
+            signal(SIGINT, SIG_IGN); 
             
             int fd[2];
             fd[0] = jefe->pipes_naves[i][0];
@@ -186,10 +171,9 @@ char * jefe_recibir_msg_sim(tipo_jefe *jefe) {
 void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg) {
     char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    //char msg_buffer[MSG_MAX] = "";
+
     int * fd; 
     load_nave_tag(jefe->equipo, num_nave, tag); 
-    printf("NUM NAVE %d \n", num_nave); 
     if (jefe->naves_vivas[num_nave] == false) {
         sprintf(out_buff, "La nave %s ha sido destruida, no se envia mensaje", tag);
         msg_jefeOK(fpo, jefe, out_buff);
@@ -202,32 +186,21 @@ void jefe_mandar_msg_nave(tipo_jefe *jefe, int num_nave, char * msg) {
 
     // cierra el descriptor de entrada en el jefe
     close(fd[0]); 
-    //sprintf(msg_buffer, "ACCION ATACAR COSA EXTRA");
-    //strcpy(msg_buffer, msg);
-    write(fd[1], msg, MSG_MAX); // !!! quiza msg_max+1. pero al leer podría fallar por pasarse de tamaño
+    write(fd[1], msg, MSG_MAX); 
 }
-/*
-bool jefe_evaluar_fin(tipo_jefe * jefe) {
-    if (jefe->naves_res == 0)
-        return true;
-    return false;
-}
-*/
+
 
 
 
 int jefe_actua (tipo_jefe * jefe, int accion_jefe, char * extra) {
     int num_nave, equipo;
- //   char msg_buffer[MSG_MAX] = "";
 
     switch (accion_jefe){   
         case DESTRUIR:
             extractv_nave_tag(extra, &equipo, &num_nave);
             jefe_mandar_msg_nave(jefe, num_nave, M_DESTRUIR);
             jefe->naves_res--;
-            printf("NUM_NAVE DESTRUCCION: %d", num_nave);
             jefe->naves_vivas[num_nave] = false;
-            printf("RESTANTES %d\n", jefe->naves_res);
             if (jefe->naves_res <= 0)  {
                 return 1;
             }

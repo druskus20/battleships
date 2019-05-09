@@ -38,8 +38,7 @@ void nave_launch(int equipo, int num, int *pipe_jefe) {
     nave_init(nave_global);
     nave_run(nave_global);
 
-    // Elimina el manejador sigint antes de liberar !!!
-    //signal(SIGINT, SIG_DFL); // CAMBIAR !!!
+
     
     nave_end(nave_global);
     nave_destroy(nave_global);
@@ -54,7 +53,6 @@ tipo_nave * nave_create(int equipo, int num, int *pipe_jefe) {
    
     new_nave->equipo = equipo;
     new_nave->num = num;
-
 
     new_nave->pipe_jefe = pipe_jefe;
     load_nave_tag(equipo, num, new_nave->tag);
@@ -181,14 +179,14 @@ void nave_init_cola_sim(tipo_nave * nave) {
     struct mq_attr attributes;
      msg_naveOK(fpo, nave,"Inicializando cola de mensajes a simulador");
 
-	attributes.mq_flags = 0;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
+	attributes.mq_flags = 0;       
 	attributes.mq_maxmsg = MAX_QUEUE_MSGS;
 	attributes.mq_curmsgs = 0; 
 	attributes.mq_msgsize = MSG_MAX;
     
     nave->cola_sim = mq_open("/cola_sim",
-                O_CREAT | O_WRONLY,  // This process is only going to send messages 
-                S_IRUSR | S_IWUSR,  // The user can read and write 
+                O_CREAT | O_WRONLY,  
+                S_IRUSR | S_IWUSR,  
                 &attributes); 
 
 	if(nave->cola_sim == (mqd_t)-1) {
@@ -222,7 +220,7 @@ void nave_mandar_msg_sim(tipo_nave * nave, char * msg) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         char sim_tag[TAG_MAX];
         char out_buff[BUFF_MAX];
-        char msg_buffer[MSG_MAX] = "";   // !!! puede fallar al concatenar la tag dentro        
+        char msg_buffer[MSG_MAX] = "";   
         
      
 
@@ -268,7 +266,8 @@ int nave_actua (tipo_nave * nave, int action_code, char * extra) {
                 case 3:
                     strcpy(dir_string, OESTE);
                     break;
-                default:
+                default:    
+                    
                     return 1;
             }
 
@@ -311,30 +310,6 @@ void nave_ready(tipo_nave * nave) {
     sem_close(sem_naves_ready);
 }
 
-/*
-void nave_init_semaforos(tipo_nave * nave) {
-    msg_naveOK(fpo, nave, "Inicializando semaforos");
-    if((nave->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_naveERR(fpo, nave, "sem_open de ""sem_lecmapa""");
-		exit(EXIT_FAILURE);
-	}  
-
-    if((nave->sem_escmapa = sem_open(SEM_ESCMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_naveERR(fpo, nave, "sem_open de ""sem_escmapa""");
-		exit(EXIT_FAILURE);
-	}  
-
-    if((nave->sem_mutex1 = sem_open(MUTEX_LE1, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_naveERR(fpo, nave, "sem_open de ""sem_mutex1""");
-		exit(EXIT_FAILURE);
-	}  
-
-    if((nave->sem_mutex3 = sem_open(MUTEX_LE3, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_naveERR(fpo, nave, "sem_open de ""sem_mutex3""");
-		exit(EXIT_FAILURE);
-	}  
-
-}*/
 
 void nave_init_shm_mapa(tipo_nave * nave)  {
     msg_naveOK(fpo, nave, "Inicializando mapa (shm)");
@@ -354,71 +329,3 @@ void nave_init_shm_mapa(tipo_nave * nave)  {
     
     
 }
-
-/*
-void nave_init_shm_readers_count(tipo_nave * nave)  {
-    msg_naveOK(fpo, nave, "Inicializando contador de lectores (shm)");
-    int fd_shm = shm_open(SHM_READERS_COUNT,
-                            O_RDWR,
-                            S_IRUSR | S_IWUSR); 
-    if(fd_shm == -1) {
-        msg_naveERR(fpo, nave, "shm_open de ""nave_init_shm_readers_count""");
-        exit(EXIT_FAILURE);
-    }
-    
-    nave->readers_count  = mmap(NULL, sizeof(*nave->readers_count),
-                                PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
-    if(nave->readers_count == MAP_FAILED){
-        msg_naveERR(fpo, nave, "mmap de ""nave_init_shm_readers_count""");
-        exit(EXIT_FAILURE);
-    }
-}
-*/
-
-
-/*
-
-void nave_down_mapa(tipo_nave * nave) {
-    
-    do {
-        sem_wait(nave->sem_mutex3);
-        printf("ERRNO_SEM1: %d", errno);
-    } while (errno == EINTR);
-    do {
-        sem_wait(nave->sem_lecmapa);
-        printf("ERRNO_SEM2: %d", errno);
-    } while (errno == EINTR);
-    do {
-        sem_wait(nave->sem_mutex1);
-        printf("ERRNO_SEM3: %d", errno);
-    } while (errno == EINTR);
-
-    nave->readers_count++;
-    if (*nave->readers_count == 1){
-        do {
-            sem_wait(nave->sem_escmapa);
-            printf("ERRNO_SEM4: %d", errno);
-        } while (errno == EINTR);
-    }
-    sem_post(nave->sem_mutex1);
-    sem_post(nave->sem_lecmapa);
-    sem_post(nave->sem_mutex3);
-
-}
-
-
-void nave_up_mapa(tipo_nave * nave) {
-
-    do {
-        sem_wait(nave->sem_mutex1);
-        printf("ERRNO_SEM3: %d", errno);
-    } while (errno == EINTR);
-    nave->readers_count--;
-    
-    
-    if (*nave->readers_count == 0)
-        sem_post(nave->sem_escmapa);
-    
-    sem_post(nave->sem_mutex1);
-
-}*/

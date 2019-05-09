@@ -106,7 +106,7 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg){
 // msg_1 y msg_2 son buffers vacios, argumentos de salida
 void dividir_msg(char * msg, char * msg_1, char * msg_2) { 
     
-    char msg_temp[strlen(msg)];  // para evitar erroes en declaraciones implicitas !!!
+    char msg_temp[strlen(msg)];  
     strcpy (msg_temp, msg);
     strcpy (msg_1, msg_temp);
     int len  = strlen(msg_temp);
@@ -123,7 +123,7 @@ void dividir_msg(char * msg, char * msg_1, char * msg_2) {
 
 // divide una accion en varias sub_cadenas
 void dividir_accion(char * msg, char * msg_1, char * msg_2, char * msg_3)  {
-    char msg_temp[strlen(msg)];  // para evitar erroes en declaraciones implicitas !!!
+    char msg_temp[strlen(msg)];  
     strcpy (msg_temp, msg);
     strcpy (msg_1, msg_temp);
     

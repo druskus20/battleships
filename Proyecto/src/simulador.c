@@ -49,7 +49,7 @@ void sim_manejador_SIGALRM(int sig) {
 
     sprintf(out_buff, "Nuevo %s", estiloMSG.turno_tag);
     msg_simOK(fpo, out_buff);
-    // !!!
+    
     mapa_restore(sim_global->mapa);
     for (int i = 0; i < N_EQUIPOS; i++)
         if (sim_global->equipos_vivos[i] == true)
@@ -119,27 +119,7 @@ void sim_init_semaforos(tipo_sim * sim) {
         msg_simERR(fpo, "sem_open de ""sem_naves_ready""");
 		exit(EXIT_FAILURE);
 	}  
-/*
-    if((sim->sem_lecmapa = sem_open(SEM_LECMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_simERR(fpo, "sem_open de ""sem_lecmapa""");
-		exit(EXIT_FAILURE);
-	}  
 
-    if((sim->sem_escmapa = sem_open(SEM_ESCMAPA, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_simERR(fpo, "sem_open de ""sem_escmapa""");
-		exit(EXIT_FAILURE);
-	}  
-
-    if((sim->sem_mutex1 = sem_open(MUTEX_LE1, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_simERR(fpo, "sem_open de ""sem_mutex1""");
-		exit(EXIT_FAILURE);
-	}  
-
-    if((sim->sem_mutex2 = sem_open(MUTEX_LE2, O_CREAT, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED){
-        msg_simERR(fpo, "sem_open de ""sem_mutex3""");
-		exit(EXIT_FAILURE);
-	}  
-*/
 }
 
 void sim_run(tipo_sim * sim) {
@@ -158,7 +138,7 @@ void sim_run(tipo_sim * sim) {
     alarm(TURNO_SECS);
 
 
-    while(!fin) {        
+    while(!fin && sim->equipos_res > 1) {        
         int action_code = -1;
      
         char orden_buff[MSG_MAX] = "";         // orden
@@ -174,7 +154,7 @@ void sim_run(tipo_sim * sim) {
           
         fin = sim_actua(sim, action_code, nave_buff, coord_dir_buff);
         free(msg_recibido);
-        usleep(300000);
+        usleep(100000);
     }   
 
 
@@ -201,35 +181,25 @@ void sim_destroy(tipo_sim * sim) {
     sprintf(out_buff, "Destruyendo %s", sim->tag);
     msg_simOK(fpo, out_buff);    
     
-    //mapa_destroy(sim->mapa);
+
     sem_unlink(SEM_NAVES_READY);
-    sem_unlink(SEM_SIMULADOR); // !!! funciona si se cierra antes que monitor?
-    /*sem_unlink(SEM_ESCMAPA); 
-    sem_unlink(SEM_LECMAPA); 
-    sem_unlink(MUTEX_LE1); 
-    sem_unlink(MUTEX_LE2); */ 
+    sem_unlink(SEM_SIMULADOR); 
+
     mq_unlink(COLA_SIM);
     shm_unlink(SHM_MAP_NAME);
-   // shm_unlink(SHM_READERS_COUNT);
+
     free(sim);
    
 }
 
 void sim_free_resources(tipo_sim * sim) {
 
-    // MAPA? !!!
     mq_close(sim->cola_msg_naves);
     sem_close(sim->sem_naves_ready);
     sem_close(sim->sem_sim);
-   // sem_close(sim->sem_escmapa);
-    //sem_close(sim->sem_lecmapa);
-    //sem_close(sim->sem_mutex1);
-    //sem_close(sim->sem_mutex2);
+
     munmap(sim->mapa, sizeof(*sim->mapa));
-    //munmap(sim->readers_count, sizeof(*sim->readers_count));
-    
-    
-    //mapa_destroy(sim->mapa); // !!!!!!!!!!! No se
+
 }
 
 
@@ -308,14 +278,14 @@ void sim_init_cola_nave(tipo_sim * sim) {
     struct mq_attr attributes;
      msg_simOK(fpo, "Inicializando cola de mensajes a simulador");
 
-	attributes.mq_flags = O_NONBLOCK;       // !!! OJO Para que los mensajes devuelvan error en vez de bloquearse, capturar
+	attributes.mq_flags = O_NONBLOCK;      
 	attributes.mq_maxmsg = MAX_QUEUE_MSGS;
 	attributes.mq_curmsgs = 0;
 	attributes.mq_msgsize = MSG_MAX;
     
     sim->cola_msg_naves = mq_open(COLA_SIM,
-                O_CREAT | O_RDONLY,  // This process is only going to receive messages 
-                S_IRUSR | S_IWUSR,  // The user can read and write 
+                O_CREAT | O_RDONLY,  
+                S_IRUSR | S_IWUSR, 
                 &attributes); 
 
 	if(sim->cola_msg_naves == (mqd_t)-1) {
@@ -329,7 +299,7 @@ char * sim_recibir_msg_nave(tipo_sim * sim) {
     
     //char tag[TAG_MAX];
     char out_buff[BUFF_MAX];
-    char * msg_buffer;  // !!! solucciona invalid read creo
+    char * msg_buffer;  
     int err = 0;
     
 
@@ -421,9 +391,10 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
     int equipo, num_nave;
     info_nave info_nave, target_info;
     char out_buffer[BUFF_MAX] = "";
-    char msg_buffer[MSG_MAX] ="";
+    char msg_buffer[MSG_MAX] = "";
+    char target_tag[TAG_MAX] = "";
 
-    // !!!!!!!!!!!!!!!!!! NO VA
+    
     extractv_nave_tag(nave_tag, &equipo, &num_nave);
 
     info_nave  = mapa_get_nave(sim->mapa, equipo, num_nave);
@@ -434,56 +405,72 @@ int sim_actua(tipo_sim * sim, int accion_sim, char * nave_tag, char * coord_dir)
 
     switch (accion_sim){   
         case ATACAR:
-            
+           
             extractv_coordenadas(coord_dir, &target_x, &target_y);
            
 
             sprintf(out_buffer, "ACCION: ATACAR %s %s ", nave_tag, coord_dir);
             msg_simOK(fpo, out_buffer);
 
-            target_info.vida -= ATAQUE_DANO;
-            mapa_set_nave(sim->mapa, target_info);
-
+         /*   
             
+            //Por si acaso se modificaran
+            int py, px, ty, tx;
+            py = info_nave.posy;
+            px = info_nave.posx;
+            ty = target_y;
+            tx = target_x;
+
+            //No funciona
+            mapa_send_misil(sim->mapa, py, px,  ty, tx);
+            
+            */
+
             if (mapa_is_casilla_vacia(sim->mapa, target_y, target_x) == true) {
+                mapa_set_symbol(sim->mapa, target_y, target_x, SYMB_AGUA);
                 return 0;
             }
 
+
             tipo_casilla cas = mapa_get_casilla(sim->mapa, target_y, target_x);
             target_info = mapa_get_nave(sim->mapa, cas.equipo, cas.num_nave);
+            target_info.vida -= ATAQUE_DANO;
+            mapa_set_nave(sim->mapa, target_info);
+           
+            
 
+            
             if (target_info.vida <= 0) {
-                int n_naves = mapa_get_num_naves(sim->mapa, cas.equipo) -1;
-                mapa_set_num_naves(sim->mapa, cas.equipo, n_naves); 
+                mapa_set_symbol(sim->mapa, target_y, target_x, SYMB_DESTRUIDO); 
+                int n_naves = mapa_get_num_naves(sim->mapa, target_info.equipo) -1;
+                mapa_set_num_naves(sim->mapa, target_info.equipo, n_naves); 
                 if ( n_naves <= 0)  
-                    sim->equipos_vivos[cas.equipo] = false; 
-                    
-                sprintf(msg_buffer, "DESTRUIR %s", nave_tag);
-                sim_mandar_msg_jefe(sim, cas.equipo, msg_buffer);
+                    sim->equipos_vivos[target_info.equipo] = false; 
+                load_nave_tag(target_info.equipo, target_info.num, target_tag);
+                sprintf(msg_buffer, "DESTRUIR %s", target_tag);
+                sim_mandar_msg_jefe(sim, target_info.equipo, msg_buffer);
                 
+            } else {
+                mapa_set_symbol(sim->mapa, target_y, target_x, SYMB_TOCADO);
             }
-
-
+            
             return sim_evaluar_fin(sim);
             
             break;
 
 
-        case MOVER: 
+        case MOVER:   
 
-            
-        
-  
             target_x = info_nave.posx; 
             target_y = info_nave.posy;
           
-            if ((strcmp (coord_dir, NORTE) == 0) && ((info_nave.posy+MOVER_ALCANCE) <= MAPA_MAXY)) {
+            if ((strcmp (coord_dir, SUR) == 0) && ((info_nave.posy+MOVER_ALCANCE) < MAPA_MAXY)) {
                 target_y += MOVER_ALCANCE;
             }
-            else if ((strcmp (coord_dir, SUR) == 0) && ((info_nave.posy-MOVER_ALCANCE) >= 0)) {
+            else if ((strcmp (coord_dir, NORTE) == 0) && ((info_nave.posy-MOVER_ALCANCE) >= 0)) {
                 target_y -= MOVER_ALCANCE;
             }
-            else if ((strcmp (coord_dir, ESTE) == 0) && ((info_nave.posx+MOVER_ALCANCE) <= MAPA_MAXX)) {
+            else if ((strcmp (coord_dir, ESTE) == 0) && ((info_nave.posx+MOVER_ALCANCE) < MAPA_MAXX)) {
                 target_x += MOVER_ALCANCE;
             }
             else if ((strcmp (coord_dir, OESTE) == 0) && ((info_nave.posx-MOVER_ALCANCE) >= 0)) {
@@ -558,73 +545,5 @@ void sim_init_mapa_shm(tipo_sim * sim) {
 
 
 }
-
-
-void sim_destruir_nave(tipo_sim *sim, int equipo, int num_nave){
-    char msg_buff[BUFF_MAX], tag[TAG_MAX];
-    load_nave_tag(equipo, num_nave, tag);
-    sprintf(msg_buff, "%s %s", M_DESTRUIR, tag);
-    sim_mandar_msg_jefe(sim, equipo, msg_buff);
-
-    if (mapa_get_num_naves(sim->mapa, equipo) <= 0)
-        sim->equipos_vivos[equipo] = false;
-}
-
-/*
-void sim_init_shm_readers_count(tipo_sim * sim) {
-    
-    msg_simOK(fpo, "Inicializando contador de lectores (shm)");
-    int fd_shm = shm_open(SHM_READERS_COUNT,
-                            O_RDWR | O_CREAT | O_EXCL,
-                            S_IRUSR | S_IWUSR); 
-    if(fd_shm == -1) {
-        msg_simERR(fpo, """shm_open"" de ""sim_init_readerscount_shm""");
-        exit( EXIT_FAILURE);
-    }
-
-
-    
-    int error = ftruncate(fd_shm, sizeof(*sim->readers_count)); // !???
-    if(error == -1) {
-        msg_simERR(fpo, """ftruncate"" de ""sim_init_readerscount_shm""");
-        shm_unlink(SHM_MAP_NAME);
-        exit( EXIT_FAILURreaders_countE);
-    }
-
-    sim->readers_count = mmap(NULL, sizeof(*sim->readers_count),
-                            PROT_READ | PROT_WRITE, MAP_SHARED, fd_shm, 0);
-    if(sim->readers_count == MAP_FAILED)  {
-        msg_simERR(fpo, """mmap"" de ""sim_init_readerscount_shm""");
-        shm_unlink(SHM_MAP_NAME);
-        exit( EXIT_FAILURE);
-    }
-
-// !!!!!!!!!!!!!!!!!!!!!!!
-    sim->readers_count = 0;
-
-}
-*/
-/*
-void sim_down_mapa(tipo_sim * sim) {
-    do {
-        sem_wait(sim->sem_lecmapa);
-        printf("ERRNO_SEM5: %d", errno);
-    } while (errno == EINTR);
-
-    do {
-        sem_wait(sim->sem_escmapa);
-        printf("ERRNO_SEM6: %d", errno);
-    } while (errno == EINTR);
-}
-
-
-void sim_up_mapa(tipo_sim * sim) {
-    sem_post(sim->sem_escmapa);
-    sem_post(sim->sem_lecmapa);
-}
-
-*/
-
-
 
 

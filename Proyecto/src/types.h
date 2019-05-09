@@ -20,14 +20,7 @@
 #define SEM_SIMULADOR "/sem_simulador"
 #define SEM_NAVES_READY "/sem_naves_ready"
 
-// Lectores - escritores
-// !!!!!!!
-/*
-#define MUTEX_LE1 "/mutex_le1"
-#define MUTEX_LE2 "/mutex_le2"
-#define MUTEX_LE3 "/mutex_le3"
-#define SEM_LECMAPA "/sem_lecmapa"
-#define SEM_ESCMAPA "/sem_escmapa" */
+
 
 
 
@@ -39,11 +32,12 @@
 
 
 /*** SIMULACION ***/
-#define N_EQUIPOS 2 	  // Número de equipos
-#define N_NAVES 4   	  // Número de naves por equipo
-#define TURNO_INTERVAL 1
+#define N_EQUIPOS 4 	  // Número de equipos
+#define N_NAVES 3   	  // Número de naves por 
 #define MAX_NAVES 4		 // No cambiar
 #define MAX_EQUIPOS 4	 // No cambiar
+
+
 
 #define MAX_QUEUE_MSGS 10  			 // Maximo numero de mensajes en la cola
 
@@ -52,14 +46,14 @@
 #define ATAQUE_ALCANCE 20 // Distancia máxima de un ataque
 #define ATAQUE_DANO 10    // Daño de un ataque
 #define MOVER_ALCANCE 1   // Máximo de casillas a mover
-#define TURNO_SECS 7      // Segundos que dura un turno
+#define TURNO_SECS 2      // Segundos que dura un turno
 
 /*** MAPA ***/
-#define MAPA_MAXX 20        // Número de columnas del mapa
+#define MAPA_MAXX 20         // Número de columnas del mapa
 #define MAPA_MAXY 20         // Número de filas del mapa
 
 /*** SCREEN ***/
-#define SCREEN_REFRESH 1 // !!! TURNO_INTERVAL // Frequencia de refresco del mapa en el monitor
+#define SCREEN_REFRESH 100000 // Frequencia de refresco del mapa en el monitor
 #define SYMB_VACIO '.'       // Símbolo para casilla vacia
 
 
@@ -75,7 +69,6 @@
 #define M_DESTRUIR 	 	  	  "DESTRUIR"     // jefe y sim
 #define M_TURNO     	  	  "TURNO"  		 // sim y jefe
 
-// !!! la nave no tiene "DESTRUIR" como pone en el enunciado
 
 // Direcciones
 #define COORDENADA "X:%02d/Y:%02d"
@@ -108,7 +101,7 @@ typedef struct {
 	bool F_fichero_out;
 	char fichero_out[MAX_FICHERO_OUT];
 } tipo_argumentos;
-// Se usará con una variable "extern" si es necesario
+
 
 /*** ESTILO ***/
 // Formato para los mensajes en la terminal
@@ -131,7 +124,7 @@ typedef struct {
 
 
 
-
+// Contiene los datos de una nave (ver tipo_mapa)
 typedef struct {
 	int vida; 	   // Vida que le queda a la nave	
 	int posx; 	   // Columna en el mapa
@@ -139,7 +132,6 @@ typedef struct {
 	int equipo;
 	int num;
 	int dmg;	   // El daño que inflinge
-
 	int alcance;
 } info_nave;
 
@@ -160,8 +152,8 @@ typedef struct {
 } tipo_mapa;
 
 
-/*** NAVE ***/
-// Información de nave
+/*** PROCESO NAVE ***/
+// Información del PROCESO nave
 typedef struct {
 
 	int equipo;    // Equipo de la nave	
@@ -169,22 +161,16 @@ typedef struct {
 	int * pipe_jefe;
 	char tag[TAG_MAX];   
 	mqd_t cola_sim;
-	//sem_t *sem_lecmapa;
-	//sem_t *sem_escmapa;
-	//sem_t *sem_mutex1;
-	//sem_t *sem_mutex3;
 	tipo_mapa * mapa;
-	//int * readers_count;
+
 } tipo_nave;
 
 
-
-
-/*** JEFE ***/
+/*** PROCESO JEFE ***/
+// Información del PROCESO jefe
 typedef struct {
 	int equipo;		// equipo del jefe (id)
-	// int pid_naves[N_NAVES]; !!! NO
-	// !!! quizas pipes de naves hijas
+
 	int pipes_naves[N_NAVES][2];
 	int * pipe_sim;
 	char tag[TAG_MAX]; 	
@@ -193,25 +179,14 @@ typedef struct {
 	bool naves_vivas[N_NAVES];
 } tipo_jefe;
 
-/*** SIM ***/
+/*** PROCESO SIM ***/
+// Información del PROCESO simulador
 typedef struct {
-	// int equipos_rest; // <- se puede? con los waits...
-	
-	// int pid_jefes[N_EQUIPOS]; !!! NO
-	// !!! array de pipes a jefes
 	int pipes_jefes[N_EQUIPOS][2];
 	char tag[TAG_MAX];
 	bool equipos_vivos[N_EQUIPOS];
 	int equipos_res;
-
 	tipo_mapa *mapa;
-
-	// Semaforos shm
-	//sem_t *sem_lecmapa;
-	//sem_t *sem_escmapa;
-	//sem_t *sem_mutex1;
-	//sem_t *sem_mutex2;
-	
 	mqd_t cola_msg_naves;
 	sem_t *sem_naves_ready;
 	sem_t *sem_sim;		// semaforo para avisar al monitor

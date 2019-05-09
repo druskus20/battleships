@@ -9,9 +9,10 @@
 // Para la lectura de argumentos
 #include <getopt.h>
 
-// !!! no estoy muy seguro de esto
 #include "simulador.h"
 #include "mapa.h"
+
+
 
 
 // Lee las flags y argumentos introducidos y modifica los parametros
@@ -90,7 +91,7 @@ void abrir_log() {
 
 // Rutina principal
 int main(int argc, char **argv) {
-    
+    char out_buffer[BUFF_MAX] = "";
 
     set_default_params();
     leer_argumentos(argc, argv);
@@ -98,7 +99,14 @@ int main(int argc, char **argv) {
     if (args.F_fichero_out) 
         abrir_log();
 
-  
+    if (N_EQUIPOS > MAX_EQUIPOS) {
+        sprintf(out_buffer, "N_EQUIPOS (%d) mayor que MAX_EQUIPOS (%d)", N_EQUIPOS, MAX_EQUIPOS);
+        msg_ERR(fpo, out_buffer);
+    }
+    if (N_NAVES > MAX_NAVES) {
+        sprintf(out_buffer, "N_NAVES (%d) mayor que MAX_NAVES (%d)", N_NAVES, MAX_NAVES);
+        msg_ERR(fpo, out_buffer);
+    }
 
     msg_OK(fpo, "Lanzando simulacion");
     sim_launch();

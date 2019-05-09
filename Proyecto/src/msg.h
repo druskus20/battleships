@@ -20,7 +20,7 @@
 #define CYAN        "\x1b[0;36m"
 #define BOLD_RED    "\x1b[1;31m" 
 #define BOLD_GREEN  "\x1b[1;32m" 
-#define COLOR_RESET "\x1b[0;00m" // !!!
+#define COLOR_RESET "\x1b[0;00m" 
 
 #define NO_TAG_L 0
 #define COLOR_TAG_L 7  // longitud de la tag de color
@@ -50,7 +50,7 @@
 #define STATUS_MSG   "%s " LINE " > %s\n"        
 
 
-
+/*** FUNCIONES PARA LA IMPRESION DE MENSAJES EN LA TERMINAL */
 
 void msg_OK(FILE * fpo, char * msg);
 void msg_ERR(FILE * fpo, char * msg);
@@ -77,9 +77,12 @@ void msg_naveERR(FILE * fpo, tipo_nave * nave, char * msg);
 void estiloMSG_set_default();
 void estiloMSG_set_colorful();
 
+// separa msg por los espacios
 void dividir_msg(char * msg,  char * msg_1, char * msg_2);
+// separa una accion msg por los espacios
 void dividir_accion(char * msg, char * msg_1, char * msg_2, char * msg_3);
 
+// extrae los valores X e Y de la string coord (X:__/Y:__)
 void extractv_coordenadas(char * coord, int * x, int * y);
 
 #endif 

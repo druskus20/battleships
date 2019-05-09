@@ -110,7 +110,7 @@ bool mapa_set_nave(tipo_mapa *mapa, info_nave nave) {
 	if (nave.equipo >= N_EQUIPOS) return false;
 	if (nave.num >= N_NAVES) return false;
 	mapa->info_naves[nave.equipo][nave.num]=nave;
-	if (nave.vida > 0) { // !!!!!!!!!!!!! cambiado, antes ponia if (nave.viva)
+	if (nave.vida > 0) { 
 		mapa->casillas[nave.posy][nave.posx].equipo=nave.equipo;
 		mapa->casillas[nave.posy][nave.posx].num_nave=nave.num;
 		mapa->casillas[nave.posy][nave.posx].simbolo=symbol_equipos[nave.equipo];
@@ -125,7 +125,12 @@ void mapa_set_num_naves(tipo_mapa *mapa, int equipo, int numNaves) {
 	mapa->num_naves[equipo]=numNaves;
 }
 
+
 void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int targetx) {
+	
+
+	
+	
 	int px=origenx;
 	int py=origeny;
 	int tx=targetx;
@@ -142,6 +147,7 @@ void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int
 
 	for (nextx = origenx; (( origenx < tx) && (nextx <= tx)) || (( origenx > tx) && (nextx >= tx)); nextx+=inc)
 	{
+		
 		// solve for y
 		float y = (m * nextx) + b;
 
@@ -166,10 +172,7 @@ void mapa_send_misil(tipo_mapa *mapa, int origeny, int origenx, int targety, int
 
 // retorna -1 si error, 0 si no. pos[2] es un argumento de salida, un buffer de coordenadas
 int mapa_generate_pos_nave(int equipo, int num_nave, int pos[2]) {
-	if (equipo >= MAX_EQUIPOS)
-		return -1;
-	if (num_nave >= MAX_NAVES)
-		return -1;
+
 	
 	// Establece en que cuadrante del tablero comenzará el equipo
 	int offsetx;
@@ -205,18 +208,18 @@ int mapa_generate_pos_nave(int equipo, int num_nave, int pos[2]) {
 	{
 
 		case 1:
-			off_rel_x = (int)ceil(MAPA_MAXX/4*1.0) - 1;
-			off_rel_y = (int)ceil(MAPA_MAXY/4*1.0) - 1;
+			off_rel_x = (int)ceil(MAPA_MAXX/4*1.0);
+			off_rel_y = (int)ceil(MAPA_MAXY/4*1.0);
 			break;
 
 		case 2:
-			off_rel_x = (int)ceil(MAPA_MAXX/4*1.0) - 1;
+			off_rel_x = (int)ceil(MAPA_MAXX/4*1.0);
 			off_rel_y = 0;
 			break;
 
 		case 3:
 			off_rel_x = 0;
-			off_rel_y = (int)ceil(MAPA_MAXY/4*1.0) - 1;			
+			off_rel_y = (int)ceil(MAPA_MAXY/4*1.0);			
 			break;
 
 		case 0:
@@ -229,8 +232,8 @@ int mapa_generate_pos_nave(int equipo, int num_nave, int pos[2]) {
 
 
 			
-	pos[0] = 1 + (rand() % ((int)ceil(MAPA_MAXX/4*1.0) - 1));
-	pos[1] = 1 + (rand() % ((int)ceil(MAPA_MAXY/4*1.0) - 1));
+	pos[0] = 1 + (rand() % ((int)ceil(MAPA_MAXX/4*1.0)));
+	pos[1] = 1 + (rand() % ((int)ceil(MAPA_MAXY/4*1.0)));
 
 	pos[0] += (offsetx +  off_rel_x);
 	pos[1] += (offsety + off_rel_y);

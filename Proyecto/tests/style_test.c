@@ -5,8 +5,7 @@
 #include <string.h>
 #include "../src/msg.h"
 
-#define CHILD 0
-#define FATHER // TODO !!!
+
 
 int main (int argc, char const *argv[]) {
 
