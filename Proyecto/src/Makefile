@@ -1,7 +1,8 @@
 TARGET = ../bin
 
 CC = gcc
-CFLAGS = -g -Wall -pthread -I.
+CFLAGS =  -fcommon -std=gnu11 -g -Wall -pthread -I.
+
 LDLIBS = -lrt -lncurses
 
 BOLD=\e[1m
