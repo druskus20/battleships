@@ -9,6 +9,12 @@ A battleship simulator using multiple methods of inter process communication. Th
     Process hierarchy
 </p>
 
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/43417195/148292290-a025e82f-4de4-4553-a3f5-6de63811dae2.gif" width="500px">
+    <br>
+    Showcase
+</p>
+
 The code can be found [here](Proyecto), although I haven't translated it to english yet.
 
 Here's a showcase video: [video](https://youtu.be/pMvVAhWTcE4)
