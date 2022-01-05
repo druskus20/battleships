@@ -1,6 +1,5 @@
 # Battleships
 
-## Final Project
 A battleship simulator using multiple methods of inter process communication. The focus wasn't efficienty or safety but rather diversity.
 
 <p align="center">
